@@ -8,6 +8,7 @@ import {
   Star, StarHalf, ShoppingBag, Heart, ChevronRight,
   Shield, Truck, RotateCcw, Plus, Minus, Check,
 } from "lucide-react";
+import { useCart } from "../../../context/CartContext";
 
 // ─── Data ─────────────────────────────────────────────────────────────────────
 
@@ -150,8 +151,18 @@ export default function ProductDetailPage() {
   const [wishlisted, setWishlisted] = useState(false);
   const [added, setAdded] = useState(false);
   const [activeTab, setActiveTab] = useState<"benefits" | "ingredients" | "how-to">("benefits");
+  const { addToCart } = useCart();
 
   const handleAddToCart = () => {
+    addToCart({
+      id: product.id,
+      name: product.name,
+      image: product.images[0],
+      price: product.currentPrice,
+      currency: product.currency,
+      size: product.sizes?.[selectedSize],
+      quantity: qty,
+    });
     setAdded(true);
     setTimeout(() => setAdded(false), 2500);
   };

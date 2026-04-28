@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useCallback, useEffect, useMemo, useRef, useState, Suspense } from "react";
 import { Star, StarHalf, SlidersHorizontal, X } from "lucide-react";
 import { useSearchParams } from "next/navigation";
+import { useCart } from "../../context/CartContext";
 
 // ─── Data ────────────────────────────────────────────────────────────────────
 
@@ -119,6 +120,22 @@ const renderStars = (rating: number) =>
 
 function ProductCard({ product, index }: { product: Product; index: number }) {
   const [imgIdx, setImgIdx] = useState(0);
+  const [isAdded, setIsAdded] = useState(false);
+  const { addToCart } = useCart();
+
+  const handleAddToCart = (e: React.MouseEvent) => {
+    e.preventDefault();
+    addToCart({
+      id: product.id,
+      name: product.name,
+      image: product.images[0],
+      price: product.currentPrice,
+      currency: product.currency,
+      quantity: 1,
+    });
+    setIsAdded(true);
+    setTimeout(() => setIsAdded(false), 2000);
+  };
 
   useEffect(() => {
     const t = setInterval(
@@ -174,10 +191,13 @@ function ProductCard({ product, index }: { product: Product; index: number }) {
       </Link>
       <div className="px-4 pb-6">
         <button
+          onClick={handleAddToCart}
           aria-label={`Add ${product.name} to cart`}
-          className="w-full bg-slate-900 text-white font-bold text-xs uppercase tracking-widest py-3 rounded-full hover:bg-slate-800 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 motion-reduce:transition-none"
+          className={`w-full text-white font-bold text-xs uppercase tracking-widest py-3 rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 motion-reduce:transition-none ${
+            isAdded ? "bg-green-600 hover:bg-green-700" : "bg-slate-900 hover:bg-slate-800"
+          }`}
         >
-          ADD TO CART
+          {isAdded ? "ADDED TO CART" : "ADD TO CART"}
         </button>
       </div>
     </article>

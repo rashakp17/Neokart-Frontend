@@ -5,44 +5,12 @@ import Image from "next/image";
 import Link from "next/link";
 import { ChevronRight, Minus, Plus, ShoppingBag, Trash2, ArrowRight } from "lucide-react";
 
-// ─── Mock Data ────────────────────────────────────────────────────────────────
-
-const INITIAL_CART = [
-  {
-    id: "brightening-suncream",
-    name: "Brightening Suncream",
-    image: "/products/suncream-1.jpg",
-    price: 100,
-    currency: "₹",
-    size: "60ml",
-    quantity: 2,
-  },
-  {
-    id: "chemist-body-wash",
-    name: "Chemist at Play Exfoliating Body Wash",
-    image: "/products/body-wash-1.jpg",
-    price: 299,
-    currency: "₹",
-    size: "400ml",
-    quantity: 1,
-  },
-];
+import { useCart } from "../../context/CartContext";
 
 // ─── Page Component ───────────────────────────────────────────────────────────
 
 export default function CartPage() {
-  const [cartItems, setCartItems] = useState(INITIAL_CART);
-
-  const updateQuantity = (id: string, newQty: number) => {
-    if (newQty < 1) return;
-    setCartItems((items) =>
-      items.map((item) => (item.id === id ? { ...item, quantity: newQty } : item))
-    );
-  };
-
-  const removeItem = (id: string) => {
-    setCartItems((items) => items.filter((item) => item.id !== id));
-  };
+  const { cartItems, updateQuantity, removeItem } = useCart();
 
   const subtotal = cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0);
   const shipping = subtotal > 0 ? (subtotal > 499 ? 0 : 50) : 0;

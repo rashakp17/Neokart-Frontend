@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { Search, User, ShoppingBag, X, Menu } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useCart } from "../../context/CartContext";
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
@@ -12,6 +13,7 @@ export default function Navbar() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const searchInputRef = useRef<HTMLInputElement>(null);
+  const { cartCount } = useCart();
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 50);
@@ -38,6 +40,20 @@ export default function Navbar() {
     return () => window.removeEventListener("keydown", handleEscape);
   }, []);
 
+  const handleToggleSearch = () => {
+    if (!isSearchOpen) {
+      setIsMobileMenuOpen(false);
+    }
+    setIsSearchOpen(!isSearchOpen);
+  };
+
+  const toggleMobileMenu = () => {
+    if (!isMobileMenuOpen) {
+      setIsSearchOpen(false);
+    }
+    setIsMobileMenuOpen(!isMobileMenuOpen);
+  };
+
   return (
     <header
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 h-24 lg:h-28 px-6 lg:px-12 flex items-center justify-between border-b ${
@@ -45,9 +61,9 @@ export default function Navbar() {
       }`}
     >
       {/* ── Mobile Menu Toggle (Left on Mobile) ── */}
-      <div className="flex md:hidden flex-1 justify-start">
+      <div className="flex md:hidden flex-1 justify-start relative z-10">
         <button
-          onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+          onClick={toggleMobileMenu}
           className="p-2 -ml-2 text-slate-900 hover:text-blue-500 transition-colors duration-200"
           aria-label="Toggle mobile menu"
         >
@@ -58,12 +74,12 @@ export default function Navbar() {
       {/* ── Logo (Center on Mobile, Left on Desktop) ── */}
       <div className="absolute left-1/2 -translate-x-1/2 md:static md:translate-x-0 flex items-center">
         <Link href="/" className="flex-shrink-0" aria-label="HEEDY home">
-          <div className="relative w-40 sm:w-48 md:w-96 lg:w-[30rem] h-12 sm:h-16 md:h-24 lg:h-28">
+          <div className="relative w-64 sm:w-80 md:w-96 lg:w-[30rem] h-24 sm:h-24 md:h-24 lg:h-28">
             <Image
               src="/logo.png"
               alt="HEEDY Logo"
               fill
-              sizes="(max-width: 640px) 160px, (max-width: 768px) 192px, (max-width: 1024px) 384px, 480px"
+              sizes="(max-width: 640px) 256px, (max-width: 768px) 320px, (max-width: 1024px) 384px, 480px"
               className="object-contain md:object-left object-center"
               priority
             />
@@ -88,56 +104,104 @@ export default function Navbar() {
       </nav>
 
       {/* ── Right: Search & Utilities ── */}
-      <div className="flex items-center justify-end gap-2 md:gap-4 flex-1 md:flex-none">
-        <div className="flex items-center relative">
+      <div className="flex items-center justify-end gap-2 md:gap-4 flex-1 md:flex-none relative z-10">
+        
+        {/* --- Mobile Always Visible Icons --- */}
+        <div className="flex md:hidden items-center gap-1 sm:gap-2">
+          {/* Search Trigger */}
+          <button
+            onClick={handleToggleSearch}
+            className="p-2 text-slate-900 hover:text-blue-500 transition-colors duration-200"
+            aria-label="Toggle search"
+          >
+            <Search size={22} strokeWidth={2} />
+          </button>
+
+          <Link
+            href="/cart"
+            className="relative p-2 flex items-center justify-center text-slate-900 hover:text-blue-500 transition-colors duration-200"
+            aria-label="Cart"
+          >
+            <ShoppingBag size={22} strokeWidth={2} />
+            {cartCount > 0 && (
+              <span className="absolute top-0 right-0 w-4 h-4 bg-blue-500 text-white text-[9px] font-bold rounded-full flex items-center justify-center border border-white">
+                {cartCount}
+              </span>
+            )}
+          </Link>
+
+          {/* Profile Icon */}
+          <Link
+            href="/sign-in"
+            className="p-2 flex items-center justify-center text-slate-900 hover:text-blue-500 transition-colors duration-200"
+            aria-label="Account"
+          >
+            <User size={22} strokeWidth={2} />
+          </Link>
+        </div>
+
+        {/* --- Desktop Interactive Area --- */}
+        <div className="hidden md:flex items-center relative min-h-[40px]">
           <AnimatePresence mode="wait">
             {!isSearchOpen ? (
-              /* --- Default State Icons --- */
+              /* --- Desktop Default State Icons --- */
               <motion.div
                 key="default-utilities"
                 initial={{ opacity: 0, x: 10 }}
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: 10 }}
-                className="flex items-center gap-2 md:gap-4"
+                className="flex items-center gap-4"
               >
                 {/* Search Trigger */}
                 <button
-                  onClick={() => setIsSearchOpen(true)}
-                  className="flex items-center p-2 md:p-0 text-slate-900 hover:text-blue-500 transition-colors duration-200 group"
+                  onClick={handleToggleSearch}
+                  className="flex items-center text-slate-900 hover:text-blue-500 transition-colors duration-200 group"
                   aria-label="Open search"
                 >
-                  <Search size={22} strokeWidth={2} className="md:w-5 md:h-5" />
+                  <Search size={20} strokeWidth={2} className="w-5 h-5" />
                   <span className="hidden lg:inline-block ml-2 font-sans font-bold text-sm tracking-[0.15em] uppercase">
                     SEARCH
                   </span>
                 </button>
 
-                {/* Cart Icon (Hidden when search is open) */}
-                <button
-                  className="relative p-2 md:p-0 md:w-10 md:h-10 flex items-center justify-center text-slate-900 hover:text-blue-500 transition-colors duration-200"
+                {/* Cart Icon */}
+                <Link
+                  href="/cart"
+                  className="relative w-10 h-10 flex items-center justify-center text-slate-900 hover:text-blue-500 transition-colors duration-200"
                   aria-label="Cart"
                 >
-                  <ShoppingBag size={22} strokeWidth={2} className="md:w-5 md:h-5" />
-                  <span className="absolute top-0 right-0 md:top-1 md:right-1 w-4 h-4 md:w-5 md:h-5 bg-blue-500 text-white text-[9px] md:text-[10px] font-bold rounded-full flex items-center justify-center border border-white">
-                    0
-                  </span>
-                </button>
+                  <ShoppingBag size={20} strokeWidth={2} className="w-5 h-5" />
+                  {cartCount > 0 && (
+                    <span className="absolute top-1 right-1 w-5 h-5 bg-blue-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center border border-white">
+                      {cartCount}
+                    </span>
+                  )}
+                </Link>
+
+                {/* Account Icon */}
+                <Link
+                  href="/sign-in"
+                  className="w-10 h-10 flex items-center justify-center text-slate-900 hover:text-blue-500 transition-colors duration-200"
+                  aria-label="Account"
+                >
+                  <User size={20} strokeWidth={2} className="w-5 h-5" />
+                </Link>
               </motion.div>
             ) : (
-              /* --- Search Active State --- */
+              /* --- Desktop Search Active State --- */
               <motion.div
                 key="active-search"
                 initial={{ opacity: 0, width: 0 }}
                 animate={{ opacity: 1, width: "auto" }}
                 exit={{ opacity: 0, width: 0 }}
-                className="flex items-center gap-2 md:gap-4"
+                className="flex items-center gap-4"
               >
                 {/* Search Input Container */}
                 <motion.div
                   initial={{ width: 0 }}
                   animate={{ width: "16rem" }}
                   transition={{ duration: 0.3, ease: "easeOut" }}
-                  className="relative hidden md:block lg:w-80"
+                  className="relative lg:w-80"
                 >
                   <input
                     ref={searchInputRef}
@@ -175,14 +239,6 @@ export default function Navbar() {
             )}
           </AnimatePresence>
         </div>
-
-        {/* Account Icon (Hidden on mobile to match reference image) */}
-        <button
-          className="hidden md:flex w-10 h-10 items-center justify-center text-slate-900 hover:text-blue-500 transition-colors duration-200"
-          aria-label="Account"
-        >
-          <User size={20} strokeWidth={2} />
-        </button>
       </div>
 
       {/* ── Mobile Search Overlay ── */}
