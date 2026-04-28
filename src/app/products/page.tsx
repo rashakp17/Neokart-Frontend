@@ -22,80 +22,9 @@ interface Product {
   category: string;
 }
 
-const ALL_PRODUCTS: Product[] = [
-  {
-    id: "brightening-suncream",
-    name: "Brightening Suncream",
-    images: ["/products/suncream-1.jpg", "/products/suncream-2.jpg"],
-    rating: 5,
-    reviewCount: 500,
-    currentPrice: 100,
-    originalPrice: 299,
-    currency: "₹",
-    dealBadge: "FLAT 10% OFF",
-    benefit: "Brightens Skin",
-    category: "skin-care",
-  },
-  {
-    id: "deconstruct-lip-balm",
-    name: "Deconstruct Brightening Lip Balm with SPF 30",
-    images: ["/products/lip-balm-1.jpg", "/products/lip-balm-2.jpg"],
-    rating: 5,
-    reviewCount: 300,
-    currentPrice: 100,
-    originalPrice: 200,
-    currency: "₹",
-    dealBadge: "EXCLUSIVE DEAL",
-    benefit: "SPF 30 protection",
-    category: "lip-care",
-  },
-  {
-    id: "chemist-body-wash",
-    name: "Chemist at Play Exfoliating Body Wash",
-    images: ["/products/body-wash-1.jpg", "/products/body-wash-2.jpg"],
-    rating: 4,
-    reviewCount: 0,
-    currentPrice: 299,
-    originalPrice: 399,
-    currency: "₹",
-    dealBadge: "EXCLUSIVE DEAL",
-    benefit: "Tan & Uneven Skin Tone, Bumps & Rough Texture",
-    category: "body-care",
-  },
-  {
-    id: "underarm-roll",
-    name: "Underarm Roll",
-    images: ["/products/underarm-1.jpg", "/products/underarm-2.jpg"],
-    rating: 5,
-    reviewCount: 400,
-    currentPrice: 999,
-    originalPrice: 1199,
-    currency: "₹",
-    dealBadge: "FLAT 20% OFF",
-    benefit: "Fragrance & Aluminium Free",
-    category: "body-care",
-  },
-  {
-    id: "test-product",
-    name: "Test3",
-    images: ["/products/test-1.jpg", "/products/test-2.jpg"],
-    rating: 4,
-    reviewCount: 200,
-    currentPrice: 299,
-    originalPrice: 399,
-    currency: "₹",
-    dealBadge: "EXCLUSIVE DEAL",
-    benefit: "test",
-    category: "skin-care",
-  },
-];
+// Categories and Products will be fetched dynamically
 
-const CATEGORIES = [
-  { id: "all", label: "All Categories" },
-  { id: "skin-care", label: "Skin Care" },
-  { id: "lip-care", label: "Lip Care" },
-  { id: "body-care", label: "Body Care" },
-];
+
 
 const HISTOGRAM = [
   { height: 30 }, { height: 100 }, { height: 60 }, { height: 20 },
@@ -187,6 +116,7 @@ function ProductCard({ product, index }: { product: Product; index: number }) {
 // ─── Filter Sidebar ───────────────────────────────────────────────────────────
 
 interface FilterSidebarProps {
+  categories: { id: string; label: string }[];
   activeCategory: string;
   minPrice: number;
   maxPrice: number;
@@ -200,7 +130,7 @@ interface FilterSidebarProps {
 }
 
 function FilterSidebar({
-  activeCategory, pendingMin, pendingMax,
+  categories, activeCategory, pendingMin, pendingMax,
   onCategoryChange, onMinChange, onMaxChange, onApply, onClear,
 }: FilterSidebarProps) {
   const trackRef = useRef<HTMLDivElement>(null);
@@ -236,16 +166,15 @@ function FilterSidebar({
           SHOP BY CATEGORY
         </p>
         <div className="flex flex-col gap-3">
-          {CATEGORIES.map((cat) => (
+          {categories.map((cat) => (
             <button
               key={cat.id}
               aria-pressed={activeCategory === cat.id}
               onClick={() => onCategoryChange(cat.id)}
-              className={`px-5 py-3 rounded-xl font-sans font-medium text-sm text-left transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-                activeCategory === cat.id
-                  ? "bg-slate-900 text-white"
-                  : "bg-slate-100 text-slate-600 border border-slate-200 hover:bg-slate-200"
-              }`}
+              className={`px-5 py-3 rounded-xl font-sans font-medium text-sm text-left transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 ${activeCategory === cat.id
+                ? "bg-slate-900 text-white"
+                : "bg-slate-100 text-slate-600 border border-slate-200 hover:bg-slate-200"
+                }`}
             >
               {cat.label}
             </button>
@@ -343,6 +272,10 @@ function ProductsContent() {
   const searchParams = useSearchParams();
   const initialCategory = searchParams.get("category") || "all";
 
+  const [products, setProducts] = useState<Product[]>([]);
+  const [categories, setCategories] = useState<{ id: string, label: string }[]>([{ id: "all", label: "All Categories" }]);
+  const [loading, setLoading] = useState(true);
+
   const [activeCategory, setActiveCategory] = useState(initialCategory);
   const [minPrice, setMinPrice] = useState(0);
   const [maxPrice, setMaxPrice] = useState(PRICE_MAX);
@@ -351,11 +284,58 @@ function ProductsContent() {
   const [drawerOpen, setDrawerOpen] = useState(false);
 
   useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        setLoading(true);
+        const [prodRes, catRes] = await Promise.all([
+          fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/v1/products`),
+          fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/v1/categories`)
+        ]);
+
+        const [prodJson, catJson] = await Promise.all([
+          prodRes.json(),
+          catRes.json()
+        ]);
+
+        if (catJson.success && catJson.data) {
+          const mappedCats = catJson.data.map((c: any) => ({
+            id: c.name,
+            label: c.name,
+          }));
+          setCategories([{ id: "all", label: "All Categories" }, ...mappedCats]);
+        }
+
+        if (prodJson.success && prodJson.data) {
+          const mappedProds = prodJson.data.map((p: any) => ({
+            id: p._id,
+            name: p.name,
+            images: p.images && p.images.length > 0 ? p.images : ["/products/suncream-1.jpg"],
+            rating: p.starRating || 0,
+            reviewCount: p.reviewsCount || 0,
+            currentPrice: p.variants?.[0]?.price || 0,
+            originalPrice: p.variants?.[0]?.oldPrice || p.variants?.[0]?.price || 0,
+            currency: "₹",
+            dealBadge: p.offerText || "",
+            benefit: p.keyFeatures || "",
+            category: p.category || "all",
+          }));
+          setProducts(mappedProds);
+        }
+      } catch (error) {
+        console.error("Failed to fetch products:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchProducts();
+  }, []);
+
+  useEffect(() => {
     const category = searchParams.get("category");
-    if (category && CATEGORIES.some(c => c.id === category)) {
+    if (category && categories.some(c => c.id === category)) {
       setActiveCategory(category);
     }
-  }, [searchParams]);
+  }, [searchParams, categories]);
 
   const handleApply = () => {
     setMinPrice(pendingMin);
@@ -373,13 +353,13 @@ function ProductsContent() {
 
   const filtered = useMemo(
     () =>
-      ALL_PRODUCTS.filter(
+      products.filter(
         (p) =>
-          (activeCategory === "all" || p.category === activeCategory) &&
+          (activeCategory === "all" || p.category.toLowerCase() === activeCategory.toLowerCase()) &&
           p.currentPrice >= minPrice &&
           p.currentPrice <= maxPrice
       ),
-    [activeCategory, minPrice, maxPrice]
+    [activeCategory, minPrice, maxPrice, products]
   );
 
   // Close drawer on escape
@@ -398,7 +378,7 @@ function ProductsContent() {
   }, [drawerOpen]);
 
   const sidebarProps: FilterSidebarProps = {
-    activeCategory, minPrice, maxPrice, pendingMin, pendingMax,
+    categories, activeCategory, minPrice, maxPrice, pendingMin, pendingMax,
     onCategoryChange: setActiveCategory,
     onMinChange: setPendingMin,
     onMaxChange: setPendingMax,
@@ -407,7 +387,7 @@ function ProductsContent() {
   };
 
   return (
-    <div className="min-h-screen bg-white pt-20">
+    <div className="min-h-screen bg-white pt-30">
       <div className="flex min-h-[calc(100vh-5rem)]">
 
         {/* ── Desktop Sidebar ─────────────────────────────────────── */}
@@ -467,7 +447,7 @@ function ProductsContent() {
               Showing{" "}
               <span className="font-bold text-slate-900">{filtered.length}</span>
               {" "}of{" "}
-              <span className="font-bold text-slate-900">{ALL_PRODUCTS.length}</span>
+              <span className="font-bold text-slate-900">{products.length}</span>
               {" "}Products
             </p>
             <button
@@ -480,7 +460,11 @@ function ProductsContent() {
           </div>
 
           {/* Product Grid */}
-          {filtered.length > 0 ? (
+          {loading ? (
+            <div className="flex items-center justify-center py-24">
+              <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-slate-900"></div>
+            </div>
+          ) : filtered.length > 0 ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-5 md:gap-7">
               {filtered.map((product, index) => (
                 <ProductCard key={product.id} product={product} index={index} />

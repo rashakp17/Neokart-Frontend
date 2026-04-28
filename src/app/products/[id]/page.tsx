@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useParams } from "next/navigation";
@@ -29,98 +29,12 @@ interface Product {
   sizes: string[];
 }
 
-const ALL_PRODUCTS: Product[] = [
-  {
-    id: "brightening-suncream",
-    name: "Brightening Suncream",
-    tagline: "Advanced broad-spectrum SPF50 with skin-brightening actives.",
-    images: ["/products/suncream-1.jpg", "/products/suncream-2.jpg"],
-    rating: 5,
-    reviewCount: 500,
-    currentPrice: 100,
-    originalPrice: 299,
-    currency: "₹",
-    dealBadge: "FLAT 10% OFF",
-    category: "Skin Care",
-    benefits: ["Brightens Skin", "Broad Spectrum SPF 50", "No White Cast", "Lightweight Formula"],
-    ingredients: "Zinc Oxide, Titanium Dioxide, Niacinamide, Hyaluronic Acid, Vitamin C.",
-    howToUse: "Apply generously 15 minutes before sun exposure. Reapply every 2 hours or after swimming.",
-    sizes: ["30ml", "60ml", "100ml"],
-  },
-  {
-    id: "deconstruct-lip-balm",
-    name: "Deconstruct Brightening Lip Balm with SPF 30",
-    tagline: "Nourishing lip care with SPF 30 protection and brightening complex.",
-    images: ["/products/lip-balm-1.jpg", "/products/lip-balm-2.jpg"],
-    rating: 5,
-    reviewCount: 300,
-    currentPrice: 100,
-    originalPrice: 200,
-    currency: "₹",
-    dealBadge: "EXCLUSIVE DEAL",
-    category: "Lip Care",
-    benefits: ["SPF 30 Protection", "Deeply Moisturising", "Brightens Lip Tone", "Long-lasting"],
-    ingredients: "Shea Butter, Vitamin E, SPF30 Filters, Niacinamide, Jojoba Oil.",
-    howToUse: "Apply evenly on lips. Reapply throughout the day as needed.",
-    sizes: ["4g", "8g"],
-  },
-  {
-    id: "chemist-body-wash",
-    name: "Chemist at Play Exfoliating Body Wash",
-    tagline: "Resurface and renew with powerful yet gentle exfoliating actives.",
-    images: ["/products/body-wash-1.jpg", "/products/body-wash-2.jpg"],
-    rating: 4,
-    reviewCount: 0,
-    currentPrice: 299,
-    originalPrice: 399,
-    currency: "₹",
-    dealBadge: "EXCLUSIVE DEAL",
-    category: "Body Care",
-    benefits: ["Removes Tan", "Evens Skin Tone", "Smooths Rough Texture", "Clears Bumps"],
-    ingredients: "Glycolic Acid, Salicylic Acid, Kojic Acid, Aloe Vera, Chamomile Extract.",
-    howToUse: "Apply on wet skin and massage gently for 1–2 minutes. Rinse thoroughly. Use 3–4 times a week.",
-    sizes: ["200ml", "400ml"],
-  },
-  {
-    id: "underarm-roll",
-    name: "Underarm Roll",
-    tagline: "Fragrance & aluminium free deodorant for sensitive underarm skin.",
-    images: ["/products/underarm-1.jpg", "/products/underarm-2.jpg"],
-    rating: 5,
-    reviewCount: 400,
-    currentPrice: 999,
-    originalPrice: 1199,
-    currency: "₹",
-    dealBadge: "FLAT 20% OFF",
-    category: "Body Care",
-    benefits: ["Aluminium Free", "Fragrance Free", "Brightens Underarms", "24hr Odour Control"],
-    ingredients: "Mandelic Acid, Niacinamide, Zinc Ricinoleate, Aloe Vera, Glycerine.",
-    howToUse: "Apply to clean, dry underarms. Allow to dry before dressing.",
-    sizes: ["50ml"],
-  },
-  {
-    id: "test-product",
-    name: "Test3",
-    tagline: "A versatile skincare essential for everyday use.",
-    images: ["/products/test-1.jpg", "/products/test-2.jpg"],
-    rating: 4,
-    reviewCount: 200,
-    currentPrice: 299,
-    originalPrice: 399,
-    currency: "₹",
-    dealBadge: "EXCLUSIVE DEAL",
-    category: "Skin Care",
-    benefits: ["Daily Use", "Gentle Formula", "Skin Nourishing", "Dermatologist Tested"],
-    ingredients: "Aqua, Glycerine, Niacinamide, Hyaluronic Acid, Panthenol.",
-    howToUse: "Apply to face and neck morning and evening after cleansing.",
-    sizes: ["30ml", "60ml"],
-  },
-];
+// Data will be fetched dynamically from backend
 
 const TRUST_BADGES = [
-  { Icon: Truck,      label: "Free Delivery",      sub: "On orders above ₹499" },
-  { Icon: RotateCcw,  label: "Easy Returns",        sub: "7-day return policy"   },
-  { Icon: Shield,     label: "100% Authentic",      sub: "Genuine products only" },
+  { Icon: Truck, label: "Free Delivery", sub: "On orders above ₹499" },
+  { Icon: RotateCcw, label: "Easy Returns", sub: "7-day return policy" },
+  { Icon: Shield, label: "100% Authentic", sub: "Genuine products only" },
 ];
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
@@ -139,10 +53,10 @@ const renderStars = (rating: number) =>
 export default function ProductDetailPage() {
   const params = useParams();
   const id = params?.id as string;
-  
-  console.log("ProductDetailPage rendering for ID:", id);
-  const product = ALL_PRODUCTS.find((p) => p.id === id);
-  console.log("Found product:", product?.name);
+
+  const [products, setProducts] = useState<Product[]>([]);
+  const [product, setProduct] = useState<Product | null>(null);
+  const [loading, setLoading] = useState(true);
 
   const [activeImage, setActiveImage] = useState(0);
   const [selectedSize, setSelectedSize] = useState(0);
@@ -151,10 +65,54 @@ export default function ProductDetailPage() {
   const [added, setAdded] = useState(false);
   const [activeTab, setActiveTab] = useState<"benefits" | "ingredients" | "how-to">("benefits");
 
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        setLoading(true);
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/v1/products`);
+        const json = await res.json();
+        if (json.success && json.data) {
+          const mapped = json.data.map((p: any) => ({
+            id: p._id,
+            name: p.name,
+            tagline: p.description?.substring(0, 100) + "..." || "",
+            images: p.images && p.images.length > 0 ? p.images : ["/products/suncream-1.jpg"],
+            rating: p.starRating || 0,
+            reviewCount: p.reviewsCount || 0,
+            currentPrice: p.variants?.[0]?.price || 0,
+            originalPrice: p.variants?.[0]?.oldPrice || p.variants?.[0]?.price || 0,
+            currency: "₹",
+            dealBadge: p.offerText || "",
+            category: p.category || "all",
+            benefits: p.keyFeatures ? p.keyFeatures.split(',').map((s: string) => s.trim()) : ["Premium Quality"],
+            ingredients: p.description || "Refer to packaging",
+            howToUse: "Follow instructions on packaging",
+            sizes: p.variants && p.variants.length > 0 ? p.variants.map((v: any) => v.volume) : ["Standard"],
+          }));
+          setProducts(mapped);
+          setProduct(mapped.find((p: Product) => p.id === id) || null);
+        }
+      } catch (error) {
+        console.error("Failed to fetch products:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    if (id) fetchProducts();
+  }, [id]);
+
   const handleAddToCart = () => {
     setAdded(true);
     setTimeout(() => setAdded(false), 2500);
   };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-white pt-24 flex items-center justify-center">
+        <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-slate-900"></div>
+      </div>
+    );
+  }
 
   if (!product) {
     return (
@@ -175,7 +133,7 @@ export default function ProductDetailPage() {
   const discount = Math.round((1 - product.currentPrice / product.originalPrice) * 100);
 
   return (
-    <div className="min-h-screen bg-white pt-24">
+    <div className="min-h-screen bg-white pt-30">
       <div className="bg-yellow-100 text-yellow-800 p-2 text-center text-xs font-bold">
         DEBUG: Rendering Product: {product.name} (ID: {id})
       </div>
@@ -207,9 +165,8 @@ export default function ProductDetailPage() {
                   fill
                   sizes="(max-width: 1024px) 100vw, 50vw"
                   priority={i === 0}
-                  className={`object-cover transition-opacity duration-500 ${
-                    i === activeImage ? "opacity-100" : "opacity-0"
-                  }`}
+                  className={`object-cover transition-opacity duration-500 ${i === activeImage ? "opacity-100" : "opacity-0"
+                    }`}
                 />
               ))}
               {/* Deal Badge */}
@@ -226,9 +183,8 @@ export default function ProductDetailPage() {
               >
                 <Heart
                   size={18}
-                  className={`transition-colors duration-200 ${
-                    wishlisted ? "fill-red-500 text-red-500" : "text-slate-400"
-                  }`}
+                  className={`transition-colors duration-200 ${wishlisted ? "fill-red-500 text-red-500" : "text-slate-400"
+                    }`}
                 />
               </button>
             </div>
@@ -241,11 +197,10 @@ export default function ProductDetailPage() {
                     key={i}
                     onClick={() => setActiveImage(i)}
                     aria-label={`View image ${i + 1}`}
-                    className={`relative w-20 h-20 rounded-xl overflow-hidden border-2 transition-all duration-200 flex-shrink-0 ${
-                      i === activeImage
+                    className={`relative w-20 h-20 rounded-xl overflow-hidden border-2 transition-all duration-200 flex-shrink-0 ${i === activeImage
                         ? "border-slate-900 shadow-md"
                         : "border-slate-200 hover:border-slate-400"
-                    }`}
+                      }`}
                   >
                     <Image src={src} alt={`Thumbnail ${i + 1}`} fill sizes="80px" className="object-cover" />
                   </button>
@@ -309,11 +264,10 @@ export default function ProductDetailPage() {
                     <button
                       key={size}
                       onClick={() => setSelectedSize(i)}
-                      className={`px-5 py-2.5 rounded-xl font-sans font-semibold text-sm border-2 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${
-                        i === selectedSize
+                      className={`px-5 py-2.5 rounded-xl font-sans font-semibold text-sm border-2 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${i === selectedSize
                           ? "border-slate-900 bg-slate-900 text-white"
                           : "border-slate-200 text-slate-600 hover:border-slate-400 bg-white"
-                      }`}
+                        }`}
                       aria-pressed={i === selectedSize}
                     >
                       {size}
@@ -355,11 +309,10 @@ export default function ProductDetailPage() {
               <button
                 onClick={handleAddToCart}
                 aria-label="Add to cart"
-                className={`flex-1 flex items-center justify-center gap-2.5 py-4 rounded-full font-bold text-sm uppercase tracking-widest transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${
-                  added
+                className={`flex-1 flex items-center justify-center gap-2.5 py-4 rounded-full font-bold text-sm uppercase tracking-widest transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${added
                     ? "bg-green-500 text-white"
                     : "bg-slate-900 text-white hover:bg-slate-800"
-                }`}
+                  }`}
               >
                 {added ? (
                   <><Check size={18} /> Added to Cart</>
@@ -396,18 +349,17 @@ export default function ProductDetailPage() {
         {/* Tab Bar */}
         <div className="flex border-b border-slate-200 mb-8 gap-8">
           {([
-            { key: "benefits",    label: "Benefits"     },
-            { key: "ingredients", label: "Ingredients"  },
-            { key: "how-to",      label: "How to Use"   },
+            { key: "benefits", label: "Benefits" },
+            { key: "ingredients", label: "Ingredients" },
+            { key: "how-to", label: "How to Use" },
           ] as const).map(({ key, label }) => (
             <button
               key={key}
               onClick={() => setActiveTab(key)}
-              className={`pb-4 font-sans font-bold text-sm uppercase tracking-[0.12em] border-b-2 transition-all duration-200 focus:outline-none ${
-                activeTab === key
+              className={`pb-4 font-sans font-bold text-sm uppercase tracking-[0.12em] border-b-2 transition-all duration-200 focus:outline-none ${activeTab === key
                   ? "border-slate-900 text-slate-900"
                   : "border-transparent text-slate-400 hover:text-slate-700"
-              }`}
+                }`}
             >
               {label}
             </button>
@@ -456,7 +408,7 @@ export default function ProductDetailPage() {
             </Link>
           </div>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
-            {ALL_PRODUCTS.filter((p) => p.id !== product.id).slice(0, 4).map((p) => (
+            {products.filter((p) => p.id !== product.id).slice(0, 4).map((p) => (
               <Link
                 key={p.id}
                 href={`/products/${p.id}`}
