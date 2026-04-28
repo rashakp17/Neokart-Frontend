@@ -123,6 +123,8 @@ export default function ProductDetailPage() {
   }, [id]);
 
   const handleAddToCart = () => {
+    if (!product) return;
+    
     addToCart({
       id: product.id,
       name: product.name,
