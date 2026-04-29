@@ -49,7 +49,10 @@ export default function SignInPage() {
         return;
       }
 
-      // Success! Redirect to home page
+      // Success! Save user and redirect to home page
+      if (json.data) {
+        localStorage.setItem('heedy_user', JSON.stringify(json.data));
+      }
       router.push("/");
     } catch (err) {
       console.error("Sign in error:", err);
