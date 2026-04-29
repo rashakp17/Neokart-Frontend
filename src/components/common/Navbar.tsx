@@ -3,7 +3,8 @@
 import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { Search, User, ShoppingBag, X, Menu } from "lucide-react";
+import { Search, User, ShoppingBag, X, Menu, LogOut } from "lucide-react";
+import { usePathname, useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { useCart } from "../../context/CartContext";
 
@@ -14,6 +15,19 @@ export default function Navbar() {
   const [searchQuery, setSearchQuery] = useState("");
   const searchInputRef = useRef<HTMLInputElement>(null);
   const { cartCount } = useCart();
+  const pathname = usePathname();
+  const router = useRouter();
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  useEffect(() => {
+    setIsLoggedIn(!!localStorage.getItem("heedy_user"));
+  }, [pathname]);
+
+  const handleLogout = () => {
+    localStorage.removeItem("heedy_user");
+    setIsLoggedIn(false);
+    router.push("/sign-in");
+  };
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 50);
@@ -132,12 +146,23 @@ export default function Navbar() {
 
           {/* Profile Icon */}
           <Link
-            href="/sign-in"
+            href="/profile"
             className="p-2 flex items-center justify-center text-slate-900 hover:text-blue-500 transition-colors duration-200"
             aria-label="Account"
           >
             <User size={22} strokeWidth={2} />
           </Link>
+          
+          {/* Logout Icon (Mobile) */}
+          {isLoggedIn && (
+            <button
+              onClick={handleLogout}
+              className="p-2 flex items-center justify-center text-slate-900 hover:text-red-500 transition-colors duration-200"
+              aria-label="Log out"
+            >
+              <LogOut size={22} strokeWidth={2} />
+            </button>
+          )}
         </div>
 
         {/* --- Desktop Interactive Area --- */}
@@ -180,12 +205,23 @@ export default function Navbar() {
 
                 {/* Account Icon */}
                 <Link
-                  href="/sign-in"
+                  href="/profile"
                   className="w-10 h-10 flex items-center justify-center text-slate-900 hover:text-blue-500 transition-colors duration-200"
                   aria-label="Account"
                 >
                   <User size={20} strokeWidth={2} className="w-5 h-5" />
                 </Link>
+
+                {/* Logout Icon (Desktop) */}
+                {isLoggedIn && (
+                  <button
+                    onClick={handleLogout}
+                    className="w-10 h-10 flex items-center justify-center text-slate-900 hover:text-red-500 transition-colors duration-200"
+                    aria-label="Log out"
+                  >
+                    <LogOut size={20} strokeWidth={2} className="w-5 h-5" />
+                  </button>
+                )}
               </motion.div>
             ) : (
               /* --- Desktop Search Active State --- */
