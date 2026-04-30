@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useCallback, useEffect, useMemo, useRef, useState, Suspense } from "react";
-import { Star, StarHalf, SlidersHorizontal, X } from "lucide-react";
+import { Star, StarHalf, SlidersHorizontal, X, ChevronLeft } from "lucide-react";
 import { useSearchParams } from "next/navigation";
 import { useCart } from "../../context/CartContext";
 
@@ -450,6 +450,15 @@ function ProductsContent() {
 
         {/* ── Main Content ─────────────────────────────────────────── */}
         <main className="flex-1 p-5 md:p-8 overflow-hidden">
+          {/* Mobile Back to Home */}
+          <Link 
+            href="/" 
+            className="md:hidden inline-flex items-center gap-2 text-slate-700 hover:text-slate-900 mb-5 transition-colors text-sm font-semibold bg-white border border-slate-200 px-5 py-2.5 rounded-full shadow-sm"
+          >
+            <ChevronLeft size={16} />
+            Back to Home
+          </Link>
+
           {/* Collection Banner */}
           <div className="relative w-full h-48 md:h-64 lg:h-72 rounded-2xl overflow-hidden mb-8">
             <Image

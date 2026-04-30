@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -13,6 +14,7 @@ import {
   Send,
   CheckCircle2,
   ChevronRight,
+  ChevronLeft,
 } from "lucide-react";
 
 // ─── Validation Schema ────────────────────────────────────────────────────────
@@ -441,6 +443,24 @@ export default function ContactUsPage() {
           }}
         >
           <div className="max-w-4xl mx-auto px-6 text-center">
+            {/* Mobile Back to Home */}
+            <div 
+              className="md:hidden flex justify-center mb-8"
+              style={{
+                opacity: heroVisible ? 1 : 0,
+                transform: heroVisible ? "translateY(0)" : "translateY(1rem)",
+                transition: "opacity 0.5s ease 50ms, transform 0.5s ease 50ms",
+              }}
+            >
+              <Link 
+                href="/" 
+                className="inline-flex items-center gap-2 text-white/90 hover:text-white transition-colors text-sm font-semibold bg-white/10 hover:bg-white/20 px-5 py-2.5 rounded-full border border-white/20 backdrop-blur-sm shadow-sm"
+              >
+                <ChevronLeft size={16} />
+                Back to Home
+              </Link>
+            </div>
+
             {/* Pill */}
             <div
               className="inline-flex items-center gap-2 px-6 py-3 rounded-full border border-blue-300/30

@@ -73,8 +73,8 @@ export default function RegisterPage() {
         return;
       }
 
-      // Success! Redirect to login page
-      router.push("/sign-in");
+      // Success! Redirect to OTP verification page
+      router.push(`/verify-otp?email=${encodeURIComponent(data.email)}`);
     } catch (err) {
       console.error("Registration error:", err);
       setApiError("Something went wrong. Please try again.");
