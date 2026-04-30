@@ -125,8 +125,8 @@ export default function Navbar() {
         scrolled ? "bg-white shadow-sm border-slate-200" : "bg-white border-transparent"
       }`}
     >
-      {/* ── Mobile Menu Toggle (Left on Mobile) ── */}
-      <div className="flex md:hidden flex-1 justify-start relative z-20 pointer-events-none">
+      {/* ── Mobile Menu Toggle & Profile (Left on Mobile) ── */}
+      <div className="flex md:hidden flex-1 justify-start items-center gap-1 relative z-20 pointer-events-none">
         <button
           onClick={toggleMobileMenu}
           className="p-2 -ml-2 text-slate-900 hover:text-blue-500 transition-colors duration-200 pointer-events-auto"
@@ -134,6 +134,13 @@ export default function Navbar() {
         >
           {isMobileMenuOpen ? <X size={24} strokeWidth={2} /> : <Menu size={24} strokeWidth={2} />}
         </button>
+        <Link
+          href={isLoggedIn ? "/profile" : "/sign-in"}
+          className="p-2 text-slate-900 hover:text-blue-500 transition-colors duration-200 pointer-events-auto"
+          aria-label="Account"
+        >
+          <User size={22} strokeWidth={2} />
+        </Link>
       </div>
 
       {/* ── Logo (Center on Mobile, Left on Desktop) ── */}

@@ -29,9 +29,11 @@ interface Product {
 
 
 const HISTOGRAM = [
-  { height: 30 }, { height: 100 }, { height: 60 }, { height: 20 },
-  { height: 45 }, { height: 80 }, { height: 35 }, { height: 15 },
-  { height: 55 }, { height: 40 },
+  { height: 15 }, { height: 25 }, { height: 40 }, { height: 80 },
+  { height: 100 }, { height: 75 }, { height: 35 }, { height: 20 },
+  { height: 45 }, { height: 25 }, { height: 15 }, { height: 10 },
+  { height: 8 }, { height: 12 }, { height: 15 }, { height: 12 },
+  { height: 10 }, { height: 15 }, { height: 20 }, { height: 15 }
 ];
 const PRICE_MAX = 1200;
 
@@ -204,45 +206,53 @@ function FilterSidebar({
 
       {/* Price Range */}
       <div>
-        <p className="font-sans font-semibold text-xs tracking-[0.15em] uppercase text-slate-400 mb-4">
+        <p className="font-sans font-bold text-sm tracking-[0.15em] uppercase text-slate-400 mb-6 px-1">
           PRICE RANGE
         </p>
 
-        {/* Histogram */}
-        <div className="h-16 flex items-end gap-[3px] mb-4">
-          {HISTOGRAM.map((bar, i) => {
-            const barPrice = (i / HISTOGRAM.length) * PRICE_MAX;
-            const isActive = barPrice >= pendingMin && barPrice <= pendingMax;
-            return (
+        <div className="px-2 mb-8">
+          {/* Histogram */}
+          <div className="h-20 flex items-end gap-1 mb-0 relative z-0">
+            {HISTOGRAM.map((bar, i) => (
               <div
                 key={i}
                 style={{ height: `${bar.height}%` }}
-                className={`flex-1 rounded-t-sm transition-colors duration-200 ${isActive ? "bg-blue-500" : "bg-blue-200"}`}
+                className="flex-1 rounded-full bg-blue-400"
               />
-            );
-          })}
-        </div>
+            ))}
+          </div>
 
-        {/* Slider track */}
-        <div
-          ref={trackRef}
-          onClick={handleTrackClick}
-          className="relative h-2 bg-slate-200 rounded-full mb-5 cursor-pointer"
-        >
+          {/* Slider track */}
           <div
-            className="absolute h-2 bg-blue-500 rounded-full"
-            style={{ left: `${getPercent(pendingMin)}%`, right: `${100 - getPercent(pendingMax)}%` }}
-          />
-          {/* Min handle */}
-          <div
-            className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 w-4 h-4 bg-white rounded-full shadow-md border border-slate-300 cursor-grab"
-            style={{ left: `${getPercent(pendingMin)}%` }}
-          />
-          {/* Max handle */}
-          <div
-            className="absolute top-1/2 -translate-y-1/2 translate-x-1/2 w-4 h-4 bg-white rounded-full shadow-md border border-slate-300 cursor-grab"
-            style={{ right: `${100 - getPercent(pendingMax)}%` }}
-          />
+            ref={trackRef}
+            onClick={handleTrackClick}
+            className="relative h-3 w-full cursor-pointer z-10 -mt-1"
+          >
+            {/* Unselected track (invisible or very faint to allow clicking) */}
+            <div className="absolute inset-0 h-4 bg-transparent rounded-full -translate-y-0.5" />
+
+            {/* Active track */}
+            <div
+              className="absolute h-3.5 bg-blue-600 rounded-full top-1/2 -translate-y-1/2"
+              style={{ left: `${getPercent(pendingMin)}%`, right: `${100 - getPercent(pendingMax)}%` }}
+            />
+
+            {/* Min handle */}
+            <div
+              className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 w-7 h-7 bg-white rounded-full shadow-[0_2px_10px_rgba(0,0,0,0.2)] flex items-center justify-center cursor-grab"
+              style={{ left: `${getPercent(pendingMin)}%` }}
+            >
+              <div className="w-3.5 h-3.5 bg-blue-600 rounded-full" />
+            </div>
+
+            {/* Max handle */}
+            <div
+              className="absolute top-1/2 -translate-y-1/2 translate-x-1/2 w-7 h-7 bg-white rounded-full shadow-[0_2px_10px_rgba(0,0,0,0.2)] flex items-center justify-center cursor-grab"
+              style={{ right: `${100 - getPercent(pendingMax)}%` }}
+            >
+              <div className="w-3.5 h-3.5 bg-blue-600 rounded-full" />
+            </div>
+          </div>
         </div>
 
         {/* Min/Max inputs */}
@@ -316,10 +326,10 @@ function ProductsContent() {
     const fetchProducts = async () => {
       try {
         setLoading(true);
-        const baseUrl = process.env.NEXT_PUBLIC_API_URL 
+        const baseUrl = process.env.NEXT_PUBLIC_API_URL
           ? process.env.NEXT_PUBLIC_API_URL.replace('/api', '')
           : 'http://localhost:5000';
-          
+
         const [prodRes, catRes] = await Promise.all([
           axios.get(`${baseUrl}/api/v1/products`),
           axios.get(`${baseUrl}/api/v1/categories`)
@@ -401,9 +411,9 @@ function ProductsContent() {
           (activeCategory === "all" || p.category.toLowerCase() === activeCategory.toLowerCase()) &&
           p.currentPrice >= minPrice &&
           p.currentPrice <= maxPrice &&
-          (searchTerm === "" || 
-           p.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
-           p.benefit.toLowerCase().includes(searchTerm.toLowerCase()))
+          (searchTerm === "" ||
+            p.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            p.benefit.toLowerCase().includes(searchTerm.toLowerCase()))
       ),
     [activeCategory, minPrice, maxPrice, products, searchTerm]
   );
@@ -468,8 +478,8 @@ function ProductsContent() {
         {/* ── Main Content ─────────────────────────────────────────── */}
         <main className="flex-1 p-5 md:p-8 overflow-hidden">
           {/* Mobile Back to Home */}
-          <Link 
-            href="/" 
+          <Link
+            href="/"
             className="md:hidden inline-flex items-center gap-2 text-slate-700 hover:text-slate-900 mb-5 transition-colors text-sm font-semibold bg-white border border-slate-200 px-5 py-2.5 rounded-full shadow-sm"
           >
             <ChevronLeft size={16} />
