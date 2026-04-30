@@ -78,7 +78,7 @@ export default function RegisterPage() {
   return (
     <div className="min-h-screen flex flex-col lg:flex-row pt-24">
       {/* ── Left Panel: Brand Context ── */}
-      <div className="bg-[#F5F0EB] lg:w-5/12 flex flex-col justify-center px-8 pt-28 pb-16 lg:p-16 xl:p-24 relative overflow-hidden">
+      <div className="bg-[#F5F0EB] lg:w-5/12 flex flex-col justify-center px-6 py-10 lg:p-16 xl:p-24 relative overflow-hidden">
         <div className="max-w-md mx-auto relative z-10 w-full">
           <p className="font-sans font-bold text-xs uppercase tracking-[0.25em] text-slate-800 mb-6 lg:mb-8">
             HEEDY MEMBERSHIP
@@ -100,7 +100,7 @@ export default function RegisterPage() {
       </div>
 
       {/* ── Right Panel: Registration Form ── */}
-      <div className="bg-white lg:w-7/12 flex flex-col justify-center px-8 py-16 lg:p-16 xl:p-24 overflow-y-auto">
+      <div className="bg-white lg:w-7/12 flex flex-col justify-center px-6 py-10 lg:p-16 xl:p-24 overflow-y-auto">
         <div className="max-w-2xl mx-auto w-full">
           <h2 className="font-sans font-bold text-4xl md:text-5xl text-slate-900 mb-3">
             Create Account
