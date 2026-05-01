@@ -122,7 +122,7 @@ function ProductCard({ product, isVisible, index }: { product: Product; isVisibl
 
   return (
     <article 
-      className={`bg-white rounded-2xl overflow-hidden border border-slate-100 hover:shadow-lg transition-all duration-300 group w-[280px] md:w-auto flex-shrink-0 snap-start h-full flex flex-col motion-reduce:transition-none motion-reduce:transform-none ${
+      className={`bg-white rounded-2xl overflow-hidden border border-slate-100 hover:shadow-lg transition-all duration-300 group flex flex-col h-full motion-reduce:transition-none motion-reduce:transform-none ${
         isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
       }`}
       style={{ transitionDelay: `${index * 100}ms` }}
@@ -165,15 +165,15 @@ function ProductCard({ product, isVisible, index }: { product: Product; isVisibl
             <span className="text-sm font-medium text-slate-400 ml-1">({product.reviewCount})</span>
           </div>
           
-          <h3 className="font-sans font-bold text-base md:text-lg text-slate-900 leading-tight text-center mb-3 line-clamp-2">
+          <h3 className="font-sans font-bold text-sm md:text-lg text-slate-900 leading-tight text-center mb-2 md:mb-3 line-clamp-2">
             {product.name}
           </h3>
           
-          <div className="flex items-center justify-center gap-2 mb-2" aria-label={`Sale price ${product.currentPrice}, original price ${product.originalPrice}`}>
-            <span className="font-sans font-bold text-xl md:text-2xl text-slate-900">
+          <div className="flex items-center justify-center gap-1.5 md:gap-2 mb-2" aria-label={`Sale price ${product.currentPrice}, original price ${product.originalPrice}`}>
+            <span className="font-sans font-bold text-lg md:text-2xl text-slate-900">
               {product.currency}{product.currentPrice}
             </span>
-            <span className="font-sans font-normal text-sm text-slate-400 line-through">
+            <span className="font-sans font-normal text-xs md:text-sm text-slate-400 line-through">
               {product.currency}{product.originalPrice}
             </span>
           </div>
@@ -190,7 +190,7 @@ function ProductCard({ product, isVisible, index }: { product: Product; isVisibl
       <div className="px-4 pb-6">
         <button 
           onClick={handleAddToCart}
-          className={`w-full text-white font-sans font-bold text-[10px] md:text-xs uppercase tracking-widest py-3 rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${
+          className={`w-full text-white font-sans font-bold text-[10px] md:text-xs uppercase tracking-widest py-2 md:py-3 rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${
             isAdded ? "bg-green-600 hover:bg-green-700" : "bg-slate-900 hover:bg-slate-800"
           }`}
         >
@@ -243,7 +243,7 @@ export default function ProductSection() {
 
       {/* Product Grid */}
       <div className="w-full px-4 md:px-8 lg:px-12">
-        <div className="flex overflow-x-auto md:grid md:grid-cols-3 lg:grid-cols-5 gap-4 md:gap-6 snap-x snap-mandatory pb-4 md:pb-0 hide-scrollbar">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 md:gap-6 pb-4 md:pb-0">
           {products.map((product, index) => (
             <ProductCard 
               key={product.id} 
