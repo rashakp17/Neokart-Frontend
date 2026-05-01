@@ -110,12 +110,12 @@ function ProductCard({ product, index }: { product: Product; index: number }) {
             {renderStars(product.rating)}
             <span className="text-sm text-slate-400 ml-1">({product.reviewCount})</span>
           </div>
-          <h3 className="font-sans font-bold text-base text-slate-900 leading-tight mb-3 line-clamp-2">
+          <h3 className="font-sans font-bold text-sm md:text-base text-slate-900 leading-tight mb-2 md:mb-3 line-clamp-2">
             {product.name}
           </h3>
-          <div className="flex items-center justify-center gap-2 mb-2">
-            <span className="font-bold text-xl text-slate-900">{product.currency}{product.currentPrice}</span>
-            <span className="text-sm line-through text-slate-400">{product.currency}{product.originalPrice}</span>
+          <div className="flex items-center justify-center gap-1.5 md:gap-2 mb-2">
+            <span className="font-bold text-lg md:text-xl text-slate-900">{product.currency}{product.currentPrice}</span>
+            <span className="text-xs md:text-sm line-through text-slate-400">{product.currency}{product.originalPrice}</span>
           </div>
           <p className="font-bold text-[10px] uppercase tracking-wider text-red-600 mb-1">{product.dealBadge}</p>
           <p className="text-xs text-slate-500 line-clamp-1 mb-2">{product.benefit}</p>
@@ -125,7 +125,7 @@ function ProductCard({ product, index }: { product: Product; index: number }) {
         <button
           onClick={handleAddToCart}
           aria-label={`Add ${product.name} to cart`}
-          className={`w-full text-white font-bold text-xs uppercase tracking-widest py-3 rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 motion-reduce:transition-none ${isAdded ? "bg-green-600 hover:bg-green-700" : "bg-slate-900 hover:bg-slate-800"
+          className={`w-full text-white font-bold text-[10px] md:text-xs uppercase tracking-widest py-2 md:py-3 rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 motion-reduce:transition-none ${isAdded ? "bg-green-600 hover:bg-green-700" : "bg-slate-900 hover:bg-slate-800"
             }`}
         >
           {isAdded ? "ADDED TO CART" : "ADD TO CART"}
@@ -296,6 +296,50 @@ function FilterSidebar({
   );
 }
 
+// ─── Pagination Component ─────────────────────────────────────────────────────
+
+function Pagination({ currentPage, totalPages, onPageChange }: { currentPage: number, totalPages: number, onPageChange: (p: number) => void }) {
+  if (totalPages <= 1) return null;
+
+  const pages = [];
+  for (let i = 1; i <= totalPages; i++) {
+    pages.push(i);
+  }
+
+  return (
+    <div className="flex justify-center mt-12 mb-4">
+      <div className="flex items-center border border-slate-200 rounded overflow-hidden">
+        <button
+          onClick={() => onPageChange(currentPage - 1)}
+          disabled={currentPage === 1}
+          className="px-4 py-2 font-sans text-sm text-slate-500 bg-slate-100 hover:bg-slate-200 disabled:opacity-50 disabled:cursor-not-allowed border-r border-slate-200 transition-colors"
+        >
+          Previous
+        </button>
+        {pages.map((p) => (
+          <button
+            key={p}
+            onClick={() => onPageChange(p)}
+            className={`px-4 py-2 font-sans text-sm border-r border-slate-200 transition-colors ${currentPage === p
+              ? "bg-blue-600 text-white"
+              : "bg-white text-blue-500 hover:bg-slate-50"
+              }`}
+          >
+            {p}
+          </button>
+        ))}
+        <button
+          onClick={() => onPageChange(currentPage + 1)}
+          disabled={currentPage === totalPages}
+          className="px-4 py-2 font-sans text-sm bg-white text-blue-500 hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+        >
+          Next
+        </button>
+      </div>
+    </div>
+  );
+}
+
 // ─── Main Page Content ─────────────────────────────────────────────────────────
 
 const DEFAULT_CATEGORIES = [
@@ -318,6 +362,8 @@ function ProductsContent() {
   const [pendingMin, setPendingMin] = useState(0);
   const [pendingMax, setPendingMax] = useState(PRICE_MAX);
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const ITEMS_PER_PAGE = 6;
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -420,6 +466,16 @@ function ProductsContent() {
             p.benefit.toLowerCase().includes(searchTerm.toLowerCase()))
       ),
     [activeCategory, minPrice, maxPrice, products, searchTerm]
+  );
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [activeCategory, minPrice, maxPrice, searchTerm]);
+
+  const totalPages = Math.ceil(filtered.length / ITEMS_PER_PAGE);
+  const paginatedProducts = filtered.slice(
+    (currentPage - 1) * ITEMS_PER_PAGE,
+    currentPage * ITEMS_PER_PAGE
   );
 
   // Close drawer on escape
@@ -542,11 +598,21 @@ function ProductsContent() {
               <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-slate-900"></div>
             </div>
           ) : filtered.length > 0 ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-5 md:gap-7">
-              {filtered.map((product, index) => (
-                <ProductCard key={product.id} product={product} index={index} />
-              ))}
-            </div>
+            <>
+              <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-5 md:gap-7">
+                {paginatedProducts.map((product, index) => (
+                  <ProductCard key={product.id} product={product} index={index} />
+                ))}
+              </div>
+              <Pagination
+                currentPage={currentPage}
+                totalPages={totalPages}
+                onPageChange={(p) => {
+                  setCurrentPage(p);
+                  window.scrollTo({ top: 0, behavior: "smooth" });
+                }}
+              />
+            </>
           ) : (
             <div className="flex flex-col items-center justify-center py-24 text-center">
               <p className="text-4xl mb-4">🔍</p>
