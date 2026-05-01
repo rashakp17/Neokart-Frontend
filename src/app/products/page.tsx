@@ -1,12 +1,14 @@
 "use client";
 
+import { useState, useEffect, Suspense, useCallback, useMemo, useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { useCallback, useEffect, useMemo, useRef, useState, Suspense } from "react";
-import { Star, StarHalf, SlidersHorizontal, X, ChevronLeft } from "lucide-react";
+import axios from "axios";
 import { useSearchParams } from "next/navigation";
 import { useCart } from "../../context/CartContext";
-// ------÷
+import { Star, StarHalf, SlidersHorizontal, X, ChevronLeft } from "lucide-react";
+
+// ─── Data ────────────────────────────────────────────────────────────────────
 
 interface Product {
   id: string;
@@ -340,11 +342,8 @@ function Pagination({ currentPage, totalPages, onPageChange }: { currentPage: nu
 
 // ─── Main Page Content ─────────────────────────────────────────────────────────
 
-const CATEGORY_OPTIONS = [
+const DEFAULT_CATEGORIES = [
   { id: "all", label: "All Categories" },
-  { id: "skin-care", label: "Skin Care" },
-  { id: "lip-care", label: "Lip Care" },
-  { id: "body-care", label: "Body Care" },
 ];
 
 function ProductsContent() {
@@ -353,7 +352,7 @@ function ProductsContent() {
   const initialSearch = searchParams.get("search") || "";
 
   const [products, setProducts] = useState<Product[]>([]);
-  const [categories, setCategories] = useState(CATEGORY_OPTIONS);
+  const [categories, setCategories] = useState(DEFAULT_CATEGORIES);
   const [loading, setLoading] = useState(true);
 
   const [activeCategory, setActiveCategory] = useState(initialCategory);
@@ -375,21 +374,26 @@ function ProductsContent() {
           : 'http://localhost:5000';
 
         const [prodRes, catRes] = await Promise.all([
-          fetch(`${baseUrl}/api/v1/products`),
-          fetch(`${baseUrl}/api/v1/categories`)
+          axios.get(`${baseUrl}/api/v1/products`),
+          axios.get(`${baseUrl}/api/v1/categories`)
         ]);
 
-        const [prodJson, catJson] = await Promise.all([
-          prodRes.json(),
-          catRes.json()
-        ]);
+        const prodJson = prodRes.data;
+        const catJson = catRes.data;
 
         if (catJson.success && catJson.data) {
-          // Note: using hardcoded categories per design requirements
-          setCategories(CATEGORY_OPTIONS);
+          const activeBackendCats = catJson.data.filter((c: any) => c.status === 'ACTIVE');
+          const dynamicCategories = [
+            { id: "all", label: "All Categories" },
+            ...activeBackendCats.map((c: any) => ({
+              id: c.name.toLowerCase().replace(/\s+/g, '-'),
+              label: c.name
+            }))
+          ];
+          setCategories(dynamicCategories);
 
           if (prodJson.success && prodJson.data) {
-            const activeCatNames = CATEGORY_OPTIONS.map((c) => c.label.toLowerCase());
+            const activeCatNames = activeBackendCats.map((c: any) => c.name.toLowerCase());
 
             const activeProducts = prodJson.data.filter((p: any) =>
               activeCatNames.includes((p.category || "").toLowerCase())

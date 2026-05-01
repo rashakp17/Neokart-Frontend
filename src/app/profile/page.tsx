@@ -2,7 +2,9 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import axios from "axios";
 import { User, Package, MapPin, LogOut, X } from "lucide-react";
+import { useToast } from "../../context/ToastContext";
 
 interface UserProfile {
   name: string;
@@ -13,12 +15,15 @@ interface UserProfile {
 
 export default function ProfilePage() {
   const router = useRouter();
+  const { showToast } = useToast();
   const [user, setUser] = useState<UserProfile | null>(null);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState<"overview" | "orders" | "addresses">("overview");
   const [addresses, setAddresses] = useState<any[]>([]);
+  const [orders, setOrders] = useState<any[]>([]);
   const [isAddressModalOpen, setIsAddressModalOpen] = useState(false);
   const [isSavingAddress, setIsSavingAddress] = useState(false);
+  const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
   const [newAddressForm, setNewAddressForm] = useState({
     street: "",
     city: "",
@@ -43,19 +48,37 @@ export default function ProfilePage() {
     if (activeTab === "addresses" && user?.token) {
       const fetchAddresses = async () => {
         try {
-          const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
-          const res = await fetch(`${API_URL}/v1/users/addresses`, {
+          const baseUrl = process.env.NEXT_PUBLIC_API_URL ? process.env.NEXT_PUBLIC_API_URL.replace(/\/api\/?$/, "") : 'http://localhost:5000';
+          const API_URL = `${baseUrl}/api`;
+          const res = await axios.get(`${API_URL}/v1/users/addresses`, {
             headers: { 'Authorization': `Bearer ${user.token}` }
           });
-          const data = await res.json();
-          if (data.success && data.data) {
-            setAddresses(data.data);
+          if (res.data.success && res.data.data) {
+            setAddresses(res.data.data);
           }
         } catch (err) {
           console.error("Failed to fetch addresses", err);
         }
       };
       fetchAddresses();
+    }
+
+    if (user?.token && (activeTab === "orders" || activeTab === "overview")) {
+      const fetchOrders = async () => {
+        try {
+          const baseUrl = process.env.NEXT_PUBLIC_API_URL ? process.env.NEXT_PUBLIC_API_URL.replace(/\/api\/?$/, "") : 'http://localhost:5000';
+          const API_URL = `${baseUrl}/api`;
+          const res = await axios.get(`${API_URL}/v1/payments/myorders`, {
+            headers: { 'Authorization': `Bearer ${user.token}` }
+          });
+          if (res.data.success) {
+            setOrders(res.data.data);
+          }
+        } catch (err) {
+          console.error("Failed to fetch orders", err);
+        }
+      };
+      fetchOrders();
     }
   }, [activeTab, user]);
 
@@ -65,7 +88,8 @@ export default function ProfilePage() {
     
     try {
       if (!user?.token) return;
-      const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
+      const baseUrl = process.env.NEXT_PUBLIC_API_URL ? process.env.NEXT_PUBLIC_API_URL.replace(/\/api\/?$/, "") : 'http://localhost:5000';
+      const API_URL = `${baseUrl}/api`;
       
       const payload = {
         street: newAddressForm.street,
@@ -75,28 +99,43 @@ export default function ProfilePage() {
         country: newAddressForm.country
       };
 
-      const res = await fetch(`${API_URL}/v1/users/addresses`, {
-        method: 'POST',
+      const res = await axios.post(`${API_URL}/v1/users/addresses`, payload, {
         headers: { 
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${user.token}` 
-        },
-        body: JSON.stringify(payload)
+        }
       });
       
-      const data = await res.json();
-      if (data.success) {
-        setAddresses(data.data);
+      if (res.data.success) {
+        setAddresses(res.data.data);
         setIsAddressModalOpen(false);
         setNewAddressForm({ street: "", city: "", state: "", zip: "", country: "India" });
       } else {
-        alert(data.message || "Failed to save address");
+        showToast(res.data.message || "Failed to save address", "error");
       }
-    } catch (err) {
+    } catch (err: any) {
       console.error(err);
-      alert("Error saving address");
+      showToast(err.response?.data?.message || "Error saving address", "error");
     } finally {
       setIsSavingAddress(false);
+    }
+  };
+
+  const handleDeleteAddress = async (addressId: string) => {
+    try {
+      if (!user?.token) return;
+      const baseUrl = process.env.NEXT_PUBLIC_API_URL ? process.env.NEXT_PUBLIC_API_URL.replace(/\/api\/?$/, "") : 'http://localhost:5000';
+      const API_URL = `${baseUrl}/api`;
+
+      const res = await axios.delete(`${API_URL}/v1/users/addresses/${addressId}`, {
+        headers: { 'Authorization': `Bearer ${user.token}` }
+      });
+      if (res.data.success) {
+        setAddresses(res.data.data);
+      }
+    } catch (err: any) {
+      console.error(err);
+      showToast(err.response?.data?.message || "Error removing address", "error");
     }
   };
 
@@ -215,7 +254,7 @@ export default function ProfilePage() {
                     <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-4">
                       TOTAL ORDERS
                     </p>
-                    <p className="font-sans font-bold text-4xl text-slate-900">0</p>
+                    <p className="font-sans font-bold text-4xl text-slate-900">{orders.length}</p>
                   </div>
                   <div className="bg-white rounded-3xl p-8 border border-slate-100 shadow-sm">
                     <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-4">
@@ -228,7 +267,30 @@ export default function ProfilePage() {
                 {/* Recent Activity */}
                 <div>
                   <p className="text-sm font-medium text-slate-700 mb-6">Recent Activity</p>
-                  <div className="text-sm text-slate-600">No recent orders found. Raw Response: []</div>
+                  {orders.length > 0 ? (
+                    <div className="flex flex-col gap-4">
+                      {orders.slice(0, 3).map((order) => (
+                        <div key={order._id} className="flex items-center justify-between p-4 bg-white border border-slate-100 rounded-xl shadow-sm">
+                          <div>
+                            <p className="font-bold text-sm text-slate-900">Order #{order._id.substring(0, 8)}</p>
+                            <p className="text-xs text-slate-500 mt-1">{new Date(order.createdAt).toLocaleDateString()}</p>
+                          </div>
+                          <div className="text-right">
+                            <p className="font-bold text-sm text-slate-900">₹{order.total}</p>
+                            <span className={`inline-block mt-1 text-[10px] font-bold px-2 py-1 rounded-full uppercase tracking-wider ${
+                              order.orderStatus === 'delivered' ? 'bg-green-100 text-green-700' :
+                              order.orderStatus === 'processing' ? 'bg-blue-100 text-blue-700' :
+                              'bg-slate-100 text-slate-700'
+                            }`}>
+                              {order.orderStatus}
+                            </span>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="text-sm text-slate-600">No recent orders found.</div>
+                  )}
                 </div>
               </>
             )}
@@ -236,7 +298,59 @@ export default function ProfilePage() {
             {activeTab === "orders" && (
               <div>
                 <h1 className="font-serif text-4xl text-slate-900 leading-tight mb-8">My Orders</h1>
-                <p className="text-slate-500">You have no orders yet.</p>
+                
+                {orders.length > 0 ? (
+                  <div className="flex flex-col gap-6">
+                    {orders.map((order) => (
+                      <div key={order._id} className="bg-white rounded-[2rem] border border-slate-100 shadow-sm overflow-hidden">
+                        <div className="bg-slate-50 border-b border-slate-100 p-6 sm:px-8 flex flex-wrap items-center justify-between gap-4">
+                          <div>
+                            <p className="text-xs font-bold text-slate-500 uppercase tracking-widest mb-1">Order Placed</p>
+                            <p className="text-sm font-bold text-slate-900">{new Date(order.createdAt).toLocaleDateString()}</p>
+                          </div>
+                          <div>
+                            <p className="text-xs font-bold text-slate-500 uppercase tracking-widest mb-1">Total Amount</p>
+                            <p className="text-sm font-bold text-slate-900">₹{order.total}</p>
+                          </div>
+                          <div>
+                            <p className="text-xs font-bold text-slate-500 uppercase tracking-widest mb-1">Order ID</p>
+                            <p className="text-sm font-bold text-slate-900">#{order._id.substring(0, 8)}</p>
+                          </div>
+                          <div className="flex-1 text-right min-w-[100px]">
+                            <span className={`inline-block text-xs font-bold px-3 py-1.5 rounded-full uppercase tracking-wider ${
+                              order.orderStatus === 'delivered' ? 'bg-green-100 text-green-700' :
+                              order.orderStatus === 'processing' ? 'bg-blue-100 text-blue-700' :
+                              'bg-slate-100 text-slate-700'
+                            }`}>
+                              {order.orderStatus}
+                            </span>
+                          </div>
+                        </div>
+                        <div className="p-6 sm:p-8">
+                          <div className="flex flex-col gap-4">
+                            {order.items.map((item: any, idx: number) => (
+                              <div key={idx} className="flex items-center gap-4 border-b border-slate-100 pb-4 last:border-0 last:pb-0">
+                                <div className="w-16 h-16 rounded-xl bg-slate-100 shrink-0 overflow-hidden">
+                                  {item.product?.images?.[0] ? (
+                                    <img src={item.product.images[0]} alt={item.product?.name} className="w-full h-full object-cover" />
+                                  ) : (
+                                    <div className="w-full h-full bg-slate-200" />
+                                  )}
+                                </div>
+                                <div className="flex-1">
+                                  <h4 className="font-bold text-sm text-slate-900">{item.product?.name || 'Product unavailable'}</h4>
+                                  <p className="text-xs text-slate-500 mt-1">Qty: {item.quantity} | Price: ₹{item.price}</p>
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <p className="text-slate-500">You have no orders yet.</p>
+                )}
               </div>
             )}
 
@@ -267,7 +381,12 @@ export default function ProfilePage() {
                       </div>
                       <div className="flex items-center gap-6">
                         <button className="text-blue-600 text-sm font-bold hover:underline">Edit Details</button>
-                        <button className="text-red-500 text-sm font-bold hover:underline">Remove</button>
+                        <button 
+                          onClick={() => setDeleteConfirmId(addr._id)}
+                          className="text-red-500 text-sm font-bold hover:underline"
+                        >
+                          Remove
+                        </button>
                       </div>
                     </div>
                   ))}
@@ -369,6 +488,40 @@ export default function ProfilePage() {
                 className="w-full bg-blue-600 text-white font-bold text-base py-4 rounded-xl mt-4 hover:bg-blue-700 transition-colors focus:outline-none disabled:opacity-50"
               >
                 {isSavingAddress ? "Saving..." : "Save Address"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ── Delete Address Confirmation Modal ── */}
+      {deleteConfirmId && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          <div 
+            className="absolute inset-0 bg-slate-900/40 backdrop-blur-sm"
+            onClick={() => setDeleteConfirmId(null)}
+          />
+          <div className="relative bg-white rounded-[2rem] w-full max-w-sm shadow-xl p-8 text-center">
+            <div className="w-14 h-14 rounded-full bg-red-50 flex items-center justify-center mx-auto mb-5">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ef4444" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
+            </div>
+            <h3 className="font-bold text-xl text-slate-900 mb-2">Remove Address?</h3>
+            <p className="text-sm text-slate-500 mb-8">This address will be permanently removed from your saved locations.</p>
+            <div className="flex gap-3">
+              <button
+                onClick={() => setDeleteConfirmId(null)}
+                className="flex-1 py-3 rounded-xl border border-slate-200 text-slate-700 font-bold text-sm hover:bg-slate-50 transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={() => {
+                  handleDeleteAddress(deleteConfirmId);
+                  setDeleteConfirmId(null);
+                }}
+                className="flex-1 py-3 rounded-xl bg-red-500 text-white font-bold text-sm hover:bg-red-600 transition-colors"
+              >
+                Remove
               </button>
             </div>
           </div>

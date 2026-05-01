@@ -26,6 +26,7 @@ export const metadata: Metadata = {
 };
 
 import { CartProvider } from "../context/CartContext";
+import { ToastProvider } from "../context/ToastContext";
 
 export default function RootLayout({
   children,
@@ -38,12 +39,14 @@ export default function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} ${playfair.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col relative" suppressHydrationWarning>
-        <CartProvider>
-          <Navbar />
-          {children}
-          <Footer />
-          <FloatingActions />
-        </CartProvider>
+        <ToastProvider>
+          <CartProvider>
+            <Navbar />
+            {children}
+            <Footer />
+            <FloatingActions />
+          </CartProvider>
+        </ToastProvider>
       </body>
     </html>
   );
