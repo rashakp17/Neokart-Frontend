@@ -29,6 +29,10 @@ export default function HeroSection() {
   const [slides, setSlides] = useState(DEFAULT_SLIDES);
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
+  const [touchStart, setTouchStart] = useState<number | null>(null);
+  const [touchEnd, setTouchEnd] = useState<number | null>(null);
+  
+  const minSwipeDistance = 50;
 
   useEffect(() => {
     const fetchBanners = async () => {
@@ -90,10 +94,36 @@ export default function HeroSection() {
     setCurrentSlide(index);
   };
 
+  const onTouchStart = (e: React.TouchEvent) => {
+    setTouchEnd(null);
+    setTouchStart(e.targetTouches[0].clientX);
+  };
+
+  const onTouchMove = (e: React.TouchEvent) => {
+    setTouchEnd(e.targetTouches[0].clientX);
+  };
+
+  const handleTouchEnd = () => {
+    if (!touchStart || !touchEnd) return;
+    const distance = touchStart - touchEnd;
+    const isLeftSwipe = distance > minSwipeDistance;
+    const isRightSwipe = distance < -minSwipeDistance;
+    
+    if (isLeftSwipe) {
+      nextSlide();
+    }
+    if (isRightSwipe) {
+      prevSlide();
+    }
+  };
+
   return (
     <section
       className="relative w-full h-[80vh] md:h-screen overflow-hidden bg-black"
       aria-label="Hero section"
+      onTouchStart={onTouchStart}
+      onTouchMove={onTouchMove}
+      onTouchEnd={handleTouchEnd}
     >
       {/* Preloader */}
       <AnimatePresence>
