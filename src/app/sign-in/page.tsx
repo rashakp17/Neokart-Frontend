@@ -27,6 +27,7 @@ export default function SignInPage() {
     formState: { errors, isSubmitting },
   } = useForm<SignInValues>({
     resolver: zodResolver(signInSchema),
+    mode: "onBlur",
   });
 
   const router = useRouter();

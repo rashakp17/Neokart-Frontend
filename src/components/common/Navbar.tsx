@@ -27,8 +27,8 @@ export default function Navbar() {
     if (isSearchOpen && allProducts.length === 0) {
       const fetchProducts = async () => {
         try {
-          const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
-          const res = await axios.get(`${API_URL}/v1/products`);
+          const BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+          const res = await axios.get(`${BASE_URL}/api/v1/products`);
           if (res.data.success && res.data.data) {
             setAllProducts(res.data.data);
           }
@@ -54,6 +54,15 @@ export default function Navbar() {
       setLiveResults([]);
     }
   }, [searchQuery, allProducts]);
+
+  const getImageUrl = (url: string) => {
+    if (!url) return null;
+    if (url.startsWith('/uploads/')) {
+      const BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+      return `${BASE_URL}${url}`;
+    }
+    return url;
+  };
 
   const handleResultClick = (id: string) => {
     router.push(`/products/${id}`);
@@ -290,36 +299,48 @@ export default function Navbar() {
                   </form>
                   
                   {/* Desktop Live Results Dropdown */}
-                  {searchQuery.trim() && liveResults.length > 0 && (
+                  {searchQuery.trim().length > 0 && (
                     <div className="absolute top-full left-0 right-0 mt-3 bg-white border border-slate-100 rounded-2xl shadow-xl overflow-hidden z-50">
-                      <ul>
-                        {liveResults.map(p => (
-                          <li key={p._id} className="border-b border-slate-50 last:border-0">
-                            <button 
-                              onClick={() => handleResultClick(p._id)}
-                              className="w-full flex items-center gap-4 px-4 py-3 hover:bg-slate-50 transition-colors text-left"
-                            >
-                              <div className="w-10 h-10 bg-slate-100 rounded-lg overflow-hidden shrink-0 flex items-center justify-center">
-                                {p.images && p.images[0] ? (
-                                  <img src={p.images[0]} alt={p.name} className="w-full h-full object-cover" />
-                                ) : (
-                                  <ShoppingBag size={16} className="text-slate-400" />
-                                )}
-                              </div>
-                              <div className="flex-1 min-w-0">
-                                <p className="font-bold text-sm text-slate-900 truncate">{p.name}</p>
-                                <p className="text-xs text-slate-500 truncate">{p.category}</p>
-                              </div>
-                            </button>
-                          </li>
-                        ))}
-                      </ul>
-                      <button 
-                        onClick={handleSearch}
-                        className="w-full text-center py-3 bg-slate-50 font-bold text-[11px] uppercase tracking-widest text-blue-600 hover:text-blue-700 hover:bg-blue-50 transition-colors border-t border-slate-100"
-                      >
-                        View all results for &quot;{searchQuery}&quot;
-                      </button>
+                      {liveResults.length > 0 ? (
+                        <>
+                          <ul>
+                            {liveResults.map(p => {
+                              const imgUrl = getImageUrl(p.images?.[0]);
+                              return (
+                                <li key={p._id} className="border-b border-slate-50 last:border-0">
+                                  <button 
+                                    onClick={() => handleResultClick(p._id)}
+                                    className="w-full flex items-center gap-4 px-4 py-3 hover:bg-slate-50 transition-colors text-left"
+                                  >
+                                    <div className="w-10 h-10 bg-slate-100 rounded-lg overflow-hidden shrink-0 flex items-center justify-center">
+                                      {imgUrl ? (
+                                        <img src={imgUrl} alt={p.name} className="w-full h-full object-cover" />
+                                      ) : (
+                                        <ShoppingBag size={16} className="text-slate-400" />
+                                      )}
+                                    </div>
+                                    <div className="flex-1 min-w-0">
+                                      <p className="font-bold text-sm text-slate-900 truncate">{p.name}</p>
+                                      <p className="text-xs text-slate-500 truncate">{p.category}</p>
+                                    </div>
+                                    <span className="text-xs font-bold text-blue-500 shrink-0">₹{p.variants?.[0]?.price}</span>
+                                  </button>
+                                </li>
+                              );
+                            })}
+                          </ul>
+                          <button 
+                            onClick={handleSearch}
+                            className="w-full text-center py-3 bg-slate-50 font-bold text-[11px] uppercase tracking-widest text-blue-600 hover:text-blue-700 hover:bg-blue-50 transition-colors border-t border-slate-100"
+                          >
+                            View all results for &quot;{searchQuery}&quot;
+                          </button>
+                        </>
+                      ) : (
+                        <div className="px-4 py-5 text-center text-sm text-slate-400 font-medium">
+                          No products found for &quot;{searchQuery}&quot;
+                        </div>
+                      )}
                     </div>
                   )}
                 </motion.div>
@@ -396,35 +417,48 @@ export default function Navbar() {
             </form>
             
             {/* Mobile Live Results Dropdown */}
-            {searchQuery.trim() && liveResults.length > 0 && (
+            {searchQuery.trim().length > 0 && (
               <div className="mt-4 bg-white border border-slate-100 rounded-xl shadow-sm overflow-hidden">
-                <ul>
-                  {liveResults.map(p => (
-                    <li key={p._id} className="border-b border-slate-50 last:border-0">
-                      <button 
-                        onClick={() => handleResultClick(p._id)}
-                        className="w-full flex items-center gap-3 px-4 py-3 hover:bg-slate-50 transition-colors text-left"
-                      >
-                        <div className="w-10 h-10 bg-slate-100 rounded-lg overflow-hidden shrink-0 flex items-center justify-center">
-                          {p.images && p.images[0] ? (
-                            <img src={p.images[0]} alt={p.name} className="w-full h-full object-cover" />
-                          ) : (
-                            <ShoppingBag size={16} className="text-slate-400" />
-                          )}
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <p className="font-bold text-sm text-slate-900 truncate">{p.name}</p>
-                        </div>
-                      </button>
-                    </li>
-                  ))}
-                </ul>
-                <button 
-                  onClick={handleSearch}
-                  className="w-full text-center py-3 bg-slate-50 font-bold text-xs text-blue-600 hover:text-blue-700 transition-colors border-t border-slate-100"
-                >
-                  View all results
-                </button>
+                {liveResults.length > 0 ? (
+                  <>
+                    <ul>
+                      {liveResults.map(p => {
+                        const imgUrl = getImageUrl(p.images?.[0]);
+                        return (
+                          <li key={p._id} className="border-b border-slate-50 last:border-0">
+                            <button 
+                              onClick={() => handleResultClick(p._id)}
+                              className="w-full flex items-center gap-3 px-4 py-3 hover:bg-slate-50 transition-colors text-left"
+                            >
+                              <div className="w-10 h-10 bg-slate-100 rounded-lg overflow-hidden shrink-0 flex items-center justify-center">
+                                {imgUrl ? (
+                                  <img src={imgUrl} alt={p.name} className="w-full h-full object-cover" />
+                                ) : (
+                                  <ShoppingBag size={16} className="text-slate-400" />
+                                )}
+                              </div>
+                              <div className="flex-1 min-w-0">
+                                <p className="font-bold text-sm text-slate-900 truncate">{p.name}</p>
+                                <p className="text-xs text-slate-500">{p.category}</p>
+                              </div>
+                              <span className="text-xs font-bold text-blue-500 shrink-0">₹{p.variants?.[0]?.price}</span>
+                            </button>
+                          </li>
+                        );
+                      })}
+                    </ul>
+                    <button 
+                      onClick={handleSearch}
+                      className="w-full text-center py-3 bg-slate-50 font-bold text-xs text-blue-600 hover:text-blue-700 transition-colors border-t border-slate-100"
+                    >
+                      View all results for &quot;{searchQuery}&quot;
+                    </button>
+                  </>
+                ) : (
+                  <div className="px-4 py-4 text-center text-sm text-slate-400 font-medium">
+                    No products found
+                  </div>
+                )}
               </div>
             )}
           </motion.div>

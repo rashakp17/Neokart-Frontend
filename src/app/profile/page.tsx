@@ -31,6 +31,7 @@ export default function ProfilePage() {
     zip: "",
     country: "India",
   });
+  const [addressErrors, setAddressErrors] = useState<Record<string, string>>({});
 
   useEffect(() => {
     // Load user from localStorage
@@ -82,8 +83,19 @@ export default function ProfilePage() {
     }
   }, [activeTab, user]);
 
+  const validateAddressForm = () => {
+    const errors: Record<string, string> = {};
+    if (!newAddressForm.city.trim()) errors.city = "City is required.";
+    if (!newAddressForm.state.trim()) errors.state = "State is required.";
+    if (!newAddressForm.zip.trim()) errors.zip = "ZIP code is required.";
+    else if (!/^\d{5,6}$/.test(newAddressForm.zip.trim())) errors.zip = "Enter a valid 5-6 digit ZIP code.";
+    if (newAddressForm.street.trim() && newAddressForm.street.trim().length < 3) errors.street = "Street must be at least 3 characters.";
+    setAddressErrors(errors);
+    return Object.keys(errors).length === 0;
+  };
+
   const handleSaveAddress = async () => {
-    if (!newAddressForm.city) return;
+    if (!validateAddressForm()) return;
     setIsSavingAddress(true);
     
     try {
@@ -110,6 +122,7 @@ export default function ProfilePage() {
         setAddresses(res.data.data);
         setIsAddressModalOpen(false);
         setNewAddressForm({ street: "", city: "", state: "", zip: "", country: "India" });
+        setAddressErrors({});
       } else {
         showToast(res.data.message || "Failed to save address", "error");
       }
@@ -430,45 +443,49 @@ export default function ProfilePage() {
                 <input 
                   type="text" 
                   value={newAddressForm.street}
-                  onChange={(e) => setNewAddressForm({...newAddressForm, street: e.target.value})}
+                  onChange={(e) => { setNewAddressForm({...newAddressForm, street: e.target.value}); setAddressErrors(prev => ({...prev, street: ''})); }}
                   placeholder="e.g. 123 Luxury Lane"
-                  className="w-full border border-slate-200 rounded-xl px-4 py-3 text-base text-slate-900 focus:outline-none focus:border-blue-500 placeholder:text-slate-400"
+                  className={`w-full border rounded-xl px-4 py-3 text-base text-slate-900 focus:outline-none focus:border-blue-500 placeholder:text-slate-400 ${addressErrors.street ? 'border-red-400 ring-1 ring-red-400' : 'border-slate-200'}`}
                 />
+                {addressErrors.street && <p className="text-red-500 text-xs mt-1.5 font-medium">{addressErrors.street}</p>}
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                 <div>
-                  <label className="block font-sans font-bold text-sm text-slate-700 mb-2">City</label>
+                  <label className="block font-sans font-bold text-sm text-slate-700 mb-2">City <span className="text-red-500">*</span></label>
                   <input 
                     type="text" 
                     value={newAddressForm.city}
-                    onChange={(e) => setNewAddressForm({...newAddressForm, city: e.target.value})}
+                    onChange={(e) => { setNewAddressForm({...newAddressForm, city: e.target.value}); setAddressErrors(prev => ({...prev, city: ''})); }}
                     placeholder="Mumbai"
-                    className="w-full border border-slate-200 rounded-xl px-4 py-3 text-base text-slate-900 focus:outline-none focus:border-blue-500 placeholder:text-slate-400"
+                    className={`w-full border rounded-xl px-4 py-3 text-base text-slate-900 focus:outline-none focus:border-blue-500 placeholder:text-slate-400 ${addressErrors.city ? 'border-red-400 ring-1 ring-red-400' : 'border-slate-200'}`}
                   />
+                  {addressErrors.city && <p className="text-red-500 text-xs mt-1.5 font-medium">{addressErrors.city}</p>}
                 </div>
                 <div>
-                  <label className="block font-sans font-bold text-sm text-slate-700 mb-2">State</label>
+                  <label className="block font-sans font-bold text-sm text-slate-700 mb-2">State <span className="text-red-500">*</span></label>
                   <input 
                     type="text" 
                     value={newAddressForm.state}
-                    onChange={(e) => setNewAddressForm({...newAddressForm, state: e.target.value})}
+                    onChange={(e) => { setNewAddressForm({...newAddressForm, state: e.target.value}); setAddressErrors(prev => ({...prev, state: ''})); }}
                     placeholder="Maharashtra"
-                    className="w-full border border-slate-200 rounded-xl px-4 py-3 text-base text-slate-900 focus:outline-none focus:border-blue-500 placeholder:text-slate-400"
+                    className={`w-full border rounded-xl px-4 py-3 text-base text-slate-900 focus:outline-none focus:border-blue-500 placeholder:text-slate-400 ${addressErrors.state ? 'border-red-400 ring-1 ring-red-400' : 'border-slate-200'}`}
                   />
+                  {addressErrors.state && <p className="text-red-500 text-xs mt-1.5 font-medium">{addressErrors.state}</p>}
                 </div>
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                 <div>
-                  <label className="block font-sans font-bold text-sm text-slate-700 mb-2">ZIP Code</label>
+                  <label className="block font-sans font-bold text-sm text-slate-700 mb-2">ZIP Code <span className="text-red-500">*</span></label>
                   <input 
                     type="text" 
                     value={newAddressForm.zip}
-                    onChange={(e) => setNewAddressForm({...newAddressForm, zip: e.target.value})}
+                    onChange={(e) => { setNewAddressForm({...newAddressForm, zip: e.target.value}); setAddressErrors(prev => ({...prev, zip: ''})); }}
                     placeholder="123456"
-                    className="w-full border border-slate-200 rounded-xl px-4 py-3 text-base text-slate-900 focus:outline-none focus:border-blue-500 placeholder:text-slate-400"
+                    className={`w-full border rounded-xl px-4 py-3 text-base text-slate-900 focus:outline-none focus:border-blue-500 placeholder:text-slate-400 ${addressErrors.zip ? 'border-red-400 ring-1 ring-red-400' : 'border-slate-200'}`}
                   />
+                  {addressErrors.zip && <p className="text-red-500 text-xs mt-1.5 font-medium">{addressErrors.zip}</p>}
                 </div>
                 <div>
                   <label className="block font-sans font-bold text-sm text-slate-700 mb-2">Country</label>

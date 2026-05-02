@@ -13,15 +13,15 @@ import GoogleAuthButton from "../../components/auth/GoogleAuthButton";
 // ─── Form Validation Schema ───
 const registerSchema = z
   .object({
-    fullName: z.string().min(2, "Name must be at least 2 characters."),
+    fullName: z.string().min(2, "Name must be at least 2 characters.").regex(/^[a-zA-Z\s]+$/, "Name can only contain letters and spaces."),
     email: z.string().email("Please enter a valid email address."),
-    phone: z.string().optional(),
-    password: z.string().min(6, "Password must be at least 6 characters."),
+    phone: z.string().optional().refine((val) => !val || /^\d{10}$/.test(val), { message: "Phone number must be 10 digits." }),
+    password: z.string().min(6, "Password must be at least 6 characters.").regex(/[A-Z]/, "Password must contain at least one uppercase letter.").regex(/[0-9]/, "Password must contain at least one number."),
     confirmPassword: z.string().min(6, "Please confirm your password."),
     street: z.string().optional(),
     city: z.string().optional(),
     state: z.string().optional(),
-    zipCode: z.string().optional(),
+    zipCode: z.string().optional().refine((val) => !val || /^\d{5,6}$/.test(val), { message: "ZIP code must be 5-6 digits." }),
     country: z.string().optional(),
   })
   .refine((data) => data.password === data.confirmPassword, {
@@ -41,6 +41,7 @@ export default function RegisterPage() {
     formState: { errors, isSubmitting },
   } = useForm<RegisterValues>({
     resolver: zodResolver(registerSchema),
+    mode: "onBlur",
   });
 
   const router = useRouter();
@@ -161,8 +162,11 @@ export default function RegisterPage() {
                   type="tel"
                   placeholder="1234567890"
                   {...register("phone")}
-                  className="w-full bg-slate-50 border border-slate-100 rounded-xl px-5 py-4 text-base text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-colors"
+                  className={`w-full bg-slate-50 border rounded-xl px-5 py-4 text-base text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-colors ${
+                    errors.phone ? "border-red-500 ring-1 ring-red-500" : "border-slate-100"
+                  }`}
                 />
+                {errors.phone && <p className="mt-2 text-sm text-red-500">{errors.phone.message}</p>}
               </div>
             </div>
 
@@ -284,8 +288,11 @@ export default function RegisterPage() {
                   type="text"
                   placeholder="10001"
                   {...register("zipCode")}
-                  className="w-full bg-slate-50 border border-slate-100 rounded-xl px-5 py-4 text-base text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-colors"
+                  className={`w-full bg-slate-50 border rounded-xl px-5 py-4 text-base text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-colors ${
+                    errors.zipCode ? "border-red-500 ring-1 ring-red-500" : "border-slate-100"
+                  }`}
                 />
+                {errors.zipCode && <p className="mt-2 text-sm text-red-500">{errors.zipCode.message}</p>}
               </div>
               <div>
                 <label htmlFor="country" className="block font-sans font-bold text-xs uppercase tracking-wider text-slate-800 mb-2.5">
