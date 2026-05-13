@@ -16,6 +16,7 @@ import {
   ChevronRight,
   ChevronLeft,
 } from "lucide-react";
+import axios from "axios";
 
 // ─── Validation Schema ────────────────────────────────────────────────────────
 
@@ -213,10 +214,20 @@ function ContactForm() {
     mode: "onBlur",
   });
 
-  const onSubmit = async (_data: ContactFormData) => {
-    // Simulate network delay
-    await new Promise((r) => setTimeout(r, 1400));
-    setSubmitted(true);
+  const [submitError, setSubmitError] = useState("");
+
+  const onSubmit = async (data: ContactFormData) => {
+    try {
+      setSubmitError("");
+      const baseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
+      const response = await axios.post(`${baseUrl}/api/v1/contacts`, data);
+      if (response.data.success) {
+        setSubmitted(true);
+      }
+    } catch (error: any) {
+      console.error("Failed to submit form:", error);
+      setSubmitError(error.response?.data?.message || "Something went wrong. Please try again.");
+    }
   };
 
   const handleReset = () => {
@@ -305,9 +316,8 @@ function ContactForm() {
                         errors.name ? "name-error" : undefined
                       }
                       {...register("name")}
-                      className={`${inputCls} ${
-                        errors.name ? "border-red-400 focus:border-red-500 focus:ring-red-500/20" : ""
-                      }`}
+                      className={`${inputCls} ${errors.name ? "border-red-400 focus:border-red-500 focus:ring-red-500/20" : ""
+                        }`}
                     />
                   </FieldWrapper>
 
@@ -326,9 +336,8 @@ function ContactForm() {
                         errors.email ? "email-error" : undefined
                       }
                       {...register("email")}
-                      className={`${inputCls} ${
-                        errors.email ? "border-red-400 focus:border-red-500 focus:ring-red-500/20" : ""
-                      }`}
+                      className={`${inputCls} ${errors.email ? "border-red-400 focus:border-red-500 focus:ring-red-500/20" : ""
+                        }`}
                     />
                   </FieldWrapper>
                 </div>
@@ -372,18 +381,22 @@ function ContactForm() {
                       errors.message ? "message-error" : undefined
                     }
                     {...register("message")}
-                    className={`${inputCls} resize-y min-h-[160px] ${
-                      errors.message ? "border-red-400 focus:border-red-500 focus:ring-red-500/20" : ""
-                    }`}
+                    className={`${inputCls} resize-y min-h-[160px] ${errors.message ? "border-red-400 focus:border-red-500 focus:ring-red-500/20" : ""
+                      }`}
                   />
                 </FieldWrapper>
 
-                {/* Submit */}
-                <button
-                  type="submit"
-                  disabled={isSubmitting}
-                  aria-label="Send message"
-                  className="w-full mt-6 md:mt-8 flex items-center justify-center gap-3
+                <div className="pt-2">
+                  {submitError && (
+                    <p className="text-red-500 text-sm font-medium mb-4 text-center">
+                      {submitError}
+                    </p>
+                  )}
+                  <button
+                    type="submit"
+                    disabled={isSubmitting}
+                    aria-label="Send message"
+                    className="w-full mt-6 md:mt-8 flex items-center justify-center gap-3
                              bg-blue-600 text-white py-4 md:py-5 rounded-full
                              font-bold text-sm tracking-[0.15em] uppercase
                              hover:bg-blue-700 active:scale-[0.98]
@@ -392,19 +405,20 @@ function ContactForm() {
                              disabled:opacity-60 disabled:cursor-not-allowed
                              focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2
                              motion-reduce:transition-none"
-                >
-                  {isSubmitting ? (
-                    <>
-                      <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                      Sending…
-                    </>
-                  ) : (
-                    <>
-                      <Send size={18} />
-                      Send Message
-                    </>
-                  )}
-                </button>
+                  >
+                    {isSubmitting ? (
+                      <>
+                        <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                        Sending…
+                      </>
+                    ) : (
+                      <>
+                        <Send size={18} />
+                        Send Message
+                      </>
+                    )}
+                  </button>
+                </div>
               </form>
             )}
           </div>
@@ -444,7 +458,7 @@ export default function ContactUsPage() {
         >
           <div className="max-w-4xl mx-auto px-6 text-center">
             {/* Mobile Back to Home */}
-            <div 
+            <div
               className="md:hidden flex justify-center mb-8"
               style={{
                 opacity: heroVisible ? 1 : 0,
@@ -452,8 +466,8 @@ export default function ContactUsPage() {
                 transition: "opacity 0.5s ease 50ms, transform 0.5s ease 50ms",
               }}
             >
-              <Link 
-                href="/" 
+              <Link
+                href="/"
                 className="inline-flex items-center gap-2 text-white/90 hover:text-white transition-colors text-sm font-semibold bg-white/10 hover:bg-white/20 px-5 py-2.5 rounded-full border border-white/20 backdrop-blur-sm shadow-sm"
               >
                 <ChevronLeft size={16} />
@@ -679,7 +693,7 @@ function FAQSection() {
         </div>
 
         {/* ── CTA ── */}
-        <div
+        {/* <div
           className="mt-12 text-center"
           style={{
             opacity: listVisible ? 1 : 0,
@@ -706,7 +720,7 @@ function FAQSection() {
             <Send size={16} />
             Send Us a Message
           </a>
-        </div>
+        </div> */}
 
       </div>
     </section>
