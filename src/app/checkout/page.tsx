@@ -132,8 +132,8 @@ export default function CheckoutPage() {
   };
 
   const subtotal = cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0);
-  const shipping = subtotal > 0 ? (subtotal > 499 ? 0 : 50) : 0;
-  const total = Math.max(0, subtotal - discountAmount) + shipping;
+  const shipping = 0;
+  const total = Math.max(0, subtotal - discountAmount);
 
   const handleApplyPromo = async () => {
     if (!promoCode.trim()) {
@@ -498,11 +498,7 @@ export default function CheckoutPage() {
               <div className="flex justify-between items-center text-slate-500 font-sans text-sm">
                 <span>Shipping</span>
                 <span>
-                  {shipping === 0 && subtotal > 0 ? (
-                    <span className="text-green-600 font-bold tracking-wide">Complimentary</span>
-                  ) : (
-                    <span className="text-slate-900">₹{shipping}</span>
-                  )}
+                  <span className="text-green-600 font-bold tracking-wide">Free</span>
                 </span>
               </div>
             </div>

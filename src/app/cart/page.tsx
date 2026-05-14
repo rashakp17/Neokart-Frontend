@@ -13,8 +13,7 @@ export default function CartPage() {
   const { cartItems, updateQuantity, removeItem } = useCart();
 
   const subtotal = cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0);
-  const shipping = subtotal > 0 ? (subtotal > 499 ? 0 : 50) : 0;
-  const total = subtotal + shipping;
+  const total = subtotal;
 
   return (
     <div className="min-h-screen bg-white pt-24 pb-16">
@@ -141,11 +140,7 @@ export default function CartPage() {
                 <div className="flex justify-between items-center text-slate-600 font-sans">
                   <span>Shipping</span>
                   <span className="font-semibold text-slate-900">
-                    {shipping === 0 ? (
-                      <span className="text-green-600 uppercase text-xs font-bold tracking-wider">Free</span>
-                    ) : (
-                      `₹${shipping}`
-                    )}
+                    <span className="text-green-600 uppercase text-xs font-bold tracking-wider">Free</span>
                   </span>
                 </div>
               </div>
