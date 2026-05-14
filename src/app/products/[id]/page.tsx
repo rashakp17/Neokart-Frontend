@@ -68,6 +68,7 @@ export default function ProductDetailPage() {
   const [activeTab, setActiveTab] = useState<"benefits" | "ingredients" | "how-to">("benefits");
   const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false);
   const [isIngredientsExpanded, setIsIngredientsExpanded] = useState(false);
+  const [showAllThumbs, setShowAllThumbs] = useState(false);
   const { addToCart } = useCart();
 
   useEffect(() => {
@@ -227,20 +228,35 @@ export default function ProductDetailPage() {
 
             {/* Thumbnails */}
             {product.images.length > 1 && (
-              <div className="flex gap-3">
-                {product.images.map((src, i) => (
-                  <button
-                    key={i}
-                    onClick={() => setActiveImage(i)}
-                    aria-label={`View image ${i + 1}`}
-                    className={`relative w-20 h-20 rounded-xl overflow-hidden border-2 transition-all duration-200 flex-shrink-0 ${i === activeImage
-                      ? "border-slate-900 shadow-md"
-                      : "border-slate-200 hover:border-slate-400"
-                      }`}
-                  >
-                    <Image src={src} alt={`Thumbnail ${i + 1}`} fill sizes="80px" className="object-cover" />
-                  </button>
-                ))}
+              <div className={`flex gap-3 ${showAllThumbs ? "flex-wrap" : "flex-nowrap md:flex-wrap overflow-hidden"}`}>
+                {product.images.map((src, i) => {
+                  const isFourth = i === 3;
+                  const isExtra = i > 3;
+                  const hasMore = product.images.length > 4;
+
+                  return (
+                    <button
+                      key={i}
+                      onClick={() => {
+                        setActiveImage(i);
+                        if (isFourth && hasMore && !showAllThumbs) {
+                          setShowAllThumbs(true);
+                        }
+                      }}
+                      aria-label={`View image ${i + 1}`}
+                      className={`relative w-20 h-20 rounded-xl overflow-hidden border-2 transition-all duration-200 flex-shrink-0 ${
+                        i === activeImage ? "border-slate-900 shadow-md" : "border-slate-200 hover:border-slate-400"
+                      } ${!showAllThumbs && isExtra && hasMore ? "hidden md:block" : ""}`}
+                    >
+                      <Image src={src} alt={`Thumbnail ${i + 1}`} fill sizes="80px" className="object-cover" />
+                      {!showAllThumbs && isFourth && hasMore && (
+                        <div className="absolute inset-0 bg-black/40 flex md:hidden items-center justify-center text-white backdrop-blur-[1px]">
+                          <Plus size={28} strokeWidth={2.5} />
+                        </div>
+                      )}
+                    </button>
+                  );
+                })}
               </div>
             )}
           </div>
