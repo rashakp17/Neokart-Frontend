@@ -233,9 +233,6 @@ export default function Navbar() {
                   aria-label="Open search"
                 >
                   <Search size={24} strokeWidth={2} className="w-6 h-6" />
-                  <span className="hidden lg:inline-block ml-2 font-sans font-black text-base tracking-[0.15em] uppercase">
-                    SEARCH
-                  </span>
                 </button>
 
                 {/* Cart Icon */}
@@ -288,15 +285,22 @@ export default function Navbar() {
                   transition={{ duration: 0.3, ease: "easeOut" }}
                   className="relative lg:w-[22rem]"
                 >
-                  <form onSubmit={handleSearch}>
+                  <form onSubmit={handleSearch} className="relative">
                     <input
                       ref={searchInputRef}
                       type="search"
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
                       placeholder="Search products..."
-                      className="w-full bg-white border border-blue-500 rounded-full px-5 py-2.5 text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-4 focus:ring-blue-500/10 transition-all duration-300 text-[15px]"
+                      className="w-full bg-white border border-blue-500 rounded-full pl-5 pr-12 py-2.5 text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-4 focus:ring-blue-500/10 transition-all duration-300 text-[15px]"
                     />
+                    <button
+                      type="submit"
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-blue-500 transition-colors duration-200"
+                      aria-label="Submit search"
+                    >
+                      <Search size={20} strokeWidth={2} />
+                    </button>
                   </form>
 
                   {/* Desktop Live Results Dropdown */}
@@ -358,17 +362,27 @@ export default function Navbar() {
                   <X size={24} strokeWidth={2} />
                 </motion.button>
 
-                {/* Submit Search Button */}
-                <motion.button
-                  onClick={handleSearch}
+
+
+                {/* Cart Icon */}
+                <motion.div
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ delay: 0.15 }}
-                  className="font-sans font-black text-base tracking-wide uppercase text-slate-900 hover:text-blue-500 transition-colors duration-200 mr-2 lg:mr-4"
-                  aria-label="Submit search"
                 >
-                  SEARCH
-                </motion.button>
+                  <Link
+                    href="/cart"
+                    className="relative w-10 h-10 flex items-center justify-center text-slate-900 hover:text-blue-500 transition-colors duration-200"
+                    aria-label="Cart"
+                  >
+                    <ShoppingBag size={24} strokeWidth={2} className="w-6 h-6" />
+                    {cartCount > 0 && (
+                      <span className="absolute top-1 right-1 w-5 h-5 bg-blue-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center border border-white">
+                        {cartCount}
+                      </span>
+                    )}
+                  </Link>
+                </motion.div>
 
                 {/* Profile Icon */}
                 <motion.div
@@ -377,11 +391,11 @@ export default function Navbar() {
                   transition={{ delay: 0.2 }}
                 >
                   <Link
-                    href="/sign-in"
-                    className="flex items-center justify-center text-slate-900 hover:text-blue-500 transition-colors duration-200"
+                    href="/profile"
+                    className="w-10 h-10 flex items-center justify-center text-slate-900 hover:text-blue-500 transition-colors duration-200"
                     aria-label="Account"
                   >
-                    <User size={24} strokeWidth={2} />
+                    <User size={24} strokeWidth={2} className="w-6 h-6" />
                   </Link>
                 </motion.div>
               </motion.div>
@@ -400,14 +414,23 @@ export default function Navbar() {
             className="absolute top-24 left-0 right-0 bg-white border-b border-slate-200 px-6 py-4 md:hidden shadow-lg z-40"
           >
             <form onSubmit={handleSearch} className="flex items-center gap-3">
-              <input
-                ref={searchInputRef}
-                type="search"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Search products..."
-                className="flex-1 bg-slate-50 border-2 border-blue-500 rounded-full px-5 py-2.5 text-slate-900 focus:outline-none"
-              />
+              <div className="relative flex-1">
+                <input
+                  ref={searchInputRef}
+                  type="search"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  placeholder="Search products..."
+                  className="w-full bg-slate-50 border-2 border-blue-500 rounded-full pl-5 pr-12 py-2.5 text-slate-900 focus:outline-none"
+                />
+                <button
+                  type="submit"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-blue-500 transition-colors"
+                  aria-label="Submit search"
+                >
+                  <Search size={20} strokeWidth={2} />
+                </button>
+              </div>
               <button
                 type="button"
                 onClick={() => setIsSearchOpen(false)}
