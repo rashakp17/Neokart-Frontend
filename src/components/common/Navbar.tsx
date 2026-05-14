@@ -28,7 +28,7 @@ export default function Navbar() {
       const fetchProducts = async () => {
         try {
           const BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
-          const res = await axios.get(`${BASE_URL}/api/v1/products`);
+          const res = await axios.get(`${BASE_URL}/v1/products`);
           if (res.data.success && res.data.data) {
             setAllProducts(res.data.data);
           }
