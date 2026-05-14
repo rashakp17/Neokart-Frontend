@@ -28,7 +28,7 @@ export default function Navbar() {
       const fetchProducts = async () => {
         try {
           const BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
-          const res = await axios.get(`${BASE_URL}/api/v1/products`);
+          const res = await axios.get(`${BASE_URL}/v1/products`);
           if (res.data.success && res.data.data) {
             setAllProducts(res.data.data);
           }
@@ -44,8 +44,8 @@ export default function Navbar() {
   useEffect(() => {
     if (searchQuery.trim().length > 0) {
       const q = searchQuery.toLowerCase();
-      const filtered = allProducts.filter(p => 
-        p.name.toLowerCase().includes(q) || 
+      const filtered = allProducts.filter(p =>
+        p.name.toLowerCase().includes(q) ||
         (p.keyFeatures && p.keyFeatures.toLowerCase().includes(q)) ||
         (p.category && p.category.toLowerCase().includes(q))
       ).slice(0, 5);
@@ -132,9 +132,8 @@ export default function Navbar() {
 
   return (
     <header
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 h-24 lg:h-28 px-6 lg:px-12 flex items-center justify-between border-b ${
-        scrolled ? "bg-white shadow-sm border-slate-200" : "bg-white border-transparent"
-      }`}
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 h-24 lg:h-28 px-6 lg:px-12 flex items-center justify-between border-b ${scrolled ? "bg-white shadow-sm border-slate-200" : "bg-white border-transparent"
+        }`}
     >
       {/* ── Mobile Menu Toggle & Profile (Left on Mobile) ── */}
       <div className="flex md:hidden flex-1 justify-start items-center gap-1 relative z-20 pointer-events-none">
@@ -188,7 +187,7 @@ export default function Navbar() {
 
       {/* ── Right: Search & Utilities ── */}
       <div className="flex items-center justify-end gap-2 md:gap-4 flex-1 md:flex-none relative z-20 pointer-events-none md:pointer-events-auto">
-        
+
         {/* --- Mobile Always Visible Icons --- */}
         <div className="flex md:hidden items-center gap-1 sm:gap-2 pointer-events-auto">
           {/* Search Trigger */}
@@ -299,7 +298,7 @@ export default function Navbar() {
                       className="w-full bg-white border border-blue-500 rounded-full px-5 py-2.5 text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-4 focus:ring-blue-500/10 transition-all duration-300 text-[15px]"
                     />
                   </form>
-                  
+
                   {/* Desktop Live Results Dropdown */}
                   {searchQuery.trim().length > 0 && (
                     <div className="absolute top-full left-0 right-0 mt-3 bg-white border border-slate-100 rounded-2xl shadow-xl overflow-hidden z-50">
@@ -310,7 +309,7 @@ export default function Navbar() {
                               const imgUrl = getImageUrl(p.images?.[0]);
                               return (
                                 <li key={p._id} className="border-b border-slate-50 last:border-0">
-                                  <button 
+                                  <button
                                     onClick={() => handleResultClick(p._id)}
                                     className="w-full flex items-center gap-4 px-4 py-3 hover:bg-slate-50 transition-colors text-left"
                                   >
@@ -331,7 +330,7 @@ export default function Navbar() {
                               );
                             })}
                           </ul>
-                          <button 
+                          <button
                             onClick={handleSearch}
                             className="w-full text-center py-3 bg-slate-50 font-bold text-[11px] uppercase tracking-widest text-blue-600 hover:text-blue-700 hover:bg-blue-50 transition-colors border-t border-slate-100"
                           >
@@ -417,7 +416,7 @@ export default function Navbar() {
                 <X size={24} />
               </button>
             </form>
-            
+
             {/* Mobile Live Results Dropdown */}
             {searchQuery.trim().length > 0 && (
               <div className="mt-4 bg-white border border-slate-100 rounded-xl shadow-sm overflow-hidden">
@@ -428,7 +427,7 @@ export default function Navbar() {
                         const imgUrl = getImageUrl(p.images?.[0]);
                         return (
                           <li key={p._id} className="border-b border-slate-50 last:border-0">
-                            <button 
+                            <button
                               onClick={() => handleResultClick(p._id)}
                               className="w-full flex items-center gap-3 px-4 py-3 hover:bg-slate-50 transition-colors text-left"
                             >
@@ -449,7 +448,7 @@ export default function Navbar() {
                         );
                       })}
                     </ul>
-                    <button 
+                    <button
                       onClick={handleSearch}
                       className="w-full text-center py-3 bg-slate-50 font-bold text-xs text-blue-600 hover:text-blue-700 transition-colors border-t border-slate-100"
                     >
