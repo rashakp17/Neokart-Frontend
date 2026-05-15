@@ -545,49 +545,36 @@ export default function ContactUsPage() {
 // ─── FAQ Data ─────────────────────────────────────────────────────────────────
 
 interface FAQItem {
-  id: string;
+  _id: string;
   question: string;
   answer: string;
 }
-
-const FAQ_ITEMS: FAQItem[] = [
-  {
-    id: "shipping-time",
-    question: "How long does shipping take?",
-    answer:
-      "Standard shipping typically takes 3–5 business days within India. Express shipping options are available at checkout for 1–2 business day delivery. International orders may take 7–14 business days depending on the destination.",
-  },
-  {
-    id: "return-policy",
-    question: "Can I return opened products?",
-    answer:
-      "For hygiene and safety reasons, we cannot accept returns on opened or used skincare products. However, if you receive a damaged or defective item, please contact our customer care team within 48 hours of delivery for a replacement or refund.",
-  },
-  {
-    id: "cruelty-free",
-    question: "Are your products cruelty-free?",
-    answer:
-      "Yes, all HEEDY products are 100% cruelty-free. We never test on animals and are certified by Leaping Bunny. Our ingredients are ethically sourced and our formulations are developed using advanced in-vitro testing methods.",
-  },
-  {
-    id: "track-order",
-    question: "How do I track my order?",
-    answer:
-      "Once your order ships, you will receive an email with a tracking number and link. You can also log into your account and visit the 'Orders' section to view real-time tracking updates.",
-  },
-  {
-    id: "consultations",
-    question: "Do you offer personalized skin consultations?",
-    answer:
-      "Yes! We offer complimentary virtual skin consultations with our certified dermatologists. Book a 15-minute session through our website and receive a personalized skincare routine tailored to your skin type and concerns.",
-  },
-];
 
 // ─── FAQ Section ──────────────────────────────────────────────────────────────
 
 function FAQSection() {
   const { ref: headerRef, visible: headerVisible } = useInView(0.2);
   const { ref: listRef, visible: listVisible } = useInView(0.1);
+  const [faqs, setFaqs] = useState<FAQItem[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchFaqs = async () => {
+      try {
+        const baseUrl = process.env.NEXT_PUBLIC_API_URL ? process.env.NEXT_PUBLIC_API_URL.replace(/\/api\/?$/, "") : "http://localhost:5000";
+        const API_URL = `${baseUrl}/api`;
+        const res = await axios.get(`${API_URL}/v1/faqs`);
+        if (res.data.success) {
+          setFaqs(res.data.data);
+        }
+      } catch (error) {
+        console.error("Failed to fetch FAQs:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchFaqs();
+  }, []);
 
   return (
     <section id="faq" className="w-full bg-white py-16 md:py-20 lg:py-24" aria-label="Frequently asked questions">
@@ -641,10 +628,16 @@ function FAQSection() {
             collapsible
             className="w-full space-y-4"
           >
-            {FAQ_ITEMS.map((item, i) => (
+            {loading ? (
+              <div className="flex justify-center py-8">
+                <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-500"></div>
+              </div>
+            ) : faqs.length === 0 ? (
+              <div className="text-center py-8 text-slate-500 font-medium">No frequently asked questions available at the moment.</div>
+            ) : faqs.map((item, i) => (
               <RadixAccordion.Item
-                key={item.id}
-                value={item.id}
+                key={item._id}
+                value={item._id}
                 className="border border-slate-200 rounded-2xl bg-white overflow-hidden
                            hover:border-slate-300 transition-colors duration-200
                            data-[state=open]:border-slate-300
