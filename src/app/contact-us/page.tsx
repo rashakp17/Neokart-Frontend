@@ -51,7 +51,7 @@ const CONTACT_CARDS: ContactCardData[] = [
     Icon: Phone,
     title: "Call Us",
     primary: "+91 907 4881 551",
-    secondary: "Mon – Sat: 9AM – 7PM",
+    // secondary: "Mon – Sat: 9AM – 7PM",
     href: "tel:+919074881551",
     ariaLabel: "Call us at +91 907 4881 551",
   },
