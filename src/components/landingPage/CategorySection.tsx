@@ -31,7 +31,7 @@ const DEFAULT_CATEGORIES = [
 ];
 
 export default function CategorySection() {
-  const [categories, setCategories] = useState(DEFAULT_CATEGORIES);
+  const [categories, setCategories] = useState<typeof DEFAULT_CATEGORIES>([]);
   const [isVisible, setIsVisible] = useState(false);
   const sectionRef = useRef<HTMLDivElement>(null);
 

@@ -113,8 +113,8 @@ function GoogleButtonUI({
         type="button"
         onClick={onClick}
         disabled={loading || disabled}
-        className="group relative w-full flex items-center justify-center gap-3 bg-white border-2 border-slate-200 rounded-xl py-4 px-6 
-          hover:border-slate-300 hover:bg-slate-50 hover:shadow-lg hover:shadow-slate-100/50
+        className="group relative w-full flex items-center justify-center gap-3 bg-black border-2 border-slate-200 rounded-xl py-4 px-6
+          hover:border-slate-300 hover:bg-slate-800 hover:shadow-lg hover:shadow-slate-100/50
           active:scale-[0.98] 
           transition-all duration-300 ease-out
           focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2
@@ -149,7 +149,7 @@ function GoogleButtonUI({
           </svg>
         )}
 
-        <span className="font-sans font-semibold text-sm text-slate-700 tracking-wide group-hover:text-slate-900 transition-colors duration-300">
+        <span className="font-sans font-semibold text-sm text-slate-200 tracking-wide group-hover:text-white transition-colors duration-300">
           {loading
             ? "Connecting..."
             : disabled

@@ -279,7 +279,7 @@ export default function ProfilePage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-white flex items-center justify-center pt-20">
+      <div className="min-h-screen bg-black flex items-center justify-center pt-20">
         <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-slate-900"></div>
       </div>
     );
@@ -294,7 +294,7 @@ export default function ProfilePage() {
 
   return (
     <div className="min-h-screen bg-[#F8F9FB] pt-20 flex justify-center">
-      <div className="max-w-[1200px] w-full flex flex-col md:flex-row bg-white min-h-[calc(100vh-5rem)]">
+      <div className="max-w-[1200px] w-full flex flex-col md:flex-row bg-black min-h-[calc(100vh-5rem)]">
 
         {/* ── Sidebar ── */}
         <aside className="w-full md:w-72 border-r border-slate-100 flex flex-col shrink-0">
@@ -405,7 +405,7 @@ export default function ProfilePage() {
 
                 {/* Stats Cards */}
                 <div className="grid grid-cols-1 gap-6 mb-12">
-                  <div className="bg-white rounded-3xl p-8 border border-slate-100 shadow-sm">
+                  <div className="bg-black rounded-3xl p-8 border border-slate-100 shadow-sm">
                     <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-4">
                       TOTAL ORDERS
                     </p>
@@ -419,7 +419,7 @@ export default function ProfilePage() {
                   {orders.length > 0 ? (
                     <div className="flex flex-col gap-4">
                       {orders.slice(0, 3).map((order) => (
-                        <div key={order._id} className="flex items-center justify-between p-4 bg-white border border-slate-100 rounded-xl shadow-sm">
+                        <div key={order._id} className="flex items-center justify-between p-4 bg-black border border-slate-100 rounded-xl shadow-sm">
                           <div>
                             <p className="font-bold text-sm text-slate-900">Order #{order._id.substring(0, 8)}</p>
                             <p className="text-xs text-slate-500 mt-1">{`${String(new Date(order.createdAt).getDate()).padStart(2, '0')}/${String(new Date(order.createdAt).getMonth() + 1).padStart(2, '0')}/${new Date(order.createdAt).getFullYear()}`}</p>
@@ -457,7 +457,7 @@ export default function ProfilePage() {
                       if (!aIsDone && bIsDone) return -1;
                       return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
                     }).map((order) => (
-                      <div key={order._id} className={`bg-white rounded-[2rem] border border-slate-100 shadow-sm overflow-hidden ${(order.orderStatus === 'delivered' || order.orderStatus === 'cancelled') ? 'opacity-80' : ''}`}>
+                      <div key={order._id} className={`bg-black rounded-[2rem] border border-slate-100 shadow-sm overflow-hidden ${(order.orderStatus === 'delivered' || order.orderStatus === 'cancelled') ? 'opacity-80' : ''}`}>
                         <div className="bg-slate-50 border-b border-slate-100 p-6 sm:px-8 flex flex-wrap items-center justify-between gap-4">
                           <div>
                             <p className="text-xs font-bold text-slate-500 uppercase tracking-widest mb-1">Order Placed</p>
@@ -522,7 +522,7 @@ export default function ProfilePage() {
 
                 <div className="grid grid-cols-1 gap-6">
                   {addresses.map((addr, idx) => (
-                    <div key={addr._id || idx} className="bg-white rounded-[2rem] p-8 border border-slate-100 shadow-sm relative">
+                    <div key={addr._id || idx} className="bg-black rounded-[2rem] p-8 border border-slate-100 shadow-sm relative">
                       <h3 className="font-bold text-lg text-slate-900 mb-4">Address {idx + 1}</h3>
                       <div className="text-slate-500 text-base leading-relaxed mb-6">
                         {addr.street && <p>{addr.street}</p>}
@@ -584,7 +584,7 @@ export default function ProfilePage() {
             className="absolute inset-0 bg-slate-900/40 backdrop-blur-sm"
             onClick={() => setIsAddressModalOpen(false)}
           />
-          <div className="relative bg-white rounded-[2rem] w-full max-w-lg shadow-xl flex flex-col overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+          <div className="relative bg-black rounded-[2rem] w-full max-w-lg shadow-xl flex flex-col overflow-hidden animate-in fade-in zoom-in-95 duration-200">
             <div className="flex items-center justify-between p-6 sm:p-8 border-b border-slate-100">
               <h2 className="font-sans font-black text-2xl text-slate-900 tracking-tight">
                 {editingAddressId ? "Edit Shipping Address" : "New Shipping Address"}
@@ -701,7 +701,7 @@ export default function ProfilePage() {
             className="absolute inset-0 bg-slate-900/40 backdrop-blur-sm"
             onClick={() => setDeleteConfirmId(null)}
           />
-          <div className="relative bg-white rounded-[2rem] w-full max-w-sm shadow-xl p-8 text-center">
+          <div className="relative bg-black rounded-[2rem] w-full max-w-sm shadow-xl p-8 text-center">
             <div className="w-14 h-14 rounded-full bg-red-50 flex items-center justify-center mx-auto mb-5">
               <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ef4444" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
             </div>
@@ -735,7 +735,7 @@ export default function ProfilePage() {
             className="absolute inset-0 bg-slate-900/40 backdrop-blur-sm"
             onClick={() => setIsEditProfileOpen(false)}
           />
-          <div className="relative bg-white rounded-[2rem] w-full max-w-md shadow-xl flex flex-col overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+          <div className="relative bg-black rounded-[2rem] w-full max-w-md shadow-xl flex flex-col overflow-hidden animate-in fade-in zoom-in-95 duration-200">
             <div className="flex items-center justify-between p-6 sm:p-8 border-b border-slate-100">
               <h2 className="font-sans font-black text-2xl text-slate-900 tracking-tight">
                 Edit Profile

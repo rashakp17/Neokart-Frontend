@@ -80,7 +80,7 @@ export default function TermsAndConditionsPage() {
         <section
           className="relative z-10 px-6 md:px-12 lg:px-20 max-w-4xl mx-auto -mt-20 md:-mt-24 mb-20"
         >
-          <div className="bg-white rounded-3xl shadow-sm p-8 md:p-12 lg:p-16 border border-slate-100">
+          <div className="bg-black rounded-3xl shadow-sm p-8 md:p-12 lg:p-16 border border-slate-100">
             <p className="text-slate-500 mb-8 font-medium">Last Updated: May 2, 2026</p>
 
             <div className="space-y-8 text-slate-700 leading-relaxed font-sans">
@@ -151,7 +151,7 @@ export default function TermsAndConditionsPage() {
 
               <section>
                 <h2 className="text-2xl font-bold text-slate-900 mb-4">9. Contact Us</h2>
-                <p className="mb-2">Email: <a href="mailto:infoheedy@gmail.com" className="text-blue-600 hover:text-blue-800 transition-colors">infoheedy@gmail.com</a></p>
+                <p className="mb-2">Email: <a href="mailto:neokart007@gmail.com" className="text-blue-600 hover:text-blue-800 transition-colors">neokart007@gmail.com</a></p>
                 <p>Phone: <a href="tel:+919074881551" className="text-blue-600 hover:text-blue-800 transition-colors">9074881551</a></p>
               </section>
             </div>

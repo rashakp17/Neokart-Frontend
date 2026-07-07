@@ -2,6 +2,8 @@
 
 import Link from "next/link";
 import Image from "next/image";
+import { useState, useEffect } from "react";
+import axios from "axios";
 import { MapPin, Phone, Mail, Heart } from "lucide-react";
 
 // Lucide removed brand icons from their core package, so we define them here:
@@ -32,17 +34,6 @@ const Youtube = (props: any) => (
   </svg>
 );
 
-const shopLinks = [
-  { label: "Skin Care", href: "/products?category=skin-care" },
-  { label: "Lip Care", href: "/products?category=lip-care" },
-  { label: "Body Care", href: "/products?category=body-care" },
-];
-
-const careLinks = [
-  { label: "Contact Us", href: "/contact-us#top" },
-  { label: "FAQ", href: "/contact-us#faq" },
-];
-
 const contacts = [
   {
     icon: MapPin,
@@ -59,8 +50,8 @@ const contacts = [
   {
     icon: Mail,
     label: "EMAIL DIRECTLY",
-    value: "infoheedy@gmail.com",
-    href: "mailto:infoheedy@gmail.com",
+    value: "neokart007@gmail.com",
+    href: "mailto:neokart007@gmail.com",
   },
 ];
 
@@ -84,19 +75,45 @@ function ColumnTitle({ children }: { children: React.ReactNode }) {
 
 export default function Footer() {
   const year = new Date().getFullYear();
+  const [shopLinks, setShopLinks] = useState<{ label: string; href: string }[]>([]);
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const baseUrl = process.env.NEXT_PUBLIC_API_URL
+          ? process.env.NEXT_PUBLIC_API_URL.replace('/api', '')
+          : 'http://localhost:5000';
+        const res = await axios.get(`${baseUrl}/api/v1/categories`);
+        if (res.data.success && res.data.data) {
+          const active = res.data.data
+            .filter((c: any) => c.status === 'ACTIVE')
+            .slice(0, 6);
+          setShopLinks(
+            active.map((c: any) => ({
+              label: c.name,
+              href: `/products?category=${c.name.toLowerCase().replace(/\s+/g, '-')}`,
+            }))
+          );
+        }
+      } catch (err) {
+        console.error('Failed to fetch footer categories', err);
+      }
+    };
+    fetchCategories();
+  }, []);
 
   return (
-    <footer className="bg-[#0a0a0a] w-full border-t border-white/10">
+    <footer className="bg-[#aea3cf]/95 w-full border-t border-white/10">
       <div className="max-w-7xl mx-auto px-6 md:px-12 lg:px-20 pt-6 md:pt-8 pb-5">
         {/* Footer Content Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 md:gap-8 lg:gap-12">
 
           {/* Column 1 — Brand */}
-          <div className="lg:col-span-4">
+          <div className="lg:col-span-4"> 
             <Link href="/" className="inline-flex items-center mb-6" aria-label="NEOKART brand logo">
-              <div className="relative w-52 h-16 bg-white rounded-xl overflow-hidden shadow-sm">
+              <div className="relative w-52 h-16">
                 <Image
-                  src="/logo.jpeg"
+                  src="/logo.png"
                   alt="Neokart Logo"
                   fill
                   sizes="(max-width: 640px) 208px, 208px"
@@ -123,29 +140,15 @@ export default function Footer() {
           </div>
 
           {/* Links Section (Side by side on all screens) */}
-          <div className="lg:col-span-4 grid grid-cols-2 gap-8">
+          <div className="lg:col-span-4">
             {/* Column 2 — Shop Collections */}
             <div>
               <ColumnTitle>SHOP COLLECTIONS</ColumnTitle>
               <ul className="space-y-4">
-                {shopLinks.map(({ label, href }) => (
-                  <li key={label}>
-                    <Link
-                      href={href}
-                      className="font-sans font-normal text-base text-white/70 hover:text-white transition-colors duration-200"
-                    >
-                      {label}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </div>
-
-            {/* Column 3 — Client Care */}
-            <div>
-              <ColumnTitle>CLIENT CARE</ColumnTitle>
-              <ul className="space-y-4">
-                {careLinks.map(({ label, href }) => (
+                {(shopLinks.length > 0
+                  ? shopLinks
+                  : [{ label: "All Products", href: "/products" }]
+                ).map(({ label, href }) => (
                   <li key={label}>
                     <Link
                       href={href}
@@ -190,7 +193,7 @@ export default function Footer() {
         </div>
 
         {/* Bottom Bar */}
-        <div className="mt-16 pt-8 border-t border-white/20 flex flex-col md:flex-row items-center justify-between gap-4">
+        <div className="mt-8 pt-6 border-t border-white/20 flex flex-col md:flex-row items-center justify-between gap-4">
           <p className="font-sans font-normal text-sm text-white/70 flex items-center gap-1.5">
             © {year} Neokart. Crafted with{" "}
             <Heart size={14} className="text-white fill-white inline" />{" "}

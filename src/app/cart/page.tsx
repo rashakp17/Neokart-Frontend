@@ -16,27 +16,27 @@ export default function CartPage() {
   const total = subtotal;
 
   return (
-    <div className="min-h-screen bg-white pt-24 pb-16">
+    <div className="min-h-screen bg-black pt-24 pb-16">
       {/* ── Breadcrumb ── */}
       <nav
         className="max-w-7xl mx-auto px-6 md:px-12 lg:px-20 py-4 flex items-center gap-2 text-xs font-sans text-slate-400"
         aria-label="Breadcrumb"
       >
-        <Link href="/" className="hover:text-slate-700 transition-colors">Home</Link>
+        <Link href="/" className="hover:text-white transition-colors">Home</Link>
         <ChevronRight size={12} />
-        <span className="text-slate-700 font-semibold">Shopping Cart</span>
+        <span className="text-slate-300 font-semibold">Shopping Cart</span>
       </nav>
 
       {/* ── Main Layout ── */}
       <section className="max-w-7xl mx-auto px-6 md:px-12 lg:px-20 pt-8">
-        <h1 className="font-serif font-normal text-4xl md:text-5xl text-slate-900 mb-10">
+        <h1 className="font-serif font-normal text-4xl md:text-5xl text-white mb-10">
           Your Cart
         </h1>
 
         {cartItems.length === 0 ? (
           /* Empty State */
-          <div className="flex flex-col items-center justify-center py-20 px-6 text-center border border-slate-100 rounded-3xl bg-slate-50">
-            <div className="w-24 h-24 bg-white rounded-full flex items-center justify-center mb-6 shadow-sm border border-slate-100">
+          <div className="flex flex-col items-center justify-center py-20 px-6 text-center border border-slate-100 rounded-3xl bg-[#aea3cf]/95">
+            <div className="w-24 h-24 bg-black rounded-full flex items-center justify-center mb-6 shadow-sm border border-slate-100">
               <ShoppingBag size={40} className="text-slate-300" />
             </div>
             <h2 className="font-sans font-bold text-2xl text-slate-900 mb-2">
@@ -60,7 +60,7 @@ export default function CartPage() {
               {cartItems.map((item) => (
                 <div
                   key={item.id}
-                  className="flex flex-col sm:flex-row gap-6 p-8 sm:p-6 border border-slate-100 rounded-2xl bg-white relative group transition-shadow hover:shadow-md"
+                  className="flex flex-col sm:flex-row gap-6 p-8 sm:p-6 border border-slate-100 rounded-2xl bg-[#aea3cf]/95 relative group transition-shadow hover:shadow-md"
                 >
                   {/* Remove Button (Desktop absolute, Mobile relative) */}
                   <button
@@ -102,7 +102,7 @@ export default function CartPage() {
                       </p>
 
                       {/* Quantity Selector */}
-                      <div className="inline-flex items-center border-2 border-slate-200 rounded-xl overflow-hidden bg-white">
+                      <div className="inline-flex items-center border-2 border-slate-200 rounded-xl overflow-hidden bg-[#aea3cf]/95">
                         <button
                           onClick={() => updateQuantity(item.id, item.quantity - 1, item.size)}
                           aria-label="Decrease quantity"
@@ -129,7 +129,7 @@ export default function CartPage() {
             </div>
 
             {/* ── Order Summary (Right Column) ── */}
-            <div className="lg:col-span-4 bg-slate-50 p-6 sm:p-8 rounded-3xl border border-slate-100 sticky top-24">
+            <div className="lg:col-span-4 bg-[#aea3cf]/95 p-6 sm:p-8 rounded-3xl border border-slate-100 sticky top-24">
               <h2 className="font-sans font-bold text-xl text-slate-900 mb-6">Order Summary</h2>
               
               <div className="space-y-4 mb-6">

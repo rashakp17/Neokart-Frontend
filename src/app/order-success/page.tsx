@@ -4,7 +4,7 @@ import { CheckCircle } from 'lucide-react';
 export default function OrderSuccessPage() {
   return (
     <div className="min-h-screen bg-[#FAFAFA] pt-24 pb-16 flex items-center justify-center">
-      <div className="max-w-md w-full mx-auto p-8 bg-white rounded-[2rem] shadow-sm border border-slate-100 text-center animate-in fade-in zoom-in duration-500">
+      <div className="max-w-md w-full mx-auto p-8 bg-black rounded-[2rem] shadow-sm border border-slate-100 text-center animate-in fade-in zoom-in duration-500">
         <div className="w-24 h-24 bg-green-50 rounded-full flex items-center justify-center mx-auto mb-6">
           <CheckCircle size={48} className="text-green-500" strokeWidth={2.5} />
         </div>
@@ -21,7 +21,7 @@ export default function OrderSuccessPage() {
           </Link>
           <Link 
             href="/products"
-            className="w-full bg-white text-slate-900 font-bold text-sm tracking-widest uppercase py-4 rounded-xl border-2 border-slate-200 hover:border-slate-900 transition-colors focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2"
+            className="w-full bg-black text-slate-900 font-bold text-sm tracking-widest uppercase py-4 rounded-xl border-2 border-slate-200 hover:border-slate-900 transition-colors focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2"
           >
             Continue Shopping
           </Link>

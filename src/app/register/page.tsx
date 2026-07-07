@@ -79,7 +79,7 @@ export default function RegisterPage() {
   return (
     <div className="min-h-screen flex flex-col lg:flex-row pt-24">
       {/* ── Left Panel: Brand Context ── */}
-      <div className="bg-[#F5F0EB] lg:w-5/12 flex flex-col justify-center px-6 py-10 lg:p-16 xl:p-24 relative overflow-hidden">
+      <div className="bg-[#aea3cf]/95 lg:w-5/12 flex flex-col justify-center px-6 py-10 lg:p-16 xl:p-24 relative overflow-hidden">
         <div className="max-w-md mx-auto relative z-10 w-full">
           <p className="font-sans font-bold text-xs uppercase tracking-[0.25em] text-slate-800 mb-6 lg:mb-8">
             NEOKART MEMBERSHIP
@@ -101,12 +101,12 @@ export default function RegisterPage() {
       </div>
 
       {/* ── Right Panel: Registration Form ── */}
-      <div className="bg-white lg:w-7/12 flex flex-col justify-center px-6 py-10 lg:p-16 xl:p-24 overflow-y-auto">
+      <div className="bg-black lg:w-7/12 flex flex-col justify-center px-6 py-10 lg:p-16 xl:p-24 overflow-y-auto">
         <div className="max-w-2xl mx-auto w-full">
-          <h2 className="font-sans font-bold text-4xl md:text-5xl text-slate-900 mb-3">
+          <h2 className="font-sans font-bold text-4xl md:text-5xl text-white mb-3">
             Create Account
           </h2>
-          <p className="font-sans text-slate-500 text-base mb-10">
+          <p className="font-sans text-slate-400 text-base mb-10">
             Join us today for a premium experience.
           </p>
 
@@ -119,7 +119,7 @@ export default function RegisterPage() {
 
             {/* Full Name */}
             <div>
-              <label htmlFor="fullName" className="block font-sans font-bold text-xs uppercase tracking-wider text-slate-800 mb-2.5">
+              <label htmlFor="fullName" className="block font-sans font-bold text-xs uppercase tracking-wider text-slate-300 mb-2.5">
                 Full Name
               </label>
               <input
@@ -127,7 +127,7 @@ export default function RegisterPage() {
                 type="text"
                 placeholder="John Doe"
                 {...register("fullName")}
-                className={`w-full bg-slate-50 border rounded-xl px-5 py-4 text-base text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-colors ${errors.fullName ? "border-red-500 ring-1 ring-red-500" : "border-slate-100"
+                className={`w-full bg-[#aea3cf]/95 border rounded-xl px-5 py-4 text-base text-slate-900 placeholder:text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-[#aea3cf] transition-colors ${errors.fullName ? "border-red-500 ring-1 ring-red-500" : "border-slate-100"
                   }`}
                 aria-invalid={errors.fullName ? "true" : "false"}
               />
@@ -137,7 +137,7 @@ export default function RegisterPage() {
             {/* Email & Phone Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-7">
               <div>
-                <label htmlFor="email" className="block font-sans font-bold text-xs uppercase tracking-wider text-slate-800 mb-2.5">
+                <label htmlFor="email" className="block font-sans font-bold text-xs uppercase tracking-wider text-slate-300 mb-2.5">
                   Email Address
                 </label>
                 <input
@@ -145,14 +145,14 @@ export default function RegisterPage() {
                   type="email"
                   placeholder="you@luxury.com"
                   {...register("email")}
-                  className={`w-full bg-slate-50 border rounded-xl px-5 py-4 text-base text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-colors ${errors.email ? "border-red-500 ring-1 ring-red-500" : "border-slate-100"
+                  className={`w-full bg-[#aea3cf]/95 border rounded-xl px-5 py-4 text-base text-slate-900 placeholder:text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-[#aea3cf] transition-colors ${errors.email ? "border-red-500 ring-1 ring-red-500" : "border-slate-100"
                     }`}
                 />
                 {errors.email && <p className="mt-2 text-sm text-red-500">{errors.email.message}</p>}
               </div>
 
               <div>
-                <label htmlFor="phone" className="block font-sans font-bold text-xs uppercase tracking-wider text-slate-800 mb-2.5">
+                <label htmlFor="phone" className="block font-sans font-bold text-xs uppercase tracking-wider text-slate-300 mb-2.5">
                   Phone Number
                 </label>
                 <input
@@ -160,7 +160,7 @@ export default function RegisterPage() {
                   type="tel"
                   placeholder="1234567890"
                   {...register("phone")}
-                  className={`w-full bg-slate-50 border rounded-xl px-5 py-4 text-base text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-colors ${errors.phone ? "border-red-500 ring-1 ring-red-500" : "border-slate-100"
+                  className={`w-full bg-[#aea3cf]/95 border rounded-xl px-5 py-4 text-base text-slate-900 placeholder:text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-[#aea3cf] transition-colors ${errors.phone ? "border-red-500 ring-1 ring-red-500" : "border-slate-100"
                     }`}
                 />
                 {errors.phone && <p className="mt-2 text-sm text-red-500">{errors.phone.message}</p>}
@@ -170,7 +170,7 @@ export default function RegisterPage() {
             {/* Password & Confirm Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-7">
               <div>
-                <label htmlFor="password" className="block font-sans font-bold text-xs uppercase tracking-wider text-slate-800 mb-2.5">
+                <label htmlFor="password" className="block font-sans font-bold text-xs uppercase tracking-wider text-slate-300 mb-2.5">
                   Password
                 </label>
                 <div className="relative">
@@ -179,7 +179,7 @@ export default function RegisterPage() {
                     type={showPassword ? "text" : "password"}
                     placeholder="••••••••"
                     {...register("password")}
-                    className={`w-full bg-slate-50 border rounded-xl px-5 py-4 text-base text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-colors pr-14 ${errors.password ? "border-red-500 ring-1 ring-red-500" : "border-slate-100"
+                    className={`w-full bg-[#aea3cf]/95 border rounded-xl px-5 py-4 text-base text-slate-900 placeholder:text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-[#aea3cf] transition-colors pr-14 ${errors.password ? "border-red-500 ring-1 ring-red-500" : "border-slate-100"
                       }`}
                   />
                   <button
@@ -195,7 +195,7 @@ export default function RegisterPage() {
               </div>
 
               <div>
-                <label htmlFor="confirmPassword" className="block font-sans font-bold text-xs uppercase tracking-wider text-slate-800 mb-2.5">
+                <label htmlFor="confirmPassword" className="block font-sans font-bold text-xs uppercase tracking-wider text-slate-300 mb-2.5">
                   Confirm Password
                 </label>
                 <div className="relative">
@@ -204,7 +204,7 @@ export default function RegisterPage() {
                     type={showConfirmPassword ? "text" : "password"}
                     placeholder="••••••••"
                     {...register("confirmPassword")}
-                    className={`w-full bg-slate-50 border rounded-xl px-5 py-4 text-base text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-colors pr-14 ${errors.confirmPassword ? "border-red-500 ring-1 ring-red-500" : "border-slate-100"
+                    className={`w-full bg-[#aea3cf]/95 border rounded-xl px-5 py-4 text-base text-slate-900 placeholder:text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-[#aea3cf] transition-colors pr-14 ${errors.confirmPassword ? "border-red-500 ring-1 ring-red-500" : "border-slate-100"
                       }`}
                   />
                   <button
@@ -226,7 +226,7 @@ export default function RegisterPage() {
                 <div className="w-full border-t border-slate-100"></div>
               </div>
               <div className="relative flex justify-center text-sm">
-                <span className="bg-white px-4 font-sans text-xs uppercase tracking-widest text-slate-400 font-bold">
+                <span className="bg-black px-4 font-sans text-xs uppercase tracking-widest text-slate-400 font-bold">
                   ADDRESS (OPTIONAL)
                 </span>
               </div>
@@ -235,7 +235,7 @@ export default function RegisterPage() {
             {/* Street & City Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-7">
               <div>
-                <label htmlFor="street" className="block font-sans font-bold text-xs uppercase tracking-wider text-slate-800 mb-2.5">
+                <label htmlFor="street" className="block font-sans font-bold text-xs uppercase tracking-wider text-slate-300 mb-2.5">
                   Street
                 </label>
                 <input
@@ -243,11 +243,11 @@ export default function RegisterPage() {
                   type="text"
                   placeholder="123 Luxury Ave"
                   {...register("street")}
-                  className="w-full bg-slate-50 border border-slate-100 rounded-xl px-5 py-4 text-base text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-colors"
+                  className="w-full bg-[#aea3cf]/95 border border-slate-100 rounded-xl px-5 py-4 text-base text-slate-900 placeholder:text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-[#aea3cf] transition-colors"
                 />
               </div>
               <div>
-                <label htmlFor="city" className="block font-sans font-bold text-xs uppercase tracking-wider text-slate-800 mb-2.5">
+                <label htmlFor="city" className="block font-sans font-bold text-xs uppercase tracking-wider text-slate-300 mb-2.5">
                   City
                 </label>
                 <input
@@ -255,7 +255,7 @@ export default function RegisterPage() {
                   type="text"
                   placeholder="Metropolis"
                   {...register("city")}
-                  className="w-full bg-slate-50 border border-slate-100 rounded-xl px-5 py-4 text-base text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-colors"
+                  className="w-full bg-[#aea3cf]/95 border border-slate-100 rounded-xl px-5 py-4 text-base text-slate-900 placeholder:text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-[#aea3cf] transition-colors"
                 />
               </div>
             </div>
@@ -263,7 +263,7 @@ export default function RegisterPage() {
             {/* State, Zip, Country Grid */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-7">
               <div>
-                <label htmlFor="state" className="block font-sans font-bold text-xs uppercase tracking-wider text-slate-800 mb-2.5">
+                <label htmlFor="state" className="block font-sans font-bold text-xs uppercase tracking-wider text-slate-300 mb-2.5">
                   State
                 </label>
                 <input
@@ -271,11 +271,11 @@ export default function RegisterPage() {
                   type="text"
                   placeholder="NY"
                   {...register("state")}
-                  className="w-full bg-slate-50 border border-slate-100 rounded-xl px-5 py-4 text-base text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-colors"
+                  className="w-full bg-[#aea3cf]/95 border border-slate-100 rounded-xl px-5 py-4 text-base text-slate-900 placeholder:text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-[#aea3cf] transition-colors"
                 />
               </div>
               <div>
-                <label htmlFor="zipCode" className="block font-sans font-bold text-xs uppercase tracking-wider text-slate-800 mb-2.5">
+                <label htmlFor="zipCode" className="block font-sans font-bold text-xs uppercase tracking-wider text-slate-300 mb-2.5">
                   Zip Code
                 </label>
                 <input
@@ -283,13 +283,13 @@ export default function RegisterPage() {
                   type="text"
                   placeholder="10001"
                   {...register("zipCode")}
-                  className={`w-full bg-slate-50 border rounded-xl px-5 py-4 text-base text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-colors ${errors.zipCode ? "border-red-500 ring-1 ring-red-500" : "border-slate-100"
+                  className={`w-full bg-[#aea3cf]/95 border rounded-xl px-5 py-4 text-base text-slate-900 placeholder:text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-[#aea3cf] transition-colors ${errors.zipCode ? "border-red-500 ring-1 ring-red-500" : "border-slate-100"
                     }`}
                 />
                 {errors.zipCode && <p className="mt-2 text-sm text-red-500">{errors.zipCode.message}</p>}
               </div>
               <div>
-                <label htmlFor="country" className="block font-sans font-bold text-xs uppercase tracking-wider text-slate-800 mb-2.5">
+                <label htmlFor="country" className="block font-sans font-bold text-xs uppercase tracking-wider text-slate-300 mb-2.5">
                   Country
                 </label>
                 <input
@@ -297,7 +297,7 @@ export default function RegisterPage() {
                   type="text"
                   placeholder="United States"
                   {...register("country")}
-                  className="w-full bg-slate-50 border border-slate-100 rounded-xl px-5 py-4 text-base text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-colors"
+                  className="w-full bg-[#aea3cf]/95 border border-slate-100 rounded-xl px-5 py-4 text-base text-slate-900 placeholder:text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-[#aea3cf] transition-colors"
                 />
               </div>
             </div>
@@ -319,7 +319,7 @@ export default function RegisterPage() {
               <div className="w-full border-t border-slate-100"></div>
             </div>
             <div className="relative flex justify-center text-sm">
-              <span className="bg-white px-4 font-sans text-xs uppercase tracking-widest text-slate-400 font-bold">
+              <span className="bg-black px-4 font-sans text-xs uppercase tracking-widest text-slate-400 font-bold">
                 OR CONTINUE WITH
               </span>
             </div>
@@ -334,9 +334,9 @@ export default function RegisterPage() {
           <div className="text-center">
             <Link
               href="/sign-in"
-              className="font-sans text-sm text-slate-500 hover:text-slate-900 transition-colors"
+              className="font-sans text-sm text-slate-300 hover:text-white transition-colors"
             >
-              Already have an account? <span className="font-bold text-slate-800">Sign In</span>
+              Already have an account? <span className="font-bold text-slate-100">Sign In</span>
             </Link>
           </div>
         </div>

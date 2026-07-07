@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import axios from "axios";
-import { Star, StarHalf } from "lucide-react";
+import { Star, ShoppingBag } from "lucide-react";
 import { useCart } from "../../context/CartContext";
 
 interface Product {
@@ -19,21 +19,10 @@ interface Product {
   currency: string;
   dealBadge: string;
   benefit: string;
+  category: string;
 }
 
 const DEFAULT_PRODUCTS: Product[] = [];
-
-const renderStars = (rating: number) => {
-  return Array.from({ length: 5 }, (_, i) => {
-    if (i < Math.floor(rating)) {
-      return <Star key={i} className="w-4 h-4 fill-amber-400 text-amber-400" />;
-    }
-    if (i === Math.floor(rating) && rating % 1 !== 0) {
-      return <StarHalf key={i} className="w-4 h-4 fill-amber-400 text-amber-400" />;
-    }
-    return <Star key={i} className="w-4 h-4 fill-slate-200 text-slate-200" />;
-  });
-};
 
 function ProductCard({ product, isVisible, index }: { product: Product; isVisible: boolean; index: number }) {
   const [isAdded, setIsAdded] = useState(false);
@@ -66,9 +55,9 @@ function ProductCard({ product, isVisible, index }: { product: Product; isVisibl
         }`}
       style={{ transitionDelay: `${index * 100}ms` }}
     >
-      <Link href={`/products/${product.id}`} className="flex flex-col flex-grow outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 rounded-2xl overflow-hidden">
+      <Link href={`/products/${product.id}`} className="flex flex-col flex-grow outline-none focus-visible:ring-2 focus-visible:ring-[#593dab] focus-visible:ring-offset-2 rounded-2xl">
         {/* Image Area */}
-        <div className="relative overflow-hidden aspect-[3/4] bg-[#1a1a1a] flex-shrink-0">
+        <div className="relative overflow-hidden aspect-[4/3] bg-[#1a1a1a] flex-shrink-0">
           {product.images.slice(0, 2).map((img, i) => {
             const hasMultipleImages = product.images.length > 1;
             return (
@@ -78,7 +67,7 @@ function ProductCard({ product, isVisible, index }: { product: Product; isVisibl
                 alt={`${product.name} product image ${i + 1}`}
                 fill
                 loading={index > 2 ? "lazy" : "eager"}
-                sizes="(max-width: 640px) 280px, (max-width: 1024px) 33vw, 20vw"
+                sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 20vw"
                 className={`object-cover transition-all duration-500 ease-in-out group-hover:scale-105 ${hasMultipleImages
                   ? i === 0
                     ? "opacity-100 group-hover:opacity-0"
@@ -88,47 +77,54 @@ function ProductCard({ product, isVisible, index }: { product: Product; isVisibl
               />
             );
           })}
+          {product.dealBadge && (
+            <span className="absolute top-3 left-3 bg-amber-400 text-black text-[10px] md:text-[11px] font-bold px-2.5 py-1 rounded-full">
+              {product.dealBadge}
+            </span>
+          )}
         </div>
 
         {/* Content Area */}
-        <div className="px-4 pt-4 pb-3 flex flex-col flex-grow">
-          <div className="flex items-center justify-center gap-0.5 mb-2" aria-label={`${product.rating} out of 5 stars`}>
-            {renderStars(product.rating)}
-            <span className="text-sm font-medium text-slate-500 ml-1">({product.reviewCount})</span>
-          </div>
+        <div className="p-3 md:p-4 flex flex-col flex-grow">
+          {product.category && (
+            <p className="font-sans font-semibold text-[10px] md:text-[11px] uppercase tracking-wider text-[#a78bda] mb-1">
+              {product.category}
+            </p>
+          )}
 
-          <h3 className="font-sans font-bold text-sm md:text-lg text-white leading-tight text-center mb-2 md:mb-3 line-clamp-2">
+          <h3 className="font-sans font-bold text-sm md:text-base text-white leading-snug mb-1.5 line-clamp-2">
             {product.name}
           </h3>
 
-          <div className="flex items-center justify-center gap-1.5 md:gap-2 mb-2" aria-label={`Sale price ${product.currentPrice}, original price ${product.originalPrice}`}>
-            <span className="font-sans font-bold text-lg md:text-2xl text-white">
-              {product.currency}{product.currentPrice}
-            </span>
-            <span className="font-sans font-normal text-xs md:text-sm text-white/40 line-through">
-              {product.currency}{product.originalPrice}
-            </span>
+          <div className="flex items-center gap-1" aria-label={`${product.rating} out of 5 stars`}>
+            <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
+            <span className="text-xs md:text-sm font-semibold text-white">{product.rating}</span>
+            <span className="text-xs md:text-sm text-slate-500">({product.reviewCount})</span>
           </div>
-
-          <div className="text-red-500 font-sans font-bold text-[10px] sm:text-xs uppercase tracking-wider text-center mb-1">
-            {product.dealBadge}
-          </div>
-
-          <p className="font-sans font-normal text-xs text-slate-400 text-center line-clamp-1">
-            {product.benefit}
-          </p>
         </div>
       </Link>
-      <div className="px-4 pb-6">
+
+      {/* Price + Cart Row */}
+      <div className="px-3 md:px-4 pb-4 pt-2 mt-auto flex items-center justify-between gap-2">
+        <div className="flex items-baseline gap-1.5 min-w-0">
+          <span className="font-sans font-bold text-base md:text-xl text-white truncate">
+            {product.currency}{product.currentPrice}
+          </span>
+          {product.originalPrice > product.currentPrice && (
+            <span className="font-sans text-[11px] md:text-xs text-white/40 line-through">
+              {product.currency}{product.originalPrice}
+            </span>
+          )}
+        </div>
         <button
           onClick={handleAddToCart}
           aria-label={`Add ${product.name} to cart`}
-          className={`w-full text-white font-sans font-bold text-[10px] md:text-xs uppercase tracking-widest py-2 md:py-3 rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${isAdded
+          className={`shrink-0 w-9 h-9 md:w-10 md:h-10 rounded-full flex items-center justify-center text-white transition-colors focus:outline-none focus:ring-2 focus:ring-[#593dab] focus:ring-offset-2 focus:ring-offset-[#121212] ${isAdded
               ? "bg-green-600 hover:bg-green-700"
               : "bg-[#593dab] hover:bg-[#4a3391]"
             }`}
         >
-          {isAdded ? "ADDED TO CART" : "ADD TO CART"}
+          <ShoppingBag className="w-4 h-4 md:w-[18px] md:h-[18px]" />
         </button>
       </div>
     </article>
@@ -161,6 +157,7 @@ export default function ProductSection() {
             currency: "₹",
             dealBadge: p.offerText || "",
             benefit: p.keyFeatures || "",
+            category: p.category || "",
           }));
           setProducts(mappedProds);
         }

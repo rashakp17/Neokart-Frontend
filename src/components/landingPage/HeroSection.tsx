@@ -174,7 +174,7 @@ export default function HeroSection() {
             initial={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.6, ease: "easeInOut" }}
-            className="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-[#593dab]"
+            className="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-[#aea3cf]/95"
           >
             <h1 className="text-white font-sans font-black text-6xl md:text-8xl tracking-[0.2em] uppercase mb-8">
               NEOKART
@@ -184,7 +184,7 @@ export default function HeroSection() {
                 initial={{ width: 0 }}
                 animate={{ width: "100%" }}
                 transition={{ duration: 2, ease: "easeInOut" }}
-                className="h-full bg-white"
+                className="h-full bg-black"
               />
             </div>
           </motion.div>
@@ -238,10 +238,10 @@ export default function HeroSection() {
               <div className="absolute inset-0 bg-[#593dab]/30" /> {/* overlay */}
 
               {/* Content specific to this slide */}
-              <div className="absolute inset-0 z-10 flex flex-col items-center justify-center text-center px-4 pointer-events-none">
+              <div className="absolute inset-0 z-10 flex flex-col items-start justify-center text-left px-6 md:px-12 lg:px-20 pointer-events-none">
 
                 {/* Headline */}
-                <h1 className="mb-6 text-white drop-shadow-sm font-sans font-normal text-4xl md:text-6xl lg:text-8xl tracking-[0.2em] md:tracking-[0.2em] uppercase pointer-events-auto">
+                <h1 className="mb-6 text-white drop-shadow-sm font-sans font-bold text-4xl md:text-5xl lg:text-6xl tracking-tight max-w-2xl pointer-events-auto">
                   {slide.headline}
                 </h1>
 

@@ -61,7 +61,7 @@ export default function SignInPage() {
   return (
     <div className="min-h-screen flex flex-col md:flex-row pt-24">
       {/* ── Left Panel: Brand Context ── */}
-      <div className="bg-[#F5F0EB] md:w-1/2 flex flex-col justify-center px-6 py-10 md:p-16 lg:p-24 relative overflow-hidden">
+      <div className="bg-[#aea3cf]/95 md:w-1/2 flex flex-col justify-center px-6 py-10 md:p-16 lg:p-24 relative overflow-hidden">
         {/* Subtle decorative elements */}
         <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-bl from-[#e8ddd4]/60 to-transparent rounded-full blur-3xl" />
         <div className="absolute bottom-0 left-0 w-48 h-48 bg-gradient-to-tr from-[#d4c5b5]/40 to-transparent rounded-full blur-2xl" />
@@ -87,12 +87,12 @@ export default function SignInPage() {
       </div>
 
       {/* ── Right Panel: Sign In Form ── */}
-      <div className="bg-white md:w-1/2 flex flex-col justify-center px-6 py-10 md:p-16 lg:p-24">
+      <div className="bg-black md:w-1/2 flex flex-col justify-center px-6 py-10 md:p-16 lg:p-24">
         <div className="max-w-lg mx-auto w-full">
-          <h2 className="font-sans font-bold text-4xl md:text-5xl text-slate-900 mb-3">
+          <h2 className="font-sans font-bold text-4xl md:text-5xl text-white mb-3">
             Sign In
           </h2>
-          <p className="font-sans text-slate-500 text-base mb-10">
+          <p className="font-sans text-slate-400 text-base mb-10">
             Enter your credentials to continue.
           </p>
 
@@ -107,7 +107,7 @@ export default function SignInPage() {
             <div>
               <label
                 htmlFor="email"
-                className="block font-sans font-bold text-xs uppercase tracking-wider text-slate-800 mb-2.5"
+                className="block font-sans font-bold text-xs uppercase tracking-wider text-slate-300 mb-2.5"
               >
                 Email Address
               </label>
@@ -116,7 +116,7 @@ export default function SignInPage() {
                 type="email"
                 placeholder="you@luxury.com"
                 {...register("email")}
-                className={`w-full bg-slate-50 border rounded-xl px-5 py-4 text-base text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-colors ${errors.email ? "border-red-500 ring-1 ring-red-500" : "border-slate-100"
+                className={`w-full bg-[#aea3cf]/95 border rounded-xl px-5 py-4 text-base text-slate-900 placeholder:text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-[#aea3cf] transition-colors ${errors.email ? "border-red-500 ring-1 ring-red-500" : "border-slate-100"
                   }`}
                 aria-invalid={errors.email ? "true" : "false"}
                 aria-describedby={errors.email ? "email-error" : undefined}
@@ -132,7 +132,7 @@ export default function SignInPage() {
             <div>
               <label
                 htmlFor="password"
-                className="block font-sans font-bold text-xs uppercase tracking-wider text-slate-800 mb-2.5"
+                className="block font-sans font-bold text-xs uppercase tracking-wider text-slate-300 mb-2.5"
               >
                 Password
               </label>
@@ -142,7 +142,7 @@ export default function SignInPage() {
                   type={showPassword ? "text" : "password"}
                   placeholder="••••••••"
                   {...register("password")}
-                  className={`w-full bg-slate-50 border rounded-xl px-5 py-4 text-base text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-colors pr-14 ${errors.password ? "border-red-500 ring-1 ring-red-500" : "border-slate-100"
+                  className={`w-full bg-[#aea3cf]/95 border rounded-xl px-5 py-4 text-base text-slate-900 placeholder:text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-[#aea3cf] transition-colors pr-14 ${errors.password ? "border-red-500 ring-1 ring-red-500" : "border-slate-100"
                     }`}
                   aria-invalid={errors.password ? "true" : "false"}
                   aria-describedby={errors.password ? "password-error" : undefined}
@@ -186,7 +186,7 @@ export default function SignInPage() {
               <div className="w-full border-t border-slate-100"></div>
             </div>
             <div className="relative flex justify-center text-sm">
-              <span className="bg-white px-4 font-sans text-xs uppercase tracking-widest text-slate-400 font-bold">
+              <span className="bg-black px-4 font-sans text-xs uppercase tracking-widest text-slate-400 font-bold">
                 OR CONTINUE WITH
               </span>
             </div>
@@ -201,9 +201,9 @@ export default function SignInPage() {
           <div className="text-center">
             <Link
               href="/register"
-              className="inline-flex items-center justify-center gap-1.5 font-sans text-sm text-slate-500 hover:text-slate-900 transition-colors"
+              className="inline-flex items-center justify-center gap-1.5 font-sans text-sm text-slate-300 hover:text-white transition-colors"
             >
-              New to Neokart? <span className="font-bold text-slate-800">Create Account</span> <UserPlus size={16} className="text-slate-800" />
+              New to Neokart? <span className="font-bold text-slate-100">Create Account</span> <UserPlus size={16} className="text-slate-100" />
             </Link>
           </div>
         </div>

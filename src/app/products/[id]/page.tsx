@@ -57,7 +57,6 @@ export default function ProductDetailPage() {
   const router = useRouter();
   const id = params?.id as string;
 
-  const [products, setProducts] = useState<Product[]>([]);
   const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -65,9 +64,7 @@ export default function ProductDetailPage() {
   const [selectedSize, setSelectedSize] = useState(0);
   const [qty, setQty] = useState(1);
   const [added, setAdded] = useState(false);
-  const [activeTab, setActiveTab] = useState<"benefits" | "ingredients" | "how-to">("benefits");
   const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false);
-  const [isIngredientsExpanded, setIsIngredientsExpanded] = useState(false);
   const [showAllThumbs, setShowAllThumbs] = useState(false);
   const { addToCart } = useCart();
 
@@ -116,7 +113,6 @@ export default function ProductDetailPage() {
             howToUse: "Follow instructions on packaging",
             sizes: p.variants && p.variants.length > 0 ? p.variants.map((v: any) => v.volume) : ["Standard"],
           }));
-          setProducts(mapped);
           const found = mapped.find((p: any) => p.id === id) || null;
           setProduct(found);
         }
@@ -159,17 +155,17 @@ export default function ProductDetailPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-white pt-24 flex items-center justify-center">
-        <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-slate-900"></div>
+      <div className="min-h-screen bg-black pt-24 flex items-center justify-center">
+        <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-white"></div>
       </div>
     );
   }
 
   if (!product) {
     return (
-      <div className="min-h-screen bg-white pt-24 flex flex-col items-center justify-center text-center px-6">
+      <div className="min-h-screen bg-black pt-24 flex flex-col items-center justify-center text-center px-6">
         <p className="text-6xl mb-4">🔍</p>
-        <h1 className="font-sans font-bold text-3xl text-slate-900 mb-2">Product Not Found</h1>
+        <h1 className="font-sans font-bold text-3xl text-white mb-2">Product Not Found</h1>
         <p className="text-slate-500 mb-8">We couldn&apos;t find the product you&apos;re looking for.</p>
         <Link
           href="/products"
@@ -182,20 +178,23 @@ export default function ProductDetailPage() {
   }
 
   const discount = Math.round((1 - product.currentPrice / product.originalPrice) * 100);
+  // Prefer the percentage stated in the deal text (offerText); fall back to the computed one.
+  const dealBadgeMatch = product.dealBadge.match(/(\d+)\s*%/);
+  const badgeDiscount = dealBadgeMatch ? Number(dealBadgeMatch[1]) : discount;
 
   return (
-    <div className="min-h-screen bg-white pt-30">
+    <div className="min-h-screen bg-black pt-30">
 
       {/* ── Breadcrumb ── */}
       <nav
         className="max-w-7xl mx-auto px-6 md:px-12 lg:px-20 py-4 flex items-center gap-2 text-xs font-sans text-slate-400"
         aria-label="Breadcrumb"
       >
-        <Link href="/" className="hover:text-slate-700 transition-colors">Home</Link>
+        <Link href="/" className="hover:text-white transition-colors">Home</Link>
         <ChevronRight size={12} />
-        <Link href="/products" className="hover:text-slate-700 transition-colors">Products</Link>
+        <Link href="/products" className="hover:text-white transition-colors">Products</Link>
         <ChevronRight size={12} />
-        <span className="text-slate-700 font-semibold line-clamp-1">{product.name}</span>
+        <span className="text-slate-200 font-semibold line-clamp-1">{product.name}</span>
       </nav>
 
       {/* ── Main Section ── */}
@@ -219,9 +218,9 @@ export default function ProductDetailPage() {
                 />
               ))}
               {/* Deal Badge */}
-              {discount > 0 && (
+              {badgeDiscount > 0 && (
                 <div className="absolute top-4 left-4 bg-red-500 text-white text-xs font-bold uppercase tracking-wider px-3 py-1.5 rounded-full">
-                  {discount}% OFF
+                  {badgeDiscount}% OFF
                 </div>
               )}
             </div>
@@ -268,7 +267,7 @@ export default function ProductDetailPage() {
             </p>
 
             {/* Name */}
-            <h1 className="font-serif font-normal text-3xl md:text-4xl text-slate-900 leading-tight mb-3">
+            <h1 className="font-sans font-bold text-3xl md:text-4xl text-white leading-tight mb-3">
               {product.name}
             </h1>
 
@@ -292,7 +291,7 @@ export default function ProductDetailPage() {
               <div className="flex items-center gap-0.5" aria-label={`${product.rating} out of 5 stars`}>
                 {renderStars(product.rating)}
               </div>
-              <span className="text-sm font-semibold text-slate-700">{product.rating.toFixed(1)}</span>
+              <span className="text-sm font-semibold text-slate-200">{product.rating.toFixed(1)}</span>
               {product.reviewCount > 0 && (
                 <span className="text-sm text-slate-400">({product.reviewCount} reviews)</span>
               )}
@@ -303,7 +302,7 @@ export default function ProductDetailPage() {
 
             {/* Price */}
             <div className="flex items-end gap-3 mb-2">
-              <span className="font-sans font-bold text-4xl text-slate-900">
+              <span className="font-sans font-bold text-4xl text-white">
                 {product.currency}{product.currentPrice}
               </span>
               <span className="font-sans text-lg text-slate-400 line-through mb-0.5">
@@ -317,7 +316,7 @@ export default function ProductDetailPage() {
             {/* Size Selector */}
             {product.sizes.length > 1 && (
               <div className="mb-6">
-                <p className="font-sans font-semibold text-sm text-slate-700 mb-3 uppercase tracking-[0.1em]">
+                <p className="font-sans font-semibold text-sm text-slate-200 mb-3 uppercase tracking-[0.1em]">
                   Size
                 </p>
                 <div className="flex gap-2 flex-wrap">
@@ -328,7 +327,7 @@ export default function ProductDetailPage() {
                         onClick={() => handleSizeChange(i)}
                         className={`px-5 py-2.5 rounded-xl font-sans font-semibold text-sm border-2 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 relative ${i === selectedSize
                           ? "border-slate-900 bg-slate-900 text-white"
-                          : "border-slate-200 text-slate-600 hover:border-slate-400 bg-white"
+                          : "border-slate-600 text-slate-300 hover:border-slate-400 bg-black"
                           }`}
                         aria-pressed={i === selectedSize}
                       >
@@ -343,7 +342,7 @@ export default function ProductDetailPage() {
             {/* Quantity */}
             <div className="mb-8">
               <div className="flex items-center justify-between mb-3">
-                <p className="font-sans font-semibold text-sm text-slate-700 uppercase tracking-[0.1em]">
+                <p className="font-sans font-semibold text-sm text-slate-200 uppercase tracking-[0.1em]">
                   Quantity
                 </p>
               </div>
@@ -351,18 +350,18 @@ export default function ProductDetailPage() {
                 <button
                   onClick={() => setQty((q) => Math.max(1, q - 1))}
                   aria-label="Decrease quantity"
-                  className="w-12 h-12 flex items-center justify-center text-slate-600 hover:bg-slate-50 transition-colors disabled:opacity-40"
+                  className="w-12 h-12 flex items-center justify-center text-slate-300 hover:bg-slate-800 transition-colors disabled:opacity-40"
                   disabled={qty <= 1}
                 >
                   <Minus size={16} />
                 </button>
-                <span className="w-14 text-center font-bold text-lg text-slate-900 select-none">
+                <span className="w-14 text-center font-bold text-lg text-white select-none">
                   {qty}
                 </span>
                 <button
                   onClick={() => setQty((q) => q + 1)}
                   aria-label="Increase quantity"
-                  className="w-12 h-12 flex items-center justify-center text-slate-600 hover:bg-slate-50 transition-colors disabled:opacity-40"
+                  className="w-12 h-12 flex items-center justify-center text-slate-300 hover:bg-slate-800 transition-colors disabled:opacity-40"
                 >
                   <Plus size={16} />
                 </button>
@@ -399,105 +398,6 @@ export default function ProductDetailPage() {
                 </div>
               ))}
             </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ── Info Tabs ── */}
-      <section className="max-w-7xl mx-auto px-6 md:px-12 lg:px-20 py-12 md:py-16">
-        {/* Tab Bar */}
-        <div className="flex border-b border-slate-200 mb-8 gap-8">
-          {([
-            { key: "benefits", label: "Benefits" },
-            { key: "ingredients", label: "Ingredients" },
-            { key: "how-to", label: "How to Use" },
-          ] as const).map(({ key, label }) => (
-            <button
-              key={key}
-              onClick={() => setActiveTab(key)}
-              className={`pb-4 font-sans font-bold text-sm uppercase tracking-[0.12em] border-b-2 transition-all duration-200 focus:outline-none ${activeTab === key
-                ? "border-slate-900 text-slate-900"
-                : "border-transparent text-slate-400 hover:text-slate-700"
-                }`}
-            >
-              {label}
-            </button>
-          ))}
-        </div>
-
-        {/* Tab Content */}
-        <div className="max-w-2xl">
-          {activeTab === "benefits" && (
-            <ul className="space-y-3">
-              {product.benefits.map((b) => (
-                <li key={b} className="flex items-start gap-3">
-                  <div className="mt-0.5 w-5 h-5 rounded-full bg-blue-100 flex items-center justify-center flex-shrink-0">
-                    <Check size={11} className="text-blue-600" strokeWidth={3} />
-                  </div>
-                  <span className="font-sans text-base text-slate-700">{b}</span>
-                </li>
-              ))}
-            </ul>
-          )}
-          {activeTab === "ingredients" && (
-            <div>
-              <p className={`font-sans text-base text-slate-600 leading-relaxed whitespace-pre-wrap transition-all duration-300 ${!isIngredientsExpanded ? 'line-clamp-4' : ''}`}>
-                {product.ingredients}
-              </p>
-              {product.ingredients && product.ingredients.length > 200 && (
-                <button
-                  onClick={() => setIsIngredientsExpanded(!isIngredientsExpanded)}
-                  className="text-blue-600 font-semibold text-sm mt-2 hover:text-blue-800 transition-colors inline-block"
-                >
-                  {isIngredientsExpanded ? 'Read Less' : 'Read More'}
-                </button>
-              )}
-            </div>
-          )}
-          {activeTab === "how-to" && (
-            <p className="font-sans text-base text-slate-600 leading-relaxed">
-              {product.howToUse}
-            </p>
-          )}
-        </div>
-      </section>
-
-      {/* ── Related Products ── */}
-      <section className="bg-slate-50 py-16 md:py-20">
-        <div className="max-w-7xl mx-auto px-6 md:px-12 lg:px-20">
-          <div className="flex items-center justify-between mb-10">
-            <h2 className="font-sans font-black text-2xl md:text-3xl uppercase tracking-[0.12em] text-slate-900">
-              You May Also Like
-            </h2>
-            <Link
-              href="/products"
-              className="font-sans font-bold text-sm text-blue-600 hover:text-blue-800 transition-colors uppercase tracking-wider"
-            >
-              View All →
-            </Link>
-          </div>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
-            {products.filter((p) => p.id !== product.id).slice(0, 4).map((p) => (
-              <Link
-                key={p.id}
-                href={`/products/${p.id}`}
-                className="group bg-white rounded-2xl overflow-hidden border border-slate-100 hover:shadow-lg transition-shadow duration-300 flex flex-col"
-              >
-                <div className="relative aspect-square overflow-hidden bg-slate-50">
-                  <Image
-                    src={p.images[0]}
-                    alt={p.name}
-                    fill
-                    sizes="(max-width: 768px) 50vw, 25vw"
-                    className="object-cover group-hover:scale-105 transition-transform duration-500"
-                  />
-                </div>
-                <div className="p-4 text-center">
-                  <p className="font-sans font-bold text-sm text-slate-900 line-clamp-2 mb-2">{p.name}</p>
-                  <p className="font-bold text-base text-slate-900">{p.currency}{p.currentPrice}</p>
-                </div>
-              </Link>
-            ))}
           </div>
         </div>
       </section>
