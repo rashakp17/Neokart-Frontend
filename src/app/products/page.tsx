@@ -6,7 +6,7 @@ import Link from "next/link";
 import axios from "axios";
 import { useSearchParams, useRouter } from "next/navigation";
 import { useCart } from "../../context/CartContext";
-import { Star, ShoppingBag, SlidersHorizontal, X } from "lucide-react";
+import { ShoppingBag, SlidersHorizontal, X } from "lucide-react";
 
 // ─── Data ────────────────────────────────────────────────────────────────────
 
@@ -14,8 +14,6 @@ interface Product {
   id: string;
   name: string;
   images: string[];
-  rating: number;
-  reviewCount: number;
   currentPrice: number;
   originalPrice: number;
   currency: string;
@@ -44,7 +42,6 @@ const SORT_OPTIONS = [
   { id: "popularity", label: "Popularity" },
   { id: "price-asc", label: "Price: Low to High" },
   { id: "price-desc", label: "Price: High to Low" },
-  { id: "rating", label: "Rating" },
 ];
 
 // ─── Product Card ─────────────────────────────────────────────────────────────
@@ -105,11 +102,6 @@ function ProductCard({ product }: { product: Product }) {
           <h3 className="font-sans font-bold text-sm md:text-base text-white leading-snug mb-2 line-clamp-2">
             {product.name}
           </h3>
-          <div className="flex items-center gap-1" aria-label={`${product.rating} out of 5 stars`}>
-            <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
-            <span className="text-xs md:text-sm font-semibold text-white">{product.rating}</span>
-            <span className="text-xs md:text-sm text-slate-500">({product.reviewCount})</span>
-          </div>
         </div>
       </Link>
 
@@ -257,8 +249,6 @@ function ProductsContent() {
               id: p._id,
               name: p.name,
               images: p.images && p.images.length > 0 ? p.images : ["/products/suncream-1.jpg"],
-              rating: p.starRating || 0,
-              reviewCount: p.reviewsCount || 0,
               currentPrice: p.variants?.[0]?.price || 0,
               originalPrice: p.variants?.[0]?.oldPrice || p.variants?.[0]?.price || 0,
               currency: "₹",
@@ -330,10 +320,8 @@ function ProductsContent() {
         return [...result].sort((a, b) => a.currentPrice - b.currentPrice);
       case "price-desc":
         return [...result].sort((a, b) => b.currentPrice - a.currentPrice);
-      case "rating":
-        return [...result].sort((a, b) => b.rating - a.rating);
       default:
-        return [...result].sort((a, b) => b.reviewCount - a.reviewCount);
+        return result;
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [products, selectedCategories, selectedPriceRanges, searchTerm, sortBy]);

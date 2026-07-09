@@ -6,7 +6,7 @@ import Link from "next/link";
 import axios from "axios";
 import { useParams, useRouter } from "next/navigation";
 import {
-  Star, StarHalf, ShoppingBag, ChevronRight,
+  ShoppingBag, ChevronRight,
   Shield, Truck, RotateCcw, Plus, Minus, Check,
 } from "lucide-react";
 import { useCart } from "../../../context/CartContext";
@@ -18,8 +18,6 @@ interface Product {
   name: string;
   tagline: string;
   images: string[];
-  rating: number;
-  reviewCount: number;
   currentPrice: number;
   originalPrice: number;
   currency: string;
@@ -38,17 +36,6 @@ const TRUST_BADGES = [
   { Icon: RotateCcw, label: "Easy Returns", sub: "7-day return policy" },
   { Icon: Shield, label: "100% Authentic", sub: "Genuine products only" },
 ];
-
-// ─── Helpers ──────────────────────────────────────────────────────────────────
-
-const renderStars = (rating: number) =>
-  Array.from({ length: 5 }, (_, i) => {
-    if (i < Math.floor(rating))
-      return <Star key={i} className="w-4 h-4 fill-amber-400 text-amber-400" />;
-    if (i === Math.floor(rating) && rating % 1 !== 0)
-      return <StarHalf key={i} className="w-4 h-4 fill-amber-400 text-amber-400" />;
-    return <Star key={i} className="w-4 h-4 fill-slate-200 text-slate-200" />;
-  });
 
 // ─── Page ─────────────────────────────────────────────────────────────────────
 
@@ -101,8 +88,6 @@ export default function ProductDetailPage() {
             name: p.name,
             tagline: p.description || "",
             images: p.images && p.images.length > 0 ? p.images : ["/products/suncream-1.jpg"],
-            rating: p.starRating || 0,
-            reviewCount: p.reviewsCount || 0,
             currentPrice: p.variants?.[0]?.price || 0,
             originalPrice: p.variants?.[0]?.oldPrice || p.variants?.[0]?.price || 0,
             currency: "₹",
@@ -286,16 +271,6 @@ export default function ProductDetailPage() {
               )}
             </div>
 
-            {/* Rating */}
-            <div className="flex items-center gap-2 mb-6">
-              <div className="flex items-center gap-0.5" aria-label={`${product.rating} out of 5 stars`}>
-                {renderStars(product.rating)}
-              </div>
-              <span className="text-sm font-semibold text-slate-200">{product.rating.toFixed(1)}</span>
-              {product.reviewCount > 0 && (
-                <span className="text-sm text-slate-400">({product.reviewCount} reviews)</span>
-              )}
-            </div>
 
             {/* Divider */}
             <div className="h-px bg-slate-100 mb-6" />
