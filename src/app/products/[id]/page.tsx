@@ -350,7 +350,7 @@ export default function ProductDetailPage() {
                 aria-label="Add to cart"
                 className={`flex-1 flex items-center justify-center gap-2.5 py-4 rounded-full font-bold text-sm uppercase tracking-widest transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${added
                   ? "bg-green-500 text-white"
-                  : "bg-slate-900 text-white hover:bg-slate-800"
+                  : "bg-[#2563eb] text-white hover:bg-[#1d4ed8]"
                   }`}
               >
                 {added ? (

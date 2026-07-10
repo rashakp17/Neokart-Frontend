@@ -41,9 +41,20 @@ export default function CategorySection() {
         const baseUrl = process.env.NEXT_PUBLIC_API_URL
           ? process.env.NEXT_PUBLIC_API_URL.replace('/api', '')
           : 'http://localhost:5000';
-        const res = await axios.get(`${baseUrl}/api/v1/categories`);
-        if (res.data.success && res.data.data) {
-          const activeCats = res.data.data.filter((c: any) => c.status === 'ACTIVE').slice(0, 6);
+        // Fetch categories and products together so we can count products per category
+        const [catRes, prodRes] = await Promise.all([
+          axios.get(`${baseUrl}/api/v1/categories`),
+          axios.get(`${baseUrl}/api/v1/products`),
+        ]);
+
+        const products: { category?: string }[] = prodRes.data?.data || [];
+        const countForCategory = (name: string) =>
+          products.filter(
+            (p) => (p.category || '').trim().toLowerCase() === name.trim().toLowerCase()
+          ).length;
+
+        if (catRes.data.success && catRes.data.data) {
+          const activeCats = catRes.data.data.filter((c: any) => c.status === 'ACTIVE').slice(0, 6);
 
           if (activeCats.length > 0) {
             const formatted = activeCats.map((c: any, index: number) => ({
@@ -51,7 +62,7 @@ export default function CategorySection() {
               label: c.name,
               image: c.image || DEFAULT_CATEGORIES[index % 3].image,
               alt: `${c.name} category`,
-              count: c.productCount ?? c.itemCount ?? c.count ?? 0,
+              count: countForCategory(c.name),
             }));
             setCategories(formatted);
           }
