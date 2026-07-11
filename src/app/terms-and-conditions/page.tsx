@@ -152,7 +152,7 @@ export default function TermsAndConditionsPage() {
               <section>
                 <h2 className="text-2xl font-bold text-slate-900 mb-4">9. Contact Us</h2>
                 <p className="mb-2">Email: <a href="mailto:neokart007@gmail.com" className="text-blue-600 hover:text-blue-800 transition-colors">neokart007@gmail.com</a></p>
-                <p>Phone: <a href="tel:+919074881551" className="text-blue-600 hover:text-blue-800 transition-colors">9074881551</a></p>
+                <p>Phone: <a href="tel:+916235251520" className="text-blue-600 hover:text-blue-800 transition-colors">6235251520</a></p>
               </section>
             </div>
           </div>

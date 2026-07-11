@@ -44,8 +44,8 @@ const contacts = [
   {
     icon: Phone,
     label: "CALL US",
-    value: "+91 9074881551",
-    href: "tel:+919074881551",
+    value: "+91 6235251520",
+    href: "tel:+916235251520",
   },
   {
     icon: Mail,
