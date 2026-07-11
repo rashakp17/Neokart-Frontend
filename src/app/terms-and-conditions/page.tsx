@@ -71,7 +71,7 @@ export default function TermsAndConditionsPage() {
                   "opacity 0.6s ease 300ms, transform 0.6s ease 300ms",
               }}
             >
-              Welcome to NEOKART. By accessing or using our website, you agree to comply with these Terms & Conditions.
+              By accessing our website or placing an order, you agree to the following Terms & Conditions, governed by the applicable laws of India.
             </p>
           </div>
         </section>
@@ -80,79 +80,93 @@ export default function TermsAndConditionsPage() {
         <section
           className="relative z-10 px-6 md:px-12 lg:px-20 max-w-4xl mx-auto -mt-20 md:-mt-24 mb-20"
         >
-          <div className="bg-black rounded-3xl shadow-sm p-8 md:p-12 lg:p-16 border border-slate-100">
-            <p className="text-slate-500 mb-8 font-medium">Last Updated: May 2, 2026</p>
+          <div className="bg-white rounded-3xl shadow-[0_20px_50px_-20px_rgba(74,51,145,0.35)] p-8 md:p-12 lg:p-16 border border-[#e7e2f3]">
+            <p className="text-slate-500 mb-8 font-medium">Last Updated: July 11, 2026</p>
 
             <div className="space-y-8 text-slate-700 leading-relaxed font-sans">
+              <p>
+                Welcome to Neokart. By accessing our website or placing an order, you agree to the following Terms &amp; Conditions. These terms are governed by the applicable laws of India, including the Information Technology Act, 2000, the Consumer Protection Act, 2019, and other applicable laws and regulations.
+              </p>
+
               <section>
-                <h2 className="text-2xl font-bold text-slate-900 mb-4">1. General</h2>
+                <h2 className="text-2xl font-bold text-[#4a3391] mb-4">1. Order Confirmation</h2>
+                <ul className="list-disc pl-6 space-y-2 marker:text-[#7c68b8]">
+                  <li>Customers must provide accurate shipping details and a valid contact number while placing an order.</li>
+                  <li>To confirm Cash on Delivery (COD) orders, an advance payment of 10% of the product value is required. The remaining amount is payable at the time of delivery.</li>
+                </ul>
+              </section>
+
+              <section>
+                <h2 className="text-2xl font-bold text-[#4a3391] mb-4">2. Delivery</h2>
+                <ul className="list-disc pl-6 space-y-2 marker:text-[#7c68b8]">
+                  <li>Prepaid Orders: Estimated delivery within 2–3 business days.</li>
+                  <li>Cash on Delivery (COD): Estimated delivery within 3–5 business days.</li>
+                  <li>Delivery timelines are estimates and may vary depending on location, courier availability, or unforeseen circumstances.</li>
+                </ul>
+              </section>
+
+              <section>
+                <h2 className="text-2xl font-bold text-[#4a3391] mb-4">3. Unboxing &amp; Delivery Claims</h2>
+                <ul className="list-disc pl-6 space-y-2 marker:text-[#7c68b8]">
+                  <li>Customers are kindly requested to record a continuous unboxing video while opening the package.</li>
+                  <li>Any claim regarding transit damage, missing items, or incorrect products must be reported within 24 hours of delivery with the unboxing video.</li>
+                  <li>Claims submitted without a valid unboxing video may not be accepted.</li>
+                </ul>
+              </section>
+
+              <section>
+                <h2 className="text-2xl font-bold text-[#4a3391] mb-4">4. Replacement &amp; Warranty</h2>
+                <ul className="list-disc pl-6 space-y-2 marker:text-[#7c68b8]">
+                  <li>No refunds will be provided.</li>
+                  <li>Eligible cases will be resolved through replacement only, subject to verification.</li>
+                  <li>Products covered under warranty will receive replacement service as per the manufacturer’s or seller’s warranty policy.</li>
+                  <li>Physical damage, water damage, improper installation, misuse, or unauthorized repairs are not covered under warranty.</li>
+                </ul>
+              </section>
+
+              <section>
+                <h2 className="text-2xl font-bold text-[#4a3391] mb-4">5. Product Information</h2>
                 <p>
-                  NEOKART operates this website to provide electronic and smart gadget products. By using this site, you confirm that you are at least 18 years old or using it under supervision.
+                  We make every effort to ensure product descriptions, specifications, and images are accurate. However, minor variations in packaging, color, or design may occur.
                 </p>
               </section>
 
               <section>
-                <h2 className="text-2xl font-bold text-slate-900 mb-4">2. Products & Pricing</h2>
-                <ul className="list-disc pl-6 space-y-2">
-                  <li>All prices are listed in INR (₹)</li>
-                  <li>We reserve the right to change prices anytime without notice</li>
-                  <li>Product colors may slightly vary due to screen settings</li>
-                </ul>
-              </section>
-
-              <section>
-                <h2 className="text-2xl font-bold text-slate-900 mb-4">3. Orders</h2>
-                <ul className="list-disc pl-6 space-y-2">
-                  <li>Orders are confirmed only after successful payment</li>
-                  <li>We reserve the right to cancel orders due to stock issues or suspicious activity</li>
-                </ul>
-              </section>
-
-              <section>
-                <h2 className="text-2xl font-bold text-slate-900 mb-4">4. Shipping</h2>
-                <ul className="list-disc pl-6 space-y-2">
-                  <li>Delivery timelines may vary depending on location</li>
-                  <li>Delays due to courier issues are not under our control</li>
-                </ul>
-              </section>
-
-              <section>
-                <h2 className="text-2xl font-bold text-slate-900 mb-4">5. Returns & Refunds</h2>
-                <ul className="list-disc pl-6 space-y-2">
-                  <li>Returns accepted within 7 days of delivery</li>
-                  <li>Products must be unused and in original packaging</li>
-                  <li>Refunds will be processed within 5-7 business days</li>
-                </ul>
-              </section>
-
-              <section>
-                <h2 className="text-2xl font-bold text-slate-900 mb-4">6. Intellectual Property</h2>
+                <h2 className="text-2xl font-bold text-[#4a3391] mb-4">6. Pricing &amp; Orders</h2>
                 <p>
-                  All content (logo, images, text) belongs to NEOKART and cannot be copied or reused.
+                  Neokart reserves the right to modify prices, discontinue products, or cancel orders due to pricing errors, stock unavailability, suspected fraud, or other genuine reasons.
                 </p>
               </section>
 
               <section>
-                <h2 className="text-2xl font-bold text-slate-900 mb-4">7. Limitation of Liability</h2>
-                <p className="mb-4">NEOKART is not liable for:</p>
-                <ul className="list-disc pl-6 space-y-2">
-                  <li>Allergic reactions (please do patch test)</li>
-                  <li>Delays in delivery</li>
-                  <li>Indirect damages</li>
-                </ul>
-              </section>
-
-              <section>
-                <h2 className="text-2xl font-bold text-slate-900 mb-4">8. Governing Law</h2>
+                <h2 className="text-2xl font-bold text-[#4a3391] mb-4">7. Limitation of Liability</h2>
                 <p>
-                  These terms are governed by the laws of India.
+                  Neokart shall not be liable for any indirect, incidental, or consequential loss arising from the use of our products or services, except as required under applicable Indian law.
                 </p>
               </section>
 
               <section>
-                <h2 className="text-2xl font-bold text-slate-900 mb-4">9. Contact Us</h2>
-                <p className="mb-2">Email: <a href="mailto:neokart007@gmail.com" className="text-blue-600 hover:text-blue-800 transition-colors">neokart007@gmail.com</a></p>
-                <p>Phone: <a href="tel:+916235251520" className="text-blue-600 hover:text-blue-800 transition-colors">6235251520</a></p>
+                <h2 className="text-2xl font-bold text-[#4a3391] mb-4">8. Governing Law</h2>
+                <p>
+                  These Terms &amp; Conditions shall be governed by the laws of India. Any disputes arising from the use of our website or services shall be subject to the exclusive jurisdiction of the competent courts in Kozhikode (Calicut), Kerala.
+                </p>
+              </section>
+
+              <section>
+                <h2 className="text-2xl font-bold text-[#4a3391] mb-4">Contact Us</h2>
+                <p className="mb-4 not-italic">
+                  <span className="font-semibold text-slate-900">NEOKART</span><br />
+                  A.M. Motors Building, Near Check Post<br />
+                  Chungam, Thamarassery<br />
+                  Calicut, Kerala – 673573
+                </p>
+                <p className="mb-2">
+                  Phone:{" "}
+                  <a href="tel:+916235251520" className="text-[#4a3391] hover:text-[#593dab] font-medium transition-colors">+91 62352 51520</a>,{" "}
+                  <a href="tel:+916235251523" className="text-[#4a3391] hover:text-[#593dab] font-medium transition-colors">+91 62352 51523</a>,{" "}
+                  <a href="tel:+916235251544" className="text-[#4a3391] hover:text-[#593dab] font-medium transition-colors">+91 62352 51544</a>
+                </p>
+                <p>Email: <a href="mailto:neokart.shopy@gmail.com" className="text-[#4a3391] hover:text-[#593dab] font-medium transition-colors">neokart.shopy@gmail.com</a></p>
               </section>
             </div>
           </div>

@@ -71,7 +71,7 @@ export default function PrivacyPolicyPage() {
                   "opacity 0.6s ease 300ms, transform 0.6s ease 300ms",
               }}
             >
-              At NEOKART, we value your privacy. This policy explains how we collect and use your data.
+              We value your privacy and are committed to protecting your personal information under the applicable data-protection laws of India.
             </p>
           </div>
         </section>
@@ -80,75 +80,106 @@ export default function PrivacyPolicyPage() {
         <section
           className="relative z-10 px-6 md:px-12 lg:px-20 max-w-4xl mx-auto -mt-20 md:-mt-24 mb-20"
         >
-          <div className="bg-black rounded-3xl shadow-sm p-8 md:p-12 lg:p-16 border border-slate-100">
-            <p className="text-slate-500 mb-8 font-medium">Last Updated: May 2, 2026</p>
+          <div className="bg-white rounded-3xl shadow-[0_20px_50px_-20px_rgba(74,51,145,0.35)] p-8 md:p-12 lg:p-16 border border-[#e7e2f3]">
+            <p className="text-slate-500 mb-8 font-medium">Last Updated: July 11, 2026</p>
 
             <div className="space-y-8 text-slate-700 leading-relaxed font-sans">
+              <p>
+                At Neokart, we value your privacy and are committed to protecting your personal information. This Privacy Policy explains how we collect, use, store, and protect your information when you visit our website or purchase our products. This policy is governed by the Information Technology Act, 2000, the Digital Personal Data Protection Act, 2023, and other applicable laws of India.
+              </p>
+
               <section>
-                <h2 className="text-2xl font-bold text-slate-900 mb-4">1. Information We Collect</h2>
+                <h2 className="text-2xl font-bold text-[#4a3391] mb-4">1. Information We Collect</h2>
                 <p className="mb-4">We may collect:</p>
-                <ul className="list-disc pl-6 space-y-2">
+                <ul className="list-disc pl-6 space-y-2 marker:text-[#7c68b8]">
                   <li>Name</li>
-                  <li>Phone number</li>
+                  <li>Mobile number</li>
                   <li>Email address</li>
-                  <li>Shipping address</li>
-                  <li>Payment details (secured via payment gateway)</li>
+                  <li>Billing and shipping address</li>
+                  <li>Order and purchase details</li>
+                  <li>Payment information (processed through secure payment providers)</li>
                 </ul>
               </section>
 
               <section>
-                <h2 className="text-2xl font-bold text-slate-900 mb-4">2. How We Use Your Information</h2>
-                <p className="mb-4">We use your data to:</p>
-                <ul className="list-disc pl-6 space-y-2">
-                  <li>Process orders</li>
-                  <li>Provide customer support</li>
-                  <li>Send updates/offers (optional)</li>
+                <h2 className="text-2xl font-bold text-[#4a3391] mb-4">2. How We Use Your Information</h2>
+                <p className="mb-4">Your information is used to:</p>
+                <ul className="list-disc pl-6 space-y-2 marker:text-[#7c68b8]">
+                  <li>Process and deliver your orders</li>
+                  <li>Confirm COD orders</li>
+                  <li>Provide customer support and warranty services</li>
+                  <li>Send order updates and important notifications</li>
+                  <li>Improve our products and services</li>
+                  <li>Prevent fraud and comply with legal obligations</li>
                 </ul>
               </section>
 
               <section>
-                <h2 className="text-2xl font-bold text-slate-900 mb-4">3. Data Protection</h2>
+                <h2 className="text-2xl font-bold text-[#4a3391] mb-4">3. Information Sharing</h2>
+                <p className="mb-4">We do not sell or rent your personal information.</p>
+                <p className="mb-4">Your information may be shared only with:</p>
+                <ul className="list-disc pl-6 space-y-2 marker:text-[#7c68b8]">
+                  <li>Courier and logistics partners</li>
+                  <li>Payment gateway providers</li>
+                  <li>Service providers assisting our business</li>
+                  <li>Government authorities when required by law</li>
+                </ul>
+              </section>
+
+              <section>
+                <h2 className="text-2xl font-bold text-[#4a3391] mb-4">4. Data Security</h2>
                 <p>
-                  We implement secure measures to protect your personal data. Payment details are processed through trusted gateways.
+                  We use reasonable security measures to protect your personal information. However, no online system is completely secure, and absolute security cannot be guaranteed.
                 </p>
               </section>
 
               <section>
-                <h2 className="text-2xl font-bold text-slate-900 mb-4">4. Sharing of Information</h2>
-                <p className="mb-4">We do NOT sell your data. We may share it with:</p>
-                <ul className="list-disc pl-6 space-y-2">
-                  <li>Delivery partners</li>
-                  <li>Payment providers</li>
-                </ul>
-              </section>
-
-              <section>
-                <h2 className="text-2xl font-bold text-slate-900 mb-4">5. Cookies</h2>
+                <h2 className="text-2xl font-bold text-[#4a3391] mb-4">5. Cookies</h2>
                 <p>
-                  We use cookies to improve user experience and website performance.
+                  Our website may use cookies to improve your browsing experience and analyze website traffic. You may disable cookies through your browser settings if you prefer.
                 </p>
               </section>
 
               <section>
-                <h2 className="text-2xl font-bold text-slate-900 mb-4">6. Your Rights</h2>
-                <p className="mb-4">You can:</p>
-                <ul className="list-disc pl-6 space-y-2">
-                  <li>Request access to your data</li>
-                  <li>Ask for correction or deletion</li>
+                <h2 className="text-2xl font-bold text-[#4a3391] mb-4">6. Your Rights</h2>
+                <p className="mb-4">Subject to applicable law, you may request to:</p>
+                <ul className="list-disc pl-6 space-y-2 marker:text-[#7c68b8]">
+                  <li>Access your personal information</li>
+                  <li>Correct inaccurate information</li>
+                  <li>Request deletion where legally permitted</li>
+                  <li>Withdraw consent for marketing communications</li>
                 </ul>
               </section>
 
               <section>
-                <h2 className="text-2xl font-bold text-slate-900 mb-4">7. Updates to Policy</h2>
+                <h2 className="text-2xl font-bold text-[#4a3391] mb-4">7. Third-Party Websites</h2>
                 <p>
-                  We may update this policy anytime. Changes will be posted on this page.
+                  Our website may contain links to third-party websites. Neokart is not responsible for their privacy practices or content.
                 </p>
               </section>
 
               <section>
-                <h2 className="text-2xl font-bold text-slate-900 mb-4">8. Contact Us</h2>
-                <p className="mb-2">Email: <a href="mailto:neokart007@gmail.com" className="text-blue-600 hover:text-blue-800 transition-colors">neokart007@gmail.com</a></p>
-                <p>Phone: <a href="tel:+916235251520" className="text-blue-600 hover:text-blue-800 transition-colors">6235251520</a></p>
+                <h2 className="text-2xl font-bold text-[#4a3391] mb-4">8. Policy Updates</h2>
+                <p>
+                  We may update this Privacy Policy from time to time. Any changes will be published on this page with the revised effective date.
+                </p>
+              </section>
+
+              <section>
+                <h2 className="text-2xl font-bold text-[#4a3391] mb-4">Contact Us</h2>
+                <p className="mb-4">
+                  <span className="font-semibold text-slate-900">NEOKART</span><br />
+                  A.M. Motors Building<br />
+                  Near Check Post, Chungam<br />
+                  Thamarassery, Calicut, Kerala – 673573
+                </p>
+                <p className="mb-2">
+                  Phone:{" "}
+                  <a href="tel:+916235251520" className="text-[#4a3391] hover:text-[#593dab] font-medium transition-colors">+91 62352 51520</a>{" "}/{" "}
+                  <a href="tel:+916235251523" className="text-[#4a3391] hover:text-[#593dab] font-medium transition-colors">+91 62352 51523</a>{" "}/{" "}
+                  <a href="tel:+916235251544" className="text-[#4a3391] hover:text-[#593dab] font-medium transition-colors">+91 62352 51544</a>
+                </p>
+                <p>Email: <a href="mailto:neokart.shopy@gmail.com" className="text-[#4a3391] hover:text-[#593dab] font-medium transition-colors">neokart.shopy@gmail.com</a></p>
               </section>
             </div>
           </div>
