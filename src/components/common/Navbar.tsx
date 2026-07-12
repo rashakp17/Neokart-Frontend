@@ -33,6 +33,7 @@ function WhatsAppIcon({ size = 20 }: { size?: number }) {
 
 export default function Navbar() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isMobileSearchOpen, setIsMobileSearchOpen] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
 
@@ -43,11 +44,15 @@ export default function Navbar() {
   useEffect(() => {
     setIsLoggedIn(!!localStorage.getItem("heedy_user"));
     setIsMobileMenuOpen(false);
+    setIsMobileSearchOpen(false);
   }, [pathname]);
 
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
-      if (e.key === "Escape") setIsMobileMenuOpen(false);
+      if (e.key === "Escape") {
+        setIsMobileMenuOpen(false);
+        setIsMobileSearchOpen(false);
+      }
     };
     window.addEventListener("keydown", handleEscape);
     return () => window.removeEventListener("keydown", handleEscape);
@@ -69,6 +74,7 @@ export default function Navbar() {
     const q = searchQuery.trim();
     router.push(q ? `/products?search=${encodeURIComponent(q)}` : "/products");
     setIsMobileMenuOpen(false);
+    setIsMobileSearchOpen(false);
   };
 
   return (
@@ -137,11 +143,24 @@ export default function Navbar() {
         </div>
       </form>
 
-      {/* Spacer to push utilities right (mobile — search moves into menu) */}
+      {/* Spacer to push utilities right (mobile — search opens from the icon) */}
       <div className="flex-1 md:hidden" />
 
       {/* Right utilities */}
       <div className="flex items-center gap-1 sm:gap-2 lg:gap-3 shrink-0">
+        {/* Mobile search toggle (desktop uses the inline search bar) */}
+        <button
+          onClick={() => {
+            setIsMobileSearchOpen((v) => !v);
+            setIsMobileMenuOpen(false);
+          }}
+          className="md:hidden p-2 text-slate-900 hover:text-[#4a3391] transition-colors"
+          aria-label="Search"
+          aria-expanded={isMobileSearchOpen}
+        >
+          {isMobileSearchOpen ? <X size={20} /> : <Search size={20} />}
+        </button>
+
         {/* WhatsApp */}
         <a
           href={`https://wa.me/${WHATSAPP_NUMBER}`}
@@ -188,6 +207,36 @@ export default function Navbar() {
         )}
       </div>
 
+      {/* Mobile search bar (slides down from header) */}
+      <AnimatePresence>
+        {isMobileSearchOpen && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: "auto" }}
+            exit={{ opacity: 0, height: 0 }}
+            className="absolute top-full left-0 right-0 bg-[#aea3cf] border-b border-black/10 shadow-lg z-30 md:hidden overflow-hidden"
+          >
+            <form onSubmit={handleSearch} role="search" className="px-6 py-3">
+              <div className="relative w-full">
+                <Search
+                  size={18}
+                  className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 pointer-events-none"
+                />
+                <input
+                  type="search"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  placeholder="Search products..."
+                  aria-label="Search products"
+                  autoFocus
+                  className="w-full h-10 pl-10 pr-4 rounded-full bg-white/80 border border-black/10 text-sm text-slate-900 placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-[#4a3391] focus:bg-white transition"
+                />
+              </div>
+            </form>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       {/* Mobile menu overlay */}
       <AnimatePresence>
         {isMobileMenuOpen && (
@@ -198,23 +247,6 @@ export default function Navbar() {
             className="absolute top-full left-0 right-0 bg-[#aea3cf] border-b border-black/10 shadow-lg z-30 lg:hidden overflow-hidden"
           >
             <nav className="flex flex-col px-6 py-3">
-              {/* Mobile search */}
-              <form onSubmit={handleSearch} role="search" className="py-3 border-b border-black/10">
-                <div className="relative w-full">
-                  <Search
-                    size={18}
-                    className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 pointer-events-none"
-                  />
-                  <input
-                    type="search"
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    placeholder="Search products..."
-                    aria-label="Search products"
-                    className="w-full h-10 pl-10 pr-4 rounded-full bg-white/80 border border-black/10 text-sm text-slate-900 placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-[#4a3391] focus:bg-white transition"
-                  />
-                </div>
-              </form>
               {NAV_LINKS.map((link) => (
                 <Link
                   key={link.href}
