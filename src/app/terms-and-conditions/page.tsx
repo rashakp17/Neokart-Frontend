@@ -20,7 +20,7 @@ export default function TermsAndConditionsPage() {
         content="Read the Terms & Conditions of NEOKART. Learn about the rules and regulations for using our website."
       />
 
-      <main id="top" className="min-h-screen bg-slate-50">
+      <main id="top" className="min-h-screen bg-[#0a0a0a]">
         {/* ── Hero ─────────────────────────────────────────────────── */}
         <section
           className="relative w-full pt-32 md:pt-40 pb-36 md:pb-48"
@@ -80,8 +80,8 @@ export default function TermsAndConditionsPage() {
         <section
           className="relative z-10 px-6 md:px-12 lg:px-20 max-w-4xl mx-auto -mt-20 md:-mt-24 mb-20"
         >
-          <div className="bg-white rounded-3xl shadow-[0_20px_50px_-20px_rgba(74,51,145,0.35)] p-8 md:p-12 lg:p-16 border border-[#e7e2f3]">
-            <p className="text-slate-500 mb-8 font-medium">Last Updated: July 11, 2026</p>
+          <div className="bg-[#aea3cf] rounded-3xl shadow-[0_20px_50px_-20px_rgba(0,0,0,0.6)] p-8 md:p-12 lg:p-16 border border-black/10">
+            <p className="text-slate-700 mb-8 font-medium">Last Updated: July 11, 2026</p>
 
             <div className="space-y-8 text-slate-700 leading-relaxed font-sans">
               <p>
@@ -90,7 +90,7 @@ export default function TermsAndConditionsPage() {
 
               <section>
                 <h2 className="text-2xl font-bold text-[#4a3391] mb-4">1. Order Confirmation</h2>
-                <ul className="list-disc pl-6 space-y-2 marker:text-[#7c68b8]">
+                <ul className="list-disc pl-6 space-y-2 marker:text-[#4a3391]">
                   <li>Customers must provide accurate shipping details and a valid contact number while placing an order.</li>
                   <li>To confirm Cash on Delivery (COD) orders, an advance payment of 10% of the product value is required. The remaining amount is payable at the time of delivery.</li>
                 </ul>
@@ -98,7 +98,7 @@ export default function TermsAndConditionsPage() {
 
               <section>
                 <h2 className="text-2xl font-bold text-[#4a3391] mb-4">2. Delivery</h2>
-                <ul className="list-disc pl-6 space-y-2 marker:text-[#7c68b8]">
+                <ul className="list-disc pl-6 space-y-2 marker:text-[#4a3391]">
                   <li>Prepaid Orders: Estimated delivery within 2–3 business days.</li>
                   <li>Cash on Delivery (COD): Estimated delivery within 3–5 business days.</li>
                   <li>Delivery timelines are estimates and may vary depending on location, courier availability, or unforeseen circumstances.</li>
@@ -107,7 +107,7 @@ export default function TermsAndConditionsPage() {
 
               <section>
                 <h2 className="text-2xl font-bold text-[#4a3391] mb-4">3. Unboxing &amp; Delivery Claims</h2>
-                <ul className="list-disc pl-6 space-y-2 marker:text-[#7c68b8]">
+                <ul className="list-disc pl-6 space-y-2 marker:text-[#4a3391]">
                   <li>Customers are kindly requested to record a continuous unboxing video while opening the package.</li>
                   <li>Any claim regarding transit damage, missing items, or incorrect products must be reported within 24 hours of delivery with the unboxing video.</li>
                   <li>Claims submitted without a valid unboxing video may not be accepted.</li>
@@ -116,7 +116,7 @@ export default function TermsAndConditionsPage() {
 
               <section>
                 <h2 className="text-2xl font-bold text-[#4a3391] mb-4">4. Replacement &amp; Warranty</h2>
-                <ul className="list-disc pl-6 space-y-2 marker:text-[#7c68b8]">
+                <ul className="list-disc pl-6 space-y-2 marker:text-[#4a3391]">
                   <li>No refunds will be provided.</li>
                   <li>Eligible cases will be resolved through replacement only, subject to verification.</li>
                   <li>Products covered under warranty will receive replacement service as per the manufacturer’s or seller’s warranty policy.</li>

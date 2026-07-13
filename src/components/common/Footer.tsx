@@ -32,13 +32,13 @@ const contacts = [
   {
     icon: MapPin,
     label: "VISIT US",
-    value: "Neokart Sajin Land, Kadakkavoor\nThiruvanathapuram, Kerala",
-    href: "https://maps.google.com",
+    value: "A.M. Motors Building, Near Check Post\nChungam, Thamarassery\nCalicut, Kerala – 673573",
+    href: "https://www.google.com/maps/search/?api=1&query=A.M.+Motors+Building+Near+Check+Post+Chungam+Thamarassery+Calicut+Kerala+673573",
   },
   {
     icon: Phone,
     label: "CALL US",
-    value: "+91 6235251520",
+    value: "+91 62352 51520\n+91 62352 51523\n+91 62352 51544",
     href: "tel:+916235251520",
   },
   {

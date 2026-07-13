@@ -449,55 +449,65 @@ export default function CheckoutPage() {
                 {/* Online Payment (Razorpay) */}
                 <button
                   onClick={() => setPaymentMethod("online")}
-                  className={`relative border rounded-2xl sm:rounded-[2rem] p-6 sm:p-7 w-full max-w-md bg-[#aea3cf]/95 text-left transition-colors ${paymentMethod === "online" ? "border-slate-300 ring-2 ring-[#0a0a0a]" : "border-slate-200 hover:border-slate-300"}`}
+                  aria-pressed={paymentMethod === "online"}
+                  className={`relative flex items-start gap-4 border-2 rounded-2xl sm:rounded-[1.75rem] p-5 sm:p-6 w-full max-w-md text-left transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-white ${
+                    paymentMethod === "online"
+                      ? "bg-[#aea3cf] border-[#4a3391] ring-4 ring-[#4a3391]/25 shadow-xl shadow-[#4a3391]/25"
+                      : "bg-[#aea3cf]/50 border-transparent hover:bg-[#aea3cf]/75"
+                  }`}
                 >
-                  {paymentMethod === "online" && (
-                    <div className="absolute -top-3 right-8 w-6 h-6 bg-[#0a0a0a] text-white rounded-full flex items-center justify-center border-4 border-white box-content">
-                      <Check size={12} strokeWidth={4} />
+                  <div className={`w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0 transition-colors ${paymentMethod === "online" ? "bg-[#4a3391] text-white" : "bg-white/50 text-slate-700"}`}>
+                    <CreditCard size={22} />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center justify-between gap-3">
+                      <p className="font-sans font-bold text-slate-900">Online Payment</p>
+                      <span className={`w-5 h-5 rounded-full border-2 flex items-center justify-center flex-shrink-0 transition-colors ${paymentMethod === "online" ? "border-[#4a3391] bg-[#4a3391]" : "border-slate-500/60"}`}>
+                        {paymentMethod === "online" && <Check size={12} strokeWidth={4} className="text-white" />}
+                      </span>
                     </div>
-                  )}
-                  <div className="flex items-start gap-4">
-                    <CreditCard size={24} className="text-slate-700 flex-shrink-0 mt-1" />
-                    <div>
-                      <p className="font-sans font-bold text-slate-900 mb-1">Online Payment</p>
-                      <p className="font-sans text-slate-600 text-sm leading-relaxed">
-                        Pay securely via card, UPI, or netbanking with Razorpay.
-                      </p>
-                    </div>
+                    <p className="font-sans text-slate-600 text-sm leading-relaxed mt-1">
+                      Pay securely via card, UPI, or netbanking with Razorpay.
+                    </p>
                   </div>
                 </button>
 
                 {/* Cash on Delivery */}
                 <button
                   onClick={() => setPaymentMethod("cod")}
-                  className={`relative border rounded-2xl sm:rounded-[2rem] p-6 sm:p-7 w-full max-w-md bg-[#aea3cf]/95 text-left transition-colors ${paymentMethod === "cod" ? "border-slate-300 ring-2 ring-[#0a0a0a]" : "border-slate-200 hover:border-slate-300"}`}
+                  aria-pressed={paymentMethod === "cod"}
+                  className={`relative flex items-start gap-4 border-2 rounded-2xl sm:rounded-[1.75rem] p-5 sm:p-6 w-full max-w-md text-left transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-white ${
+                    paymentMethod === "cod"
+                      ? "bg-[#aea3cf] border-[#4a3391] ring-4 ring-[#4a3391]/25 shadow-xl shadow-[#4a3391]/25"
+                      : "bg-[#aea3cf]/50 border-transparent hover:bg-[#aea3cf]/75"
+                  }`}
                 >
-                  {paymentMethod === "cod" && (
-                    <div className="absolute -top-3 right-8 w-6 h-6 bg-[#0a0a0a] text-white rounded-full flex items-center justify-center border-4 border-white box-content">
-                      <Check size={12} strokeWidth={4} />
+                  <div className={`w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0 transition-colors ${paymentMethod === "cod" ? "bg-[#4a3391] text-white" : "bg-white/50 text-slate-700"}`}>
+                    <Banknote size={22} />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center justify-between gap-3">
+                      <p className="font-sans font-bold text-slate-900">Cash on Delivery</p>
+                      <span className={`w-5 h-5 rounded-full border-2 flex items-center justify-center flex-shrink-0 transition-colors ${paymentMethod === "cod" ? "border-[#4a3391] bg-[#4a3391]" : "border-slate-500/60"}`}>
+                        {paymentMethod === "cod" && <Check size={12} strokeWidth={4} className="text-white" />}
+                      </span>
                     </div>
-                  )}
-                  <div className="flex items-start gap-4">
-                    <Banknote size={24} className="text-slate-700 flex-shrink-0 mt-1" />
-                    <div className="flex-1">
-                      <p className="font-sans font-bold text-slate-900 mb-1">Cash on Delivery</p>
-                      <p className="font-sans text-slate-600 text-sm leading-relaxed">
-                        Pay a 10% advance online now; pay the balance in cash on delivery.
-                      </p>
+                    <p className="font-sans text-slate-600 text-sm leading-relaxed mt-1">
+                      Pay a 10% advance online now; pay the balance in cash on delivery.
+                    </p>
 
-                      {paymentMethod === "cod" && (
-                        <div className="mt-4 border-t border-slate-300/60 pt-4 flex flex-col gap-2">
-                          <div className="flex justify-between text-sm">
-                            <span className="text-slate-600">Advance now (10%)</span>
-                            <span className="font-bold text-slate-900">₹{advanceAmount.toFixed(2)}</span>
-                          </div>
-                          <div className="flex justify-between text-sm">
-                            <span className="text-slate-600">Balance on delivery</span>
-                            <span className="font-bold text-slate-900">₹{balanceAmount.toFixed(2)}</span>
-                          </div>
+                    {paymentMethod === "cod" && (
+                      <div className="mt-4 border-t border-[#4a3391]/25 pt-4 flex flex-col gap-2">
+                        <div className="flex justify-between text-sm">
+                          <span className="text-slate-600">Advance now (10%)</span>
+                          <span className="font-bold text-slate-900">₹{advanceAmount.toFixed(2)}</span>
                         </div>
-                      )}
-                    </div>
+                        <div className="flex justify-between text-sm">
+                          <span className="text-slate-600">Balance on delivery</span>
+                          <span className="font-bold text-slate-900">₹{balanceAmount.toFixed(2)}</span>
+                        </div>
+                      </div>
+                    )}
                   </div>
                 </button>
               </div>

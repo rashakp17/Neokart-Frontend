@@ -20,7 +20,7 @@ export default function PrivacyPolicyPage() {
         content="Read the Privacy Policy of NEOKART. Learn how we collect, use, and protect your data."
       />
 
-      <main id="top" className="min-h-screen bg-slate-50">
+      <main id="top" className="min-h-screen bg-[#0a0a0a]">
         {/* ── Hero ─────────────────────────────────────────────────── */}
         <section
           className="relative w-full pt-32 md:pt-40 pb-36 md:pb-48"
@@ -80,8 +80,8 @@ export default function PrivacyPolicyPage() {
         <section
           className="relative z-10 px-6 md:px-12 lg:px-20 max-w-4xl mx-auto -mt-20 md:-mt-24 mb-20"
         >
-          <div className="bg-white rounded-3xl shadow-[0_20px_50px_-20px_rgba(74,51,145,0.35)] p-8 md:p-12 lg:p-16 border border-[#e7e2f3]">
-            <p className="text-slate-500 mb-8 font-medium">Last Updated: July 11, 2026</p>
+          <div className="bg-[#aea3cf] rounded-3xl shadow-[0_20px_50px_-20px_rgba(0,0,0,0.6)] p-8 md:p-12 lg:p-16 border border-black/10">
+            <p className="text-slate-700 mb-8 font-medium">Last Updated: July 11, 2026</p>
 
             <div className="space-y-8 text-slate-700 leading-relaxed font-sans">
               <p>
@@ -91,7 +91,7 @@ export default function PrivacyPolicyPage() {
               <section>
                 <h2 className="text-2xl font-bold text-[#4a3391] mb-4">1. Information We Collect</h2>
                 <p className="mb-4">We may collect:</p>
-                <ul className="list-disc pl-6 space-y-2 marker:text-[#7c68b8]">
+                <ul className="list-disc pl-6 space-y-2 marker:text-[#4a3391]">
                   <li>Name</li>
                   <li>Mobile number</li>
                   <li>Email address</li>
@@ -104,7 +104,7 @@ export default function PrivacyPolicyPage() {
               <section>
                 <h2 className="text-2xl font-bold text-[#4a3391] mb-4">2. How We Use Your Information</h2>
                 <p className="mb-4">Your information is used to:</p>
-                <ul className="list-disc pl-6 space-y-2 marker:text-[#7c68b8]">
+                <ul className="list-disc pl-6 space-y-2 marker:text-[#4a3391]">
                   <li>Process and deliver your orders</li>
                   <li>Confirm COD orders</li>
                   <li>Provide customer support and warranty services</li>
@@ -118,7 +118,7 @@ export default function PrivacyPolicyPage() {
                 <h2 className="text-2xl font-bold text-[#4a3391] mb-4">3. Information Sharing</h2>
                 <p className="mb-4">We do not sell or rent your personal information.</p>
                 <p className="mb-4">Your information may be shared only with:</p>
-                <ul className="list-disc pl-6 space-y-2 marker:text-[#7c68b8]">
+                <ul className="list-disc pl-6 space-y-2 marker:text-[#4a3391]">
                   <li>Courier and logistics partners</li>
                   <li>Payment gateway providers</li>
                   <li>Service providers assisting our business</li>
@@ -143,7 +143,7 @@ export default function PrivacyPolicyPage() {
               <section>
                 <h2 className="text-2xl font-bold text-[#4a3391] mb-4">6. Your Rights</h2>
                 <p className="mb-4">Subject to applicable law, you may request to:</p>
-                <ul className="list-disc pl-6 space-y-2 marker:text-[#7c68b8]">
+                <ul className="list-disc pl-6 space-y-2 marker:text-[#4a3391]">
                   <li>Access your personal information</li>
                   <li>Correct inaccurate information</li>
                   <li>Request deletion where legally permitted</li>
