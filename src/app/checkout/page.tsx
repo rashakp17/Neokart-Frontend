@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import axios from "axios";
@@ -28,6 +28,7 @@ export default function CheckoutPage() {
 
   // Checkout flow step: "shipping" (address) → "payment" (choose how to pay).
   const [step, setStep] = useState<"shipping" | "payment">("shipping");
+  const paymentSectionRef = useRef<HTMLDivElement>(null);
   const [paymentMethod, setPaymentMethod] = useState<"online" | "cod">("online");
   const [isPlacingOrder, setIsPlacingOrder] = useState(false);
 
@@ -162,6 +163,14 @@ export default function CheckoutPage() {
     }
     setStep("payment");
   };
+
+  // When moving to the payment step, bring the payment section into view so
+  // mobile users don't land mid-page and have to hunt for the payment cards.
+  useEffect(() => {
+    if (step === "payment") {
+      paymentSectionRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  }, [step]);
 
   // Shared helpers for building the order payload sent to the backend.
   const getAuthToken = (): string | null => {
@@ -426,7 +435,7 @@ export default function CheckoutPage() {
             )}
 
             {step === "payment" && (
-            <div className="flex flex-col gap-8">
+            <div ref={paymentSectionRef} className="flex flex-col gap-8 scroll-mt-24">
               {/* Back to shipping */}
               <button
                 onClick={() => setStep("shipping")}

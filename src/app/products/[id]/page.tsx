@@ -34,7 +34,7 @@ interface Product {
 
 const TRUST_BADGES = [
   { Icon: Truck, label: "Free Delivery", sub: "On orders above ₹499" },
-  { Icon: RotateCcw, label: "Easy Returns", sub: "7-day return policy" },
+  { Icon: RotateCcw, label: "Easy Replacement", sub: "Replacement policy" },
   { Icon: Shield, label: "100% Authentic", sub: "Genuine products only" },
 ];
 
