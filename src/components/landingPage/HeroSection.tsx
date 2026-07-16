@@ -234,20 +234,25 @@ export default function HeroSection() {
                   />
                 </div>
               </motion.div>
-              <div className="absolute inset-0 bg-[#593dab]/30" /> {/* overlay */}
+              {/* Subtle gradient overlay to keep text readable */}
+              <div className="absolute inset-0 bg-gradient-to-r from-black/50 via-black/20 to-transparent" />
 
               {/* Content specific to this slide */}
               <div className="absolute inset-0 z-10 flex flex-col items-start justify-center text-left px-6 md:px-12 lg:px-20 pointer-events-none">
 
                 {/* Headline */}
-                <h1 className="mb-6 text-white drop-shadow-sm font-sans font-bold text-4xl md:text-5xl lg:text-6xl tracking-tight max-w-2xl pointer-events-auto">
-                  {slide.headline}
-                </h1>
+                {slide.headline && (
+                  <h1 className="mb-2 md:mb-6 text-white drop-shadow-sm font-sans font-bold text-lg sm:text-3xl md:text-5xl lg:text-6xl tracking-tight max-w-2xl pointer-events-auto leading-tight">
+                    {slide.headline}
+                  </h1>
+                )}
 
                 {/* Subheadline */}
-                <p className="mb-10 text-white/90 max-w-xl font-sans font-normal text-base md:text-lg lg:text-xl tracking-wide pointer-events-auto">
-                  {slide.subheadline}
-                </p>
+                {slide.subheadline && (
+                  <p className="text-white/90 max-w-xs sm:max-w-xl font-sans font-normal text-[10px] sm:text-base md:text-lg lg:text-xl tracking-wide pointer-events-auto leading-normal line-clamp-2 md:line-clamp-none">
+                    {slide.subheadline}
+                  </p>
+                )}
               </div>
             </motion.div>
           ) : null
@@ -260,7 +265,7 @@ export default function HeroSection() {
           <button
             onClick={prevSlide}
             aria-label="Previous slide"
-            className="flex absolute left-4 md:left-6 top-1/2 -translate-y-1/2 w-10 h-10 md:w-12 md:h-12 rounded-full bg-white/20 backdrop-blur-sm items-center justify-center text-white hover:bg-white/30 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-black z-20"
+            className="hidden md:flex absolute left-4 md:left-6 top-1/2 -translate-y-1/2 w-10 h-10 md:w-12 md:h-12 rounded-full bg-white/20 backdrop-blur-sm items-center justify-center text-white hover:bg-white/30 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-black z-20"
           >
             <ChevronLeft className="w-5 h-5 md:w-6 md:h-6" />
           </button>
@@ -268,13 +273,13 @@ export default function HeroSection() {
           <button
             onClick={nextSlide}
             aria-label="Next slide"
-            className="flex absolute right-4 md:right-6 top-1/2 -translate-y-1/2 w-10 h-10 md:w-12 md:h-12 rounded-full bg-white/20 backdrop-blur-sm items-center justify-center text-white hover:bg-white/30 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-black z-20"
+            className="hidden md:flex absolute right-4 md:right-6 top-1/2 -translate-y-1/2 w-10 h-10 md:w-12 md:h-12 rounded-full bg-white/20 backdrop-blur-sm items-center justify-center text-white hover:bg-white/30 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-black z-20"
           >
             <ChevronRight className="w-5 h-5 md:w-6 md:h-6" />
           </button>
 
-          {/* Dots Indicator */}
-          <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex gap-2" role="tablist">
+          {/* Dots Indicator - styled as a beautiful capsule that works cleanly on mobile */}
+          <div className="absolute bottom-3 md:bottom-8 left-1/2 -translate-x-1/2 flex gap-2 bg-black/40 backdrop-blur-sm px-3.5 py-2 rounded-full items-center z-20" role="tablist">
             {finalSlides.map((slide, index) => (
               <button
                 key={slide.id}
@@ -282,9 +287,9 @@ export default function HeroSection() {
                 aria-selected={currentSlide === index}
                 aria-label={`Go to slide ${index + 1}`}
                 onClick={() => goToSlide(index)}
-                className={`transition-colors duration-300 motion-reduce:transition-none focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-black ${currentSlide === index
-                  ? "w-2.5 h-2.5 rounded-full bg-blue-500"
-                  : "w-2.5 h-2.5 rounded-full bg-white/50"
+                className={`transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-2 focus:ring-offset-black ${currentSlide === index
+                    ? "w-5 h-2 rounded-full bg-amber-500"
+                    : "w-2 h-2 rounded-full bg-white/55 hover:bg-white/80"
                   }`}
               />
             ))}
