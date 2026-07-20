@@ -42,7 +42,6 @@ function WhatsAppIcon({ size = 20 }: { size?: number }) {
 
 export default function Navbar() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [isMobileSearchOpen, setIsMobileSearchOpen] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
 
@@ -53,14 +52,12 @@ export default function Navbar() {
   useEffect(() => {
     setIsLoggedIn(!!localStorage.getItem("heedy_user"));
     setIsMobileMenuOpen(false);
-    setIsMobileSearchOpen(false);
   }, [pathname]);
 
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
         setIsMobileMenuOpen(false);
-        setIsMobileSearchOpen(false);
       }
     };
     window.addEventListener("keydown", handleEscape);
@@ -83,168 +80,143 @@ export default function Navbar() {
     const q = searchQuery.trim();
     router.push(q ? `/products?search=${encodeURIComponent(q)}` : "/products");
     setIsMobileMenuOpen(false);
-    setIsMobileSearchOpen(false);
   };
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 h-16 lg:h-[72px] px-2.5 sm:px-4 lg:px-8 flex items-center gap-1.5 sm:gap-3 lg:gap-6 border-b border-black/10 bg-[#aea3cf]/95 backdrop-blur-md">
-      {/* Mobile menu toggle */}
-      <button
-        onClick={() => setIsMobileMenuOpen((v) => !v)}
-        className="lg:hidden p-1 sm:p-2 -ml-1 sm:-ml-2 text-slate-900 hover:text-[#4a3391] transition-colors"
-        aria-label="Toggle menu"
-      >
-        {isMobileMenuOpen ? <X size={22} /> : <Menu size={22} />}
-      </button>
+    <header className="fixed top-0 left-0 right-0 z-50 border-b border-black/10 bg-[#aea3cf]/95 backdrop-blur-md">
+      {/* Primary row */}
+      <div className="h-16 lg:h-[72px] px-2.5 sm:px-4 lg:px-8 flex items-center gap-1.5 sm:gap-3 lg:gap-6">
+        {/* Mobile menu toggle */}
+        <button
+          onClick={() => setIsMobileMenuOpen((v) => !v)}
+          className="lg:hidden p-1 sm:p-2 -ml-1 sm:-ml-2 text-slate-900 hover:text-[#4a3391] transition-colors"
+          aria-label="Toggle menu"
+        >
+          {isMobileMenuOpen ? <X size={22} /> : <Menu size={22} />}
+        </button>
 
-      {/* Logo */}
-      <Link href="/" className="flex-shrink-0" aria-label="NEOKART home">
-        <div className="relative w-40 sm:w-44 md:w-52 lg:w-56 h-11 sm:h-10 lg:h-12">
-          <Image
-            src="/logo.png"
-            alt="Neokart Logo"
-            fill
-            sizes="(max-width: 640px) 224px, (max-width: 768px) 256px, (max-width: 1024px) 320px, 384px"
-            className="object-contain object-left"
-            priority
-          />
-        </div>
-      </Link>
+        {/* Logo */}
+        <Link href="/" className="flex-shrink-0" aria-label="NEOKART home">
+          <div className="relative w-32 sm:w-36 md:w-40 lg:w-44 h-8 sm:h-9 lg:h-10">
+            <Image
+              src="/logo.png"
+              alt="Neokart Logo"
+              fill
+              sizes="(max-width: 640px) 176px, (max-width: 768px) 208px, (max-width: 1024px) 256px, 320px"
+              className="object-contain object-left"
+              priority
+            />
+          </div>
+        </Link>
 
-      {/* Desktop nav links */}
-      <nav className="hidden lg:flex items-center gap-8 ml-2">
-        {NAV_LINKS.map((link) => {
-          const active = isActive(link.href, link.exact);
-          return (
-            <Link
-              key={link.href}
-              href={link.href}
-              className={`font-sans font-semibold text-[15px] pb-1 border-b-2 transition-colors ${active
-                ? "text-slate-900 border-[#4a3391]"
-                : "text-slate-700 border-transparent hover:text-slate-900"
-                }`}
+        {/* Desktop nav links */}
+        <nav className="hidden lg:flex items-center gap-8 ml-2">
+          {NAV_LINKS.map((link) => {
+            const active = isActive(link.href, link.exact);
+            return (
+              <Link
+                key={link.href}
+                href={link.href}
+                className={`font-sans font-semibold text-[15px] pb-1 border-b-2 transition-colors ${active
+                  ? "text-slate-900 border-[#4a3391]"
+                  : "text-slate-700 border-transparent hover:text-slate-900"
+                  }`}
+              >
+                {link.label}
+              </Link>
+            );
+          })}
+        </nav>
+
+        {/* Desktop search bar */}
+        <form
+          onSubmit={handleSearch}
+          role="search"
+          className="hidden md:flex flex-1 max-w-md mx-4 items-center"
+        >
+          <div className="relative w-full">
+            <Search
+              size={18}
+              className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 pointer-events-none"
+            />
+            <input
+              type="search"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="Search products..."
+              aria-label="Search products"
+              className="w-full h-10 pl-10 pr-4 rounded-full bg-white/80 border border-black/10 text-sm text-slate-900 placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-[#4a3391] focus:bg-white transition"
+            />
+          </div>
+        </form>
+
+        {/* Spacer to push utilities right on mobile (search is its own row below) */}
+        <div className="flex-1 md:hidden" />
+
+        {/* Right utilities */}
+        <div className="flex items-center gap-1 sm:gap-2 lg:gap-3 shrink-0">
+          {/* WhatsApp */}
+          <a
+            href={`https://wa.me/${WHATSAPP_NUMBER}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="p-1 sm:p-2 hover:opacity-80 transition-opacity"
+            aria-label="Contact us on WhatsApp"
+          >
+            <WhatsAppIcon size={26} />
+          </a>
+
+          {/* Account */}
+          <Link
+            href={isLoggedIn ? "/profile" : "/sign-in"}
+            className="p-1 sm:p-2 text-slate-900 hover:text-[#4a3391] transition-colors"
+            aria-label="Account"
+          >
+            <User size={20} />
+          </Link>
+
+          {/* Cart */}
+          <Link
+            href="/cart"
+            className="relative p-1 sm:p-2 text-slate-900 hover:text-[#4a3391] transition-colors"
+            aria-label="Cart"
+          >
+            <ShoppingBag size={20} />
+            {cartCount > 0 && (
+              <span className="absolute top-0 right-0 min-w-[18px] h-[18px] px-1 bg-[#4a3391] text-white text-[10px] font-bold rounded-full flex items-center justify-center border border-[#aea3cf]">
+                {cartCount}
+              </span>
+            )}
+          </Link>
+
+          {/* Logout (when logged in) */}
+          {isLoggedIn && (
+            <button
+              onClick={handleLogout}
+              className="hidden sm:flex p-2 text-slate-900 hover:text-red-600 transition-colors"
+              aria-label="Log out"
             >
-              {link.label}
-            </Link>
-          );
-        })}
-      </nav>
+              <LogOut size={19} />
+            </button>
+          )}
+        </div>
+      </div>
 
-      {/* Desktop search bar */}
+      {/* Mobile search bar — always visible as its own row (no toggle, no icon) */}
       <form
         onSubmit={handleSearch}
         role="search"
-        className="hidden md:flex flex-1 max-w-md mx-4 items-center"
+        className="md:hidden px-3 pb-2"
       >
-        <div className="relative w-full">
-          <Search
-            size={18}
-            className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 pointer-events-none"
-          />
-          <input
-            type="search"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Search products..."
-            aria-label="Search products"
-            className="w-full h-10 pl-10 pr-4 rounded-full bg-white/80 border border-black/10 text-sm text-slate-900 placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-[#4a3391] focus:bg-white transition"
-          />
-        </div>
+        <input
+          type="search"
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          placeholder="Search products..."
+          aria-label="Search products"
+          className="w-full h-9 px-4 rounded-full bg-white/80 border border-black/10 text-sm text-slate-900 placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-[#4a3391] focus:bg-white transition"
+        />
       </form>
-
-      {/* Spacer to push utilities right (mobile — search opens from the icon) */}
-      <div className="flex-1 md:hidden" />
-
-      {/* Right utilities */}
-      <div className="flex items-center gap-1 sm:gap-2 lg:gap-3 shrink-0">
-        {/* Mobile search toggle (desktop uses the inline search bar) */}
-        <button
-          onClick={() => {
-            setIsMobileSearchOpen((v) => !v);
-            setIsMobileMenuOpen(false);
-          }}
-          className="md:hidden p-1 sm:p-2 text-slate-900 hover:text-[#4a3391] transition-colors"
-          aria-label="Search"
-          aria-expanded={isMobileSearchOpen}
-        >
-          {isMobileSearchOpen ? <X size={20} /> : <Search size={20} />}
-        </button>
-
-        {/* WhatsApp */}
-        <a
-          href={`https://wa.me/${WHATSAPP_NUMBER}`}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="p-1 sm:p-2 hover:opacity-80 transition-opacity"
-          aria-label="Contact us on WhatsApp"
-        >
-          <WhatsAppIcon size={26} />
-        </a>
-
-        {/* Account */}
-        <Link
-          href={isLoggedIn ? "/profile" : "/sign-in"}
-          className="p-1 sm:p-2 text-slate-900 hover:text-[#4a3391] transition-colors"
-          aria-label="Account"
-        >
-          <User size={20} />
-        </Link>
-
-        {/* Cart */}
-        <Link
-          href="/cart"
-          className="relative p-1 sm:p-2 text-slate-900 hover:text-[#4a3391] transition-colors"
-          aria-label="Cart"
-        >
-          <ShoppingBag size={20} />
-          {cartCount > 0 && (
-            <span className="absolute top-0 right-0 min-w-[18px] h-[18px] px-1 bg-[#4a3391] text-white text-[10px] font-bold rounded-full flex items-center justify-center border border-[#aea3cf]">
-              {cartCount}
-            </span>
-          )}
-        </Link>
-
-        {/* Logout (when logged in) */}
-        {isLoggedIn && (
-          <button
-            onClick={handleLogout}
-            className="hidden sm:flex p-2 text-slate-900 hover:text-red-600 transition-colors"
-            aria-label="Log out"
-          >
-            <LogOut size={19} />
-          </button>
-        )}
-      </div>
-
-      {/* Mobile search bar (slides down from header) */}
-      <AnimatePresence>
-        {isMobileSearchOpen && (
-          <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: "auto" }}
-            exit={{ opacity: 0, height: 0 }}
-            className="absolute top-full left-0 right-0 bg-[#aea3cf] border-b border-black/10 shadow-lg z-30 md:hidden overflow-hidden"
-          >
-            <form onSubmit={handleSearch} role="search" className="px-6 py-3">
-              <div className="relative w-full">
-                <Search
-                  size={18}
-                  className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 pointer-events-none"
-                />
-                <input
-                  type="search"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  placeholder="Search products..."
-                  aria-label="Search products"
-                  autoFocus
-                  className="w-full h-10 pl-10 pr-4 rounded-full bg-white/80 border border-black/10 text-sm text-slate-900 placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-[#4a3391] focus:bg-white transition"
-                />
-              </div>
-            </form>
-          </motion.div>
-        )}
-      </AnimatePresence>
 
       {/* Mobile menu overlay */}
       <AnimatePresence>

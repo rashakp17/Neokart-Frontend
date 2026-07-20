@@ -44,6 +44,8 @@ export default function RootLayout({
           <CartProvider>
             <GoogleOAuthWrapper>
               <Navbar />
+              {/* Offsets the mobile-only second navbar row (always-visible search bar) */}
+              <div className="h-11 md:hidden" aria-hidden="true" />
               {children}
               <Footer />
               <FloatingActions />

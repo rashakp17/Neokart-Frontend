@@ -32,8 +32,8 @@ const contacts = [
   {
     icon: MapPin,
     label: "VISIT US",
-    value: "A.M. Motors Building, Near Check Post\nChungam, Thamarassery\nCalicut, Kerala – 673573",
-    href: "https://www.google.com/maps/search/?api=1&query=A.M.+Motors+Building+Near+Check+Post+Chungam+Thamarassery+Calicut+Kerala+673573",
+    value: "Neokart , A.M. Motors Building, Near Check Post\nChungam, Thamarassery\nCalicut, Kerala – 673573",
+    href: "https://www.google.com/maps/search/?api=1&query=Neokart+,+A.M.+Motors+Building+Near+Check+Post+Chungam+Thamarassery+Calicut+Kerala+673573",
   },
   {
     icon: Phone,
@@ -104,12 +104,12 @@ export default function Footer() {
           {/* Column 1 — Brand */}
           <div className="lg:col-span-4"> 
             <Link href="/" className="inline-flex items-center mb-6" aria-label="NEOKART brand logo">
-              <div className="relative w-52 h-16">
+              <div className="relative w-40 h-12">
                 <Image
                   src="/logo.png"
                   alt="Neokart Logo"
                   fill
-                  sizes="(max-width: 640px) 208px, 208px"
+                  sizes="(max-width: 640px) 160px, 160px"
                   className="object-contain"
                 />
               </div>

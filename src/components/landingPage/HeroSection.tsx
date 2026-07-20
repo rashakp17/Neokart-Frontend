@@ -173,9 +173,14 @@ export default function HeroSection() {
             transition={{ duration: 0.6, ease: "easeInOut" }}
             className="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-[#aea3cf]/95"
           >
-            <h1 className="text-white font-sans font-black text-6xl md:text-8xl tracking-[0.2em] uppercase mb-8">
-              NEOKART
-            </h1>
+            <Image
+              src="/logo.png"
+              alt="NEOKART"
+              width={256}
+              height={77}
+              priority
+              className="w-44 md:w-64 h-auto mb-8 object-contain"
+            />
             <div className="w-64 md:w-80 h-[2px] bg-white/25 overflow-hidden relative">
               <motion.div
                 initial={{ width: 0 }}

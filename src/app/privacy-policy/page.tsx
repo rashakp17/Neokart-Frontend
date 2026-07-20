@@ -168,10 +168,9 @@ export default function PrivacyPolicyPage() {
               <section>
                 <h2 className="text-2xl font-bold text-[#4a3391] mb-4">Contact Us</h2>
                 <p className="mb-4">
-                  <span className="font-semibold text-slate-900">NEOKART</span><br />
-                  A.M. Motors Building<br />
-                  Near Check Post, Chungam<br />
-                  Thamarassery, Calicut, Kerala – 673573
+                  Neokart , A.M. Motors Building, Near Check Post<br />
+                  Chungam, Thamarassery<br />
+                  Calicut, Kerala – 673573
                 </p>
                 <p className="mb-2">
                   Phone:{" "}
