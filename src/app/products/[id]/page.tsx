@@ -360,9 +360,9 @@ export default function ProductDetailPage() {
               <button
                 onClick={handleAddToCart}
                 aria-label="Add to cart"
-                className={`flex-1 flex items-center justify-center gap-2.5 py-4 rounded-full font-bold text-sm uppercase tracking-widest transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${added
+                className={`flex-1 flex items-center justify-center gap-2.5 py-4 rounded-full font-bold text-sm uppercase tracking-widest transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-[#a78bda] focus:ring-offset-2 ${added
                   ? "bg-green-500 text-white"
-                  : "bg-[#2563eb] text-white hover:bg-[#1d4ed8]"
+                  : "bg-[#a78bda] text-white hover:bg-[#9376d2]"
                   }`}
               >
                 {added ? (
@@ -389,8 +389,8 @@ export default function ProductDetailPage() {
         </div>
       </section>
 
-      {/* ── Related Products ── */}
-      {relatedProducts.length > 0 && (
+      {/* ── Related Products (only on flash-sale products) ── */}
+      {product.showInFlashSale && relatedProducts.length > 0 && (
         <section className="max-w-7xl mx-auto px-6 md:px-12 lg:px-20 pb-16 md:pb-24">
           <div className="flex items-center justify-between mb-6 md:mb-8">
             <h2 className="font-sans font-bold text-xl md:text-2xl text-white">
