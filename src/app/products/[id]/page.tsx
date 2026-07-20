@@ -28,6 +28,7 @@ interface Product {
   ingredients: string;
   howToUse: string;
   sizes: string[];
+  showInFlashSale: boolean;
 }
 
 // Data will be fetched dynamically from backend
@@ -46,6 +47,8 @@ export default function ProductDetailPage() {
   const id = params?.id as string;
 
   const [product, setProduct] = useState<Product | null>(null);
+  const [allProducts, setAllProducts] = useState<Product[]>([]);
+  const [fromFlashSale, setFromFlashSale] = useState(false);
   const [loading, setLoading] = useState(true);
 
   const [activeImage, setActiveImage] = useState(0);
@@ -55,6 +58,14 @@ export default function ProductDetailPage() {
   const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false);
   const [showAllThumbs, setShowAllThumbs] = useState(false);
   const { addToCart } = useCart();
+
+  // Detect whether the visitor arrived by clicking a Flash Sale card
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const urlParams = new URLSearchParams(window.location.search);
+      setFromFlashSale(urlParams.get("from") === "flash-sale");
+    }
+  }, [id]);
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -98,9 +109,11 @@ export default function ProductDetailPage() {
             ingredients: p.description || "Refer to packaging",
             howToUse: "Follow instructions on packaging",
             sizes: p.variants && p.variants.length > 0 ? p.variants.map((v: any) => v.volume) : ["Standard"],
+            showInFlashSale: p.showInFlashSale === true,
           }));
           const found = mapped.find((p: any) => p.id === id) || null;
           setProduct(found);
+          setAllProducts(mapped);
         }
       } catch (error) {
         console.error("Failed to fetch product:", error);
@@ -167,6 +180,17 @@ export default function ProductDetailPage() {
   // Prefer the percentage stated in the deal text (offerText); fall back to the computed one.
   const dealBadgeMatch = product.dealBadge.match(/(\d+)\s*%/);
   const badgeDiscount = dealBadgeMatch ? Number(dealBadgeMatch[1]) : discount;
+
+  // Related products: when the visitor arrived from a Flash Sale card, show ONLY
+  // other flash-sale products. Otherwise, show items from the same category.
+  const relatedProducts = allProducts
+    .filter((p) => p.id !== product.id)
+    .filter((p) =>
+      fromFlashSale
+        ? p.showInFlashSale
+        : p.category.toLowerCase() === product.category.toLowerCase()
+    )
+    .slice(0, 5);
 
   return (
     <div className="min-h-screen bg-black pt-30">
@@ -378,6 +402,77 @@ export default function ProductDetailPage() {
           </div>
         </div>
       </section>
+
+      {/* ── Related Products ── */}
+      {relatedProducts.length > 0 && (
+        <section className="max-w-7xl mx-auto px-6 md:px-12 lg:px-20 pb-16 md:pb-24">
+          <div className="flex items-center justify-between mb-6 md:mb-8">
+            <h2 className="font-sans font-bold text-xl md:text-2xl text-white">
+              {fromFlashSale ? "More Flash Deals" : "Related Products"}
+            </h2>
+            {fromFlashSale && (
+              <Link
+                href="/"
+                className="font-sans font-semibold text-xs md:text-sm text-amber-400 hover:text-amber-300 transition-colors"
+              >
+                View all offers
+              </Link>
+            )}
+          </div>
+
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 md:gap-6">
+            {relatedProducts.map((rp) => {
+              const rpDiscount =
+                rp.originalPrice > rp.currentPrice && rp.originalPrice > 0
+                  ? Math.round(((rp.originalPrice - rp.currentPrice) / rp.originalPrice) * 100)
+                  : 0;
+              return (
+                <Link
+                  key={rp.id}
+                  href={`/products/${rp.id}${fromFlashSale ? "?from=flash-sale" : ""}`}
+                  className="group bg-[#121212] rounded-2xl overflow-hidden border border-white/10 hover:border-white/20 transition-all duration-300 flex flex-col outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 focus-visible:ring-offset-black"
+                >
+                  <div className="relative aspect-square bg-[#1a1a1a] overflow-hidden">
+                    <Image
+                      src={cldOptimize(rp.images[0], 500)}
+                      alt={rp.name}
+                      fill
+                      sizes="(max-width: 640px) 45vw, 220px"
+                      unoptimized
+                      className="object-cover transition-transform duration-500 group-hover:scale-105"
+                    />
+                    {rpDiscount > 0 && (
+                      <span className="absolute top-2.5 left-2.5 bg-amber-400 text-black text-[11px] font-black px-2 py-0.5 rounded-full">
+                        {rpDiscount}% OFF
+                      </span>
+                    )}
+                  </div>
+                  <div className="p-3 flex flex-col flex-grow">
+                    {rp.category && (
+                      <p className="font-sans font-semibold text-[9px] md:text-[10px] uppercase tracking-wider text-[#a78bda] mb-1">
+                        {rp.category}
+                      </p>
+                    )}
+                    <h3 className="font-sans font-bold text-xs md:text-sm text-white leading-snug line-clamp-2 mb-2">
+                      {rp.name}
+                    </h3>
+                    <div className="mt-auto flex items-baseline gap-1.5">
+                      <span className="font-sans font-black text-sm md:text-base text-white">
+                        {rp.currency}{rp.currentPrice}
+                      </span>
+                      {rp.originalPrice > rp.currentPrice && (
+                        <span className="font-sans text-[10px] md:text-[11px] text-white/40 line-through">
+                          {rp.currency}{rp.originalPrice}
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                </Link>
+              );
+            })}
+          </div>
+        </section>
+      )}
     </div>
   );
 }
