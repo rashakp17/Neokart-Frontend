@@ -163,7 +163,9 @@ export default function FlashSaleSection() {
     fetchDeals();
   }, []);
 
+  // Runs once products load (the section only mounts then, so the ref exists here).
   useEffect(() => {
+    if (products.length === 0) return;
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
@@ -177,7 +179,7 @@ export default function FlashSaleSection() {
       observer.observe(sectionRef.current);
     }
     return () => observer.disconnect();
-  }, []);
+  }, [products.length]);
 
   // Nothing on sale — don't render an empty section
   if (products.length === 0) return null;

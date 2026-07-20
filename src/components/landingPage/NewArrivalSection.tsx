@@ -62,7 +62,9 @@ export default function NewArrivalSection() {
     fetchNewArrival();
   }, []);
 
+  // Runs once the product loads (the section only mounts then, so the ref exists here).
   useEffect(() => {
+    if (!item) return;
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
@@ -76,7 +78,7 @@ export default function NewArrivalSection() {
       observer.observe(sectionRef.current);
     }
     return () => observer.disconnect();
-  }, []);
+  }, [item]);
 
   // No product flagged as new arrival — don't render an empty section
   if (!item) return null;
