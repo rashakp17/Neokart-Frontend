@@ -15,7 +15,10 @@ export default function CheckoutPage() {
   const [addresses, setAddresses] = useState<any[]>([]);
   const [selectedAddressId, setSelectedAddressId] = useState("");
   const [newAddressForm, setNewAddressForm] = useState({
+    name: "",
+    phone: "",
     street: "",
+    postOffice: "",
     city: "",
     state: "",
     zip: "",
@@ -32,6 +35,19 @@ export default function CheckoutPage() {
   const [paymentMethod, setPaymentMethod] = useState<"online" | "cod">("online");
   const [isPlacingOrder, setIsPlacingOrder] = useState(false);
 
+  // Normalize a saved address from the API into the shape this page uses.
+  const mapAddress = (addr: any) => ({
+    id: addr._id,
+    recipientName: addr.name || "",
+    phone: addr.phone || "",
+    street: addr.street || "",
+    postOffice: addr.postOffice || "",
+    city: addr.city || "",
+    state: addr.state || "",
+    zipCode: addr.zipCode || "",
+    country: addr.country || "India",
+  });
+
   useEffect(() => {
     const fetchAddresses = async () => {
       try {
@@ -46,12 +62,7 @@ export default function CheckoutPage() {
           headers: { 'Authorization': `Bearer ${token}` }
         });
         if (res.data.success && res.data.data) {
-          const mappedAddresses = res.data.data.map((addr: any) => ({
-            id: addr._id,
-            name: addr.city?.toLowerCase() || 'Address',
-            line1: `${addr.street ? addr.street + ", " : ""}${addr.state?.toLowerCase() || ''}`,
-            line2: addr.zipCode,
-          }));
+          const mappedAddresses = res.data.data.map(mapAddress);
           setAddresses(mappedAddresses);
           if (mappedAddresses.length > 0) {
             setSelectedAddressId(mappedAddresses[0].id);
@@ -66,6 +77,11 @@ export default function CheckoutPage() {
 
   const validateAddressForm = () => {
     const errors: Record<string, string> = {};
+    if (!newAddressForm.name.trim()) errors.name = "Full name is required.";
+    else if (newAddressForm.name.trim().length < 2) errors.name = "Enter a valid name.";
+    if (!newAddressForm.phone.trim()) errors.phone = "Phone number is required.";
+    else if (!/^\d{10}$/.test(newAddressForm.phone.trim())) errors.phone = "Enter a valid 10-digit phone number.";
+    if (!newAddressForm.postOffice.trim()) errors.postOffice = "Post office is required.";
     if (!newAddressForm.city.trim()) errors.city = "City is required.";
     if (!newAddressForm.state.trim()) errors.state = "State is required.";
     if (!newAddressForm.zip.trim()) errors.zip = "PIN code is required.";
@@ -92,7 +108,10 @@ export default function CheckoutPage() {
       const API_URL = `${baseUrl}/api`;
 
       const payload = {
+        name: newAddressForm.name,
+        phone: newAddressForm.phone,
         street: newAddressForm.street,
+        postOffice: newAddressForm.postOffice,
         city: newAddressForm.city,
         state: newAddressForm.state,
         zipCode: newAddressForm.zip,
@@ -108,18 +127,13 @@ export default function CheckoutPage() {
 
       if (res.data.success) {
         const newAddrs = res.data.data;
-        const mappedAddresses = newAddrs.map((addr: any) => ({
-          id: addr._id,
-          name: addr.city?.toLowerCase() || 'Address',
-          line1: `${addr.street ? addr.street + ", " : ""}${addr.state?.toLowerCase() || ''}`,
-          line2: addr.zipCode,
-        }));
+        const mappedAddresses = newAddrs.map(mapAddress);
         setAddresses(mappedAddresses);
         if (mappedAddresses.length > 0) {
           setSelectedAddressId(mappedAddresses[mappedAddresses.length - 1].id);
         }
         setIsAddressModalOpen(false);
-        setNewAddressForm({ street: "", city: "", state: "", zip: "", country: "India" });
+        setNewAddressForm({ name: "", phone: "", street: "", postOffice: "", city: "", state: "", zip: "", country: "India" });
         setAddressErrors({});
       } else {
         showToast(res.data.message || "Failed to save address", "error");
@@ -191,11 +205,14 @@ export default function CheckoutPage() {
       size: item.size,
     }));
     const orderShippingAddress = {
-      street: selectedAddress?.line1.split(", ")[0] || '',
-      city: selectedAddress?.name || '',
-      state: selectedAddress?.line1.split(", ")[1] || '',
-      zipCode: selectedAddress?.line2 || '',
-      country: "India",
+      name: selectedAddress?.recipientName || '',
+      phone: selectedAddress?.phone || '',
+      street: selectedAddress?.street || '',
+      postOffice: selectedAddress?.postOffice || '',
+      city: selectedAddress?.city || '',
+      state: selectedAddress?.state || '',
+      zipCode: selectedAddress?.zipCode || '',
+      country: selectedAddress?.country || 'India',
     };
     return { orderItems, orderShippingAddress };
   };
@@ -294,6 +311,15 @@ export default function CheckoutPage() {
         return;
       }
 
+      // Prefill the Razorpay popup with the recipient's real details.
+      const selectedAddress = addresses.find((a) => a.id === selectedAddressId);
+      let userEmail = "";
+      try {
+        userEmail = JSON.parse(localStorage.getItem("heedy_user") || "{}").email || "";
+      } catch {
+        userEmail = "";
+      }
+
       const options = {
         key: key_id || process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID || "rzp_test_YourTestKey", // Use backend key first to guarantee match
         amount: razorpayOrder.amount,
@@ -328,9 +354,9 @@ export default function CheckoutPage() {
           }
         },
         prefill: {
-          name: "Customer",
-          email: "neokart007@gmail.com",
-          contact: "9999999999"
+          name: selectedAddress?.recipientName || "Customer",
+          email: userEmail,
+          contact: selectedAddress?.phone || ""
         },
         theme: {
           color: "#0a0a0a"
@@ -407,10 +433,14 @@ export default function CheckoutPage() {
                       <div className="flex items-start gap-3">
                         <MapPin size={20} className="text-slate-500 flex-shrink-0 mt-1" />
                         <div>
-                          <p className="font-sans font-bold text-slate-900 mb-2">{addr.name}</p>
+                          <p className="font-sans font-bold text-slate-900">{addr.recipientName || addr.city}</p>
+                          {addr.phone && (
+                            <p className="font-sans text-slate-600 text-sm mb-2">📞 {addr.phone}</p>
+                          )}
                           <p className="font-sans text-slate-500 leading-relaxed text-sm">
-                            {addr.line1}<br />
-                            {addr.line2}
+                            {addr.street && <>{addr.street}<br /></>}
+                            {addr.postOffice && <>P.O. {addr.postOffice}<br /></>}
+                            {addr.city}{addr.state ? `, ${addr.state}` : ""} {addr.zipCode}
                           </p>
                         </div>
                       </div>
@@ -633,6 +663,32 @@ export default function CheckoutPage() {
 
             {/* Form */}
             <div className="p-6 sm:p-8 flex flex-col gap-5">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                <div>
+                  <label className="block font-sans font-bold text-sm text-slate-700 mb-2">Full Name <span className="text-red-500">*</span></label>
+                  <input
+                    type="text"
+                    value={newAddressForm.name}
+                    onChange={(e) => { setNewAddressForm({ ...newAddressForm, name: e.target.value }); setAddressErrors(prev => ({ ...prev, name: '' })); }}
+                    placeholder="Recipient's full name"
+                    className={`w-full border rounded-xl px-4 py-3 text-base text-slate-900 focus:outline-none focus:border-[#0a0a0a] placeholder:text-slate-700 ${addressErrors.name ? 'border-red-400 ring-1 ring-red-400' : 'border-slate-200'}`}
+                  />
+                  {addressErrors.name && <p className="text-red-500 text-xs mt-1.5 font-medium">{addressErrors.name}</p>}
+                </div>
+                <div>
+                  <label className="block font-sans font-bold text-sm text-slate-700 mb-2">Phone Number <span className="text-red-500">*</span></label>
+                  <input
+                    type="tel"
+                    inputMode="numeric"
+                    value={newAddressForm.phone}
+                    onChange={(e) => { setNewAddressForm({ ...newAddressForm, phone: e.target.value }); setAddressErrors(prev => ({ ...prev, phone: '' })); }}
+                    placeholder="10-digit mobile number"
+                    className={`w-full border rounded-xl px-4 py-3 text-base text-slate-900 focus:outline-none focus:border-[#0a0a0a] placeholder:text-slate-700 ${addressErrors.phone ? 'border-red-400 ring-1 ring-red-400' : 'border-slate-200'}`}
+                  />
+                  {addressErrors.phone && <p className="text-red-500 text-xs mt-1.5 font-medium">{addressErrors.phone}</p>}
+                </div>
+              </div>
+
               <div>
                 <label className="block font-sans font-bold text-sm text-slate-700 mb-2">Street Address</label>
                 <input
@@ -643,6 +699,18 @@ export default function CheckoutPage() {
                   className={`w-full border rounded-xl px-4 py-3 text-base text-slate-900 focus:outline-none focus:border-[#0a0a0a] placeholder:text-slate-700 ${addressErrors.street ? 'border-red-400 ring-1 ring-red-400' : 'border-slate-200'}`}
                 />
                 {addressErrors.street && <p className="text-red-500 text-xs mt-1.5 font-medium">{addressErrors.street}</p>}
+              </div>
+
+              <div>
+                <label className="block font-sans font-bold text-sm text-slate-700 mb-2">Post Office <span className="text-red-500">*</span></label>
+                <input
+                  type="text"
+                  value={newAddressForm.postOffice}
+                  onChange={(e) => { setNewAddressForm({ ...newAddressForm, postOffice: e.target.value }); setAddressErrors(prev => ({ ...prev, postOffice: '' })); }}
+                  placeholder="e.g. Thamarassery"
+                  className={`w-full border rounded-xl px-4 py-3 text-base text-slate-900 focus:outline-none focus:border-[#0a0a0a] placeholder:text-slate-700 ${addressErrors.postOffice ? 'border-red-400 ring-1 ring-red-400' : 'border-slate-200'}`}
+                />
+                {addressErrors.postOffice && <p className="text-red-500 text-xs mt-1.5 font-medium">{addressErrors.postOffice}</p>}
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">

@@ -29,9 +29,12 @@ export default function ProfilePage() {
   const [isSavingAddress, setIsSavingAddress] = useState(false);
   const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
   const [newAddressForm, setNewAddressForm] = useState({
+    name: "",
+    phone: "",
     street: "",
     apartment: "",
     landmark: "",
+    postOffice: "",
     city: "",
     state: "",
     zip: "",
@@ -142,6 +145,11 @@ export default function ProfilePage() {
 
   const validateAddressForm = () => {
     const errors: Record<string, string> = {};
+    if (!newAddressForm.name.trim()) errors.name = "Full name is required.";
+    else if (newAddressForm.name.trim().length < 2) errors.name = "Enter a valid name.";
+    if (!newAddressForm.phone.trim()) errors.phone = "Phone number is required.";
+    else if (!/^\d{10}$/.test(newAddressForm.phone.trim())) errors.phone = "Enter a valid 10-digit phone number.";
+    if (!newAddressForm.postOffice.trim()) errors.postOffice = "Post office is required.";
     if (!newAddressForm.city.trim()) errors.city = "City is required.";
     if (!newAddressForm.state.trim()) errors.state = "State is required.";
     if (!newAddressForm.zip.trim()) errors.zip = "PIN code is required.";
@@ -161,9 +169,12 @@ export default function ProfilePage() {
       const API_URL = `${baseUrl}/api`;
 
       const payload = {
+        name: newAddressForm.name,
+        phone: newAddressForm.phone,
         street: newAddressForm.street,
         apartment: newAddressForm.apartment,
         landmark: newAddressForm.landmark,
+        postOffice: newAddressForm.postOffice,
         city: newAddressForm.city,
         state: newAddressForm.state,
         zipCode: newAddressForm.zip,
@@ -191,7 +202,7 @@ export default function ProfilePage() {
         setAddresses(res.data.data);
         setIsAddressModalOpen(false);
         setEditingAddressId(null);
-        setNewAddressForm({ street: "", apartment: "", landmark: "", city: "", state: "", zip: "", country: "India" });
+        setNewAddressForm({ name: "", phone: "", street: "", apartment: "", landmark: "", postOffice: "", city: "", state: "", zip: "", country: "India" });
         setAddressErrors({});
       } else {
         showToast(res.data.message || "Failed to save address", "error");
@@ -527,9 +538,12 @@ export default function ProfilePage() {
                     <div key={addr._id || idx} className="bg-[#aea3cf]/95 rounded-[2rem] p-8 border border-slate-100 shadow-sm relative">
                       <h3 className="font-bold text-lg text-slate-900 mb-4">Address {idx + 1}</h3>
                       <div className="text-slate-500 text-base leading-relaxed mb-6">
+                        {addr.name && <p className="font-bold text-slate-900">{addr.name}</p>}
+                        {addr.phone && <p>📞 {addr.phone}</p>}
                         {addr.street && <p>{addr.street}</p>}
                         {addr.apartment && <p>{addr.apartment}</p>}
                         {addr.landmark && <p>Landmark: {addr.landmark}</p>}
+                        {addr.postOffice && <p>P.O. {addr.postOffice}</p>}
                         <p>{addr.city}{addr.state ? `, ${addr.state}` : ''} {addr.zipCode}</p>
                         <p>{addr.country}</p>
                       </div>
@@ -537,9 +551,12 @@ export default function ProfilePage() {
                         <button
                           onClick={() => {
                             setNewAddressForm({
+                              name: addr.name || "",
+                              phone: addr.phone || "",
                               street: addr.street || "",
                               apartment: addr.apartment || "",
                               landmark: addr.landmark || "",
+                              postOffice: addr.postOffice || "",
                               city: addr.city || "",
                               state: addr.state || "",
                               zip: addr.zipCode || "",
@@ -564,7 +581,7 @@ export default function ProfilePage() {
 
                   <button
                     onClick={() => {
-                      setNewAddressForm({ street: "", apartment: "", landmark: "", city: "", state: "", zip: "", country: "India" });
+                      setNewAddressForm({ name: "", phone: "", street: "", apartment: "", landmark: "", postOffice: "", city: "", state: "", zip: "", country: "India" });
                       setEditingAddressId(null);
                       setIsAddressModalOpen(true);
                     }}
@@ -600,6 +617,32 @@ export default function ProfilePage() {
             </div>
 
             <div className="p-6 sm:p-8 flex flex-col gap-5">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                <div>
+                  <label className="block font-sans font-bold text-sm text-slate-700 mb-2">Full Name <span className="text-red-500">*</span></label>
+                  <input
+                    type="text"
+                    value={newAddressForm.name}
+                    onChange={(e) => { setNewAddressForm({ ...newAddressForm, name: e.target.value }); setAddressErrors(prev => ({ ...prev, name: '' })); }}
+                    placeholder="Recipient's full name"
+                    className={`w-full border rounded-xl px-4 py-3 text-base text-slate-900 focus:outline-none focus:border-blue-500 placeholder:text-slate-700 ${addressErrors.name ? 'border-red-400 ring-1 ring-red-400' : 'border-slate-200'}`}
+                  />
+                  {addressErrors.name && <p className="text-red-500 text-xs mt-1.5 font-medium">{addressErrors.name}</p>}
+                </div>
+                <div>
+                  <label className="block font-sans font-bold text-sm text-slate-700 mb-2">Phone Number <span className="text-red-500">*</span></label>
+                  <input
+                    type="tel"
+                    inputMode="numeric"
+                    value={newAddressForm.phone}
+                    onChange={(e) => { setNewAddressForm({ ...newAddressForm, phone: e.target.value }); setAddressErrors(prev => ({ ...prev, phone: '' })); }}
+                    placeholder="10-digit mobile number"
+                    className={`w-full border rounded-xl px-4 py-3 text-base text-slate-900 focus:outline-none focus:border-blue-500 placeholder:text-slate-700 ${addressErrors.phone ? 'border-red-400 ring-1 ring-red-400' : 'border-slate-200'}`}
+                  />
+                  {addressErrors.phone && <p className="text-red-500 text-xs mt-1.5 font-medium">{addressErrors.phone}</p>}
+                </div>
+              </div>
+
               <div>
                 <label className="block font-sans font-bold text-sm text-slate-700 mb-2">Street Address</label>
                 <input
@@ -610,6 +653,18 @@ export default function ProfilePage() {
                   className={`w-full border rounded-xl px-4 py-3 text-base text-slate-900 focus:outline-none focus:border-blue-500 placeholder:text-slate-700 ${addressErrors.street ? 'border-red-400 ring-1 ring-red-400' : 'border-slate-200'}`}
                 />
                 {addressErrors.street && <p className="text-red-500 text-xs mt-1.5 font-medium">{addressErrors.street}</p>}
+              </div>
+
+              <div>
+                <label className="block font-sans font-bold text-sm text-slate-700 mb-2">Post Office <span className="text-red-500">*</span></label>
+                <input
+                  type="text"
+                  value={newAddressForm.postOffice}
+                  onChange={(e) => { setNewAddressForm({ ...newAddressForm, postOffice: e.target.value }); setAddressErrors(prev => ({ ...prev, postOffice: '' })); }}
+                  placeholder="e.g. Thamarassery"
+                  className={`w-full border rounded-xl px-4 py-3 text-base text-slate-900 focus:outline-none focus:border-blue-500 placeholder:text-slate-700 ${addressErrors.postOffice ? 'border-red-400 ring-1 ring-red-400' : 'border-slate-200'}`}
+                />
+                {addressErrors.postOffice && <p className="text-red-500 text-xs mt-1.5 font-medium">{addressErrors.postOffice}</p>}
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
