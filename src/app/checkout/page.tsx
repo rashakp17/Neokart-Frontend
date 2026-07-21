@@ -204,21 +204,15 @@ export default function CheckoutPage() {
   // Online payment charges the full total; COD charges only the 10% advance online
   // and records the balance to be collected on delivery.
   const handlePlaceOrder = () => {
-    if (paymentMethod === "cod") {
-      processRazorpayPayment({ amountToCharge: advanceAmount, method: "cod" });
-    } else {
-      processRazorpayPayment({ amountToCharge: total, method: "razorpay" });
-    }
+    processRazorpayPayment({ method: paymentMethod === "cod" ? "cod" : "razorpay" });
   };
 
-  // Shared Razorpay flow. `amountToCharge` is what gets collected online now
-  // (full total for online orders, the 10% advance for COD). The order is saved
-  // in the DB only after this payment is verified.
+  // Shared Razorpay flow. The server prices the order and decides how much to
+  // collect online now (full total for online orders, the 10% advance for COD).
+  // The order is saved in the DB only after this payment is verified.
   const processRazorpayPayment = async ({
-    amountToCharge,
     method,
   }: {
-    amountToCharge: number;
     method: "razorpay" | "cod";
   }) => {
     if (!selectedAddressId) {
@@ -259,9 +253,12 @@ export default function CheckoutPage() {
         balanceAmount: isCod ? balanceAmount : 0,
       });
 
-      // Create a Razorpay order for the amount collected now (no DB save yet).
+      // Create a Razorpay order (no DB save yet). The server prices the order
+      // from the DB and decides the amount to charge — we only send the items
+      // and payment method, never a client-controlled total.
       const createOrderRes = await axios.post(`${API_URL}/v1/payments/create-order`, {
-        total: amountToCharge
+        items: orderItems,
+        paymentMethod: method,
       }, {
         headers: { 'Authorization': `Bearer ${token}` }
       });

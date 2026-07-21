@@ -80,11 +80,11 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
     <ToastContext.Provider value={{ showToast }}>
       {children}
       {/* Toast Container */}
-      <div className="fixed top-6 right-6 z-[9999] flex flex-col gap-3 pointer-events-none">
+      <div className="fixed top-6 right-4 sm:right-6 left-4 sm:left-auto z-[9999] flex flex-col gap-3 pointer-events-none">
         {toasts.map((toast) => (
           <div
             key={toast.id}
-            className={`pointer-events-auto flex items-start gap-3 px-5 py-4 rounded-2xl border shadow-lg backdrop-blur-sm min-w-[320px] max-w-[440px] animate-slide-in ${getStyles(toast.type)}`}
+            className={`pointer-events-auto flex items-start gap-3 px-5 py-4 rounded-2xl border shadow-lg backdrop-blur-sm w-full sm:w-auto sm:min-w-[320px] sm:max-w-[440px] animate-slide-in ${getStyles(toast.type)}`}
             style={{
               animation: "slideIn 0.35s cubic-bezier(0.21, 1.02, 0.73, 1) forwards"
             }}

@@ -96,7 +96,7 @@ export default function CategorySection() {
     <section ref={sectionRef} className="bg-[#0a0a0a] pt-20 md:pt-28 pb-6 md:pb-8 w-full">
       <div className="max-w-7xl mx-auto px-6 md:px-12">
         {/* Category circles list */}
-        <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-6 md:gap-8 justify-items-center">
+        <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-3 sm:gap-6 md:gap-8 justify-items-center">
           {categories.map((category, index) => (
             <Link
               key={category.id}
