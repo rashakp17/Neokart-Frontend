@@ -32,8 +32,8 @@ const contacts = [
   {
     icon: MapPin,
     label: "VISIT US",
-    value: "Neokart , A.M. Motors Building, Near Check Post\nChungam, Thamarassery\nCalicut, Kerala – 673573",
-    href: "https://www.google.com/maps/search/?api=1&query=Neokart+,+A.M.+Motors+Building+Near+Check+Post+Chungam+Thamarassery+Calicut+Kerala+673573",
+    value: "NEOKART\nA.M. Motors Building, Near Check Post\nChungam, Thamarassery\nCalicut, Kerala – 673573",
+    href: "https://www.google.com/maps/search/?api=1&query=NEOKART+A.M.+Motors+Building+Near+Check+Post+Chungam+Thamarassery+Calicut+Kerala+673573",
   },
   {
     icon: Phone,
