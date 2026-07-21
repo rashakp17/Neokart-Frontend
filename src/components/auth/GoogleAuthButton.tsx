@@ -67,7 +67,11 @@ function GoogleAuthButtonConfigured({ mode = "signin" }: GoogleAuthButtonProps) 
               : "Account created with Google successfully!",
             "success"
           );
-          router.push("/");
+          // Return the user to where they were before the session expired, if
+          // a safe internal ?next= path was provided; otherwise go home.
+          const nextParam = new URLSearchParams(window.location.search).get("next");
+          const safeNext = nextParam && nextParam.startsWith("/") && !nextParam.startsWith("//") ? nextParam : "/";
+          router.push(safeNext);
         }
       } catch (err: any) {
         console.error("Google auth error:", err);
