@@ -365,7 +365,16 @@ export default function CheckoutPage() {
 
       const rzp = new (window as any).Razorpay(options);
       rzp.on('payment.failed', function (response: any) {
-        window.location.href = "/order-failure";
+        // Razorpay puts the real reason in response.error — capture it instead
+        // of discarding it, so failures are diagnosable (esp. on live mode).
+        const err = response?.error || {};
+        console.error('Razorpay payment failed:', err);
+        const params = new URLSearchParams();
+        if (err.description) params.set("reason", err.description);
+        if (err.code) params.set("code", err.code);
+        if (err.step) params.set("step", err.step);
+        const qs = params.toString();
+        window.location.href = `/order-failure${qs ? `?${qs}` : ""}`;
       });
       rzp.open();
 
