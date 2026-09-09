@@ -2,9 +2,9 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import axios from "axios";
-import { ArrowRight } from "lucide-react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 
 const DEFAULT_CATEGORIES = [
   {
@@ -33,7 +33,10 @@ const DEFAULT_CATEGORIES = [
 export default function CategorySection() {
   const [categories, setCategories] = useState<typeof DEFAULT_CATEGORIES>([]);
   const [isVisible, setIsVisible] = useState(false);
+  const [canScrollLeft, setCanScrollLeft] = useState(false);
+  const [canScrollRight, setCanScrollRight] = useState(false);
   const sectionRef = useRef<HTMLDivElement>(null);
+  const sliderRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -54,7 +57,7 @@ export default function CategorySection() {
           ).length;
 
         if (catRes.data.success && catRes.data.data) {
-          const activeCats = catRes.data.data.filter((c: any) => c.status === 'ACTIVE').slice(0, 6);
+          const activeCats = catRes.data.data.filter((c: any) => c.status === 'ACTIVE');
 
           if (activeCats.length > 0) {
             const formatted = activeCats.map((c: any, index: number) => ({
@@ -92,17 +95,67 @@ export default function CategorySection() {
     return () => observer.disconnect();
   }, []);
 
+  // Track how far the strip is scrolled so the arrows only show when usable
+  const updateArrows = useCallback(() => {
+    const el = sliderRef.current;
+    if (!el) return;
+    setCanScrollLeft(el.scrollLeft > 8);
+    setCanScrollRight(el.scrollLeft + el.clientWidth < el.scrollWidth - 8);
+  }, []);
+
+  useEffect(() => {
+    updateArrows();
+    const el = sliderRef.current;
+    if (!el) return;
+    window.addEventListener("resize", updateArrows);
+    return () => window.removeEventListener("resize", updateArrows);
+  }, [categories.length, updateArrows]);
+
+  const scrollByCards = (direction: -1 | 1) => {
+    const el = sliderRef.current;
+    if (!el) return;
+    // Slide roughly one "page" of cards at a time
+    const amount = Math.max(el.clientWidth * 0.8, 160);
+    el.scrollBy({ left: direction * amount, behavior: "smooth" });
+  };
+
   return (
     <section ref={sectionRef} className="bg-[#0a0a0a] pt-20 md:pt-28 pb-6 md:pb-8 w-full">
-      <div className="max-w-7xl mx-auto px-6 md:px-12">
-        {/* Category circles list */}
-        <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-3 sm:gap-6 md:gap-8 justify-items-center">
+      <div className="max-w-7xl mx-auto px-6 md:px-12 relative">
+        {/* Prev arrow */}
+        <button
+          type="button"
+          onClick={() => scrollByCards(-1)}
+          aria-label="Scroll categories left"
+          className={`hidden md:flex absolute left-0 top-[3.5rem] lg:top-[4rem] -translate-y-1/2 z-10 w-10 h-10 items-center justify-center rounded-full bg-black/70 border border-sky-400/40 text-white backdrop-blur transition-all duration-300 hover:bg-sky-500 hover:border-sky-500 focus:outline-none focus:ring-2 focus:ring-sky-400 ${canScrollLeft ? "opacity-100" : "opacity-0 pointer-events-none"
+            }`}
+        >
+          <ChevronLeft className="w-5 h-5" />
+        </button>
+
+        {/* Next arrow */}
+        <button
+          type="button"
+          onClick={() => scrollByCards(1)}
+          aria-label="Scroll categories right"
+          className={`hidden md:flex absolute right-0 top-[3.5rem] lg:top-[4rem] -translate-y-1/2 z-10 w-10 h-10 items-center justify-center rounded-full bg-black/70 border border-sky-400/40 text-white backdrop-blur transition-all duration-300 hover:bg-sky-500 hover:border-sky-500 focus:outline-none focus:ring-2 focus:ring-sky-400 ${canScrollRight ? "opacity-100" : "opacity-0 pointer-events-none"
+            }`}
+        >
+          <ChevronRight className="w-5 h-5" />
+        </button>
+
+        {/* Horizontally scrollable category strip */}
+        <div
+          ref={sliderRef}
+          onScroll={updateArrows}
+          className="flex gap-3 sm:gap-6 md:gap-8 overflow-x-auto snap-x snap-mandatory scroll-smooth hide-scrollbar pb-2"
+        >
           {categories.map((category, index) => (
             <Link
               key={category.id}
               href={`/products?category=${category.id}`}
               aria-label={`Browse ${category.label}`}
-              className={`group flex flex-col items-center text-center transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-[#593dab] focus:ring-offset-2 focus:ring-offset-[#0a0a0a] rounded-xl p-1 motion-reduce:transition-none motion-reduce:transform-none ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
+              className={`group shrink-0 snap-start w-20 sm:w-24 md:w-28 lg:w-32 flex flex-col items-center text-center transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-[#593dab] focus:ring-offset-2 focus:ring-offset-[#0a0a0a] rounded-xl p-1 motion-reduce:transition-none motion-reduce:transform-none ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
                 }`}
               style={{ transitionDelay: `${index * 80}ms` }}
             >
